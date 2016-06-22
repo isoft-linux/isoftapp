@@ -1,0 +1,3 @@
+[repo]
+url=http://koji.isoft.zhcn.cc/kojifiles/app/isoft
+repos=005-extra,005-driver,005-gnome

@@ -1,0 +1,20 @@
+[Desktop Entry]
+Categories=System;
+Comment[zh_CN]=普华软件中心
+Comment=iSoft Center
+Exec=qjade
+GenericName[zh_CN]=普华软件中心
+GenericName=iSoft Center
+Icon=qjade
+MimeType=
+Name[zh_CN]=普华软件中心
+Name=iSoft Center
+Path=
+StartupNotify=false
+Terminal=false
+TerminalOptions=
+Type=Application
+X-DBUS-ServiceName=
+X-DBUS-StartupType=
+X-KDE-SubstituteUID=false
+X-KDE-Username=

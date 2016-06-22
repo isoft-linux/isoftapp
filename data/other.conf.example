@@ -1,0 +1,10 @@
+[repo]
+url=file:///backup/isoft
+version=4.0
+# i686 or mips or sw)
+arch=x86_64
+repos=005-extra,005-driver,005-gnome
+# or false, without this tag, default to true
+enable=false
+# or true, without this tag, default to false
+gpgcheck=false

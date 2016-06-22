@@ -1,0 +1,33 @@
+isoftapp
+
+isoft-genbasedir && isoftapp search/install/remove/check/update/upgrade
+
+
+Build && Install
+
+mkdir build
+cd build
+cmake .. -DCMAKE_INSTALL_PREFIX=/usr    \
+    -DLIB_INSTALL_DIR=lib   \
+    -DLIBEXEC_INSTALL_DIR=lib   \
+    -DKDE_INSTALL_USE_QT_SYS_PATHS=ON   \
+    -DCMAKE_BUILD_TYPE=Debug    \
+    -DENABLE_NOSIZY=ON
+make
+sudo make install
+
+### for qjade:
+cd isoftapp/qjade
+lupdate qml/*.qml -ts translations/qjade_zh_CN.ts
+lrelease translations/qjade_zh_CN.ts
+
+cd build
+make
+sudo make install
+### end
+
+
+TODO:
+
+* sudo isoftapp upgrade
+* if "any operation need cache", should "update" the cache automatically

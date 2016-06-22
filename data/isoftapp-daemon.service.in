@@ -1,0 +1,14 @@
+[Unit]
+Description=iSOFT app Service
+
+After=network.target
+Wants=network.target
+
+[Service]
+Type=dbus
+BusName=org.isoftlinux.Isoftapp
+ExecStart=@CMAKE_INSTALL_FULL_BINDIR@/isoftapp-daemon
+StandardOutput=syslog
+
+[Install]
+WantedBy=multi-user.target

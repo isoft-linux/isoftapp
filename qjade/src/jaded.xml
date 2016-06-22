@@ -1,0 +1,61 @@
+<!DOCTYPE node PUBLIC "-//freedesktop//DTD D-BUS Object Introspection 1.0//EN"
+	"http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd">
+    <node name="/cn/com/isoft/jaded">
+	<interface name="cn.com.isoft.JadedInterface">
+        <method name="getInfo">
+            <arg type="s" name="name" direction="in" />
+            <arg type="s" name="info" direction="out" />
+        </method>
+        <method name="getUpdate">
+        </method>
+        <method name="getInstalled">
+        </method>
+        <method name="search">
+            <arg type="s" name="name" direction="in" />
+        </method>
+        <method name="install">
+            <arg type="s" name="name" direction="in" />
+        </method>
+        <method name="installFile">
+            <arg type="s" name="filePath" direction="in" />
+        </method>
+        <method name="uninstall">
+            <arg type="s" name="id" direction="in" />
+        </method>
+        <method name="update">
+            <arg type="s" name="name" direction="in" />
+        </method>
+        <method name="runCmd">
+            <arg type="s" name="id" direction="in" />
+        </method>
+        <method name="cancel">
+            <arg type="s" name="id" direction="in" />
+        </method>
+        <method name="getTaskQueue" />
+        <method name="setPathMode">
+            <arg type="s" name="path" direction="in" />
+            <arg type="s" name="mode" direction="in" />
+        </method>
+        <signal name="errored">
+            <arg type="s" name="name" direction="out" />
+        </signal>
+        <signal name="taskStarted">
+            <arg type="s" name="name" direction="out" />
+        </signal>>
+        <signal name="taskFinished">
+            <arg type="s" name="name" direction="out" />
+        </signal>
+        <signal name="getUpdateFinished">
+            <arg type="as" name="update" direction="out" />
+        </signal>
+        <signal name="getInstalledFinished">
+            <arg type="as" name="installed" direction="out" />
+        </signal>
+        <signal name="searchFinished">
+            <arg type="as" name="search" direction="out" />
+        </signal>
+        <signal name="taskQueueChanged">
+            <arg type="as" name="task" direction="out" />
+        </signal>
+	</interface>
+</node>

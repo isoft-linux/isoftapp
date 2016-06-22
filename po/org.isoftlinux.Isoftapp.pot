@@ -1,0 +1,209 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-12-29 12:25+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#, c-format
+msgid "Updating / installing...\n"
+msgstr ""
+
+msgid "Preparing..."
+msgstr ""
+
+msgid "Preparing packages..."
+msgstr ""
+
+msgid "Failed to install rpm file"
+msgstr ""
+
+msgid "No this package."
+msgstr ""
+
+msgid ""
+"Provides D-Bus interfaces for querying and manipulating\n"
+"iSOFT App information."
+msgstr ""
+
+#, c-format
+msgid "Not using locking for read only lock file %s"
+msgstr ""
+
+#, c-format
+msgid "Could not open lock file %s"
+msgstr ""
+
+#, c-format
+msgid "Not using locking for nfs mounted lock file %s"
+msgstr ""
+
+#, c-format
+msgid "Could not get lock %s"
+msgstr ""
+
+#, c-format
+msgid "Waited, for %s but it wasn't there"
+msgstr ""
+
+#, c-format
+msgid "Sub-process %s received a segmentation fault."
+msgstr ""
+
+#, c-format
+msgid "Sub-process %s returned an error code (%u)"
+msgstr ""
+
+#, c-format
+msgid "Sub-process %s exited unexpectedly"
+msgstr ""
+
+#, c-format
+msgid "Could not open file %s"
+msgstr ""
+
+msgid "Read error"
+msgstr ""
+
+#, c-format
+msgid "read, still have %lu to read but none left"
+msgstr ""
+
+msgid "Write error"
+msgstr ""
+
+#, c-format
+msgid "write, still have %lu to write but couldn't"
+msgstr ""
+
+msgid "Problem closing the file"
+msgstr ""
+
+msgid "Problem unlinking the file"
+msgstr ""
+
+msgid "Problem syncing the file"
+msgstr ""
+
+#, c-format
+msgid "Unable to parse package file %s (1)"
+msgstr ""
+
+#, c-format
+msgid "Unable to parse package file %s (2)"
+msgstr ""
+
+#, c-format
+msgid "Selection %s not found"
+msgstr ""
+
+#, c-format
+msgid "Unrecognized type abbreviation: '%c'"
+msgstr ""
+
+#, c-format
+msgid "Opening configuration file %s"
+msgstr ""
+
+#, c-format
+msgid "Syntax error %s:%u: Block starts with no name."
+msgstr ""
+
+#, c-format
+msgid "Syntax error %s:%u: Malformed Tag"
+msgstr ""
+
+#, c-format
+msgid "Syntax error %s:%u: Extra junk after value"
+msgstr ""
+
+#, c-format
+msgid "Syntax error %s:%u: Directives can only be done at the top level"
+msgstr ""
+
+#, c-format
+msgid "Syntax error %s:%u: Too many nested includes"
+msgstr ""
+
+#, c-format
+msgid "Syntax error %s:%u: Included from here"
+msgstr ""
+
+#, c-format
+msgid "Syntax error %s:%u: Unsupported directive '%s'"
+msgstr ""
+
+#, c-format
+msgid "Syntax error %s:%u: Extra junk at end of file"
+msgstr ""
+
+#, c-format
+msgid "Unable to read %s"
+msgstr ""
+
+msgid "Upgrade"
+msgstr ""
+
+msgid "QSystemTrayIcon is not supported on this platform"
+msgstr ""
+
+msgid "DEBUG MODE"
+msgstr ""
+
+msgid "Test Progress"
+msgstr ""
+
+msgid "Test Upgrade"
+msgstr ""
+
+msgid "&Quit"
+msgstr ""
+
+msgid "Installing "
+msgstr ""
+
+msgid ""
+"Usage: isoftapp [options] command\n"
+"       isoftapp [options] install|remove pkg1 [pkg2 ...]\n"
+msgstr ""
+
+msgid ""
+"isoftapp is a simple command line interface for downloading and\n"
+"installing packages. The most frequently used commands are update\n"
+"and install.\n"
+msgstr ""
+
+msgid ""
+"Commands:\n"
+"   search - Search packages\n"
+"   update - Retrieve new lists of packages\n"
+"   upgrade - Perform an upgrade\n"
+"   install - Install new packages (pkg is libc6 not libc6.rpm)\n"
+"   remove - Remove packages\n"
+"   check - Verify that there are no broken dependencies\n"
+"   list-installed - list \"All installed package\" in \"isoftapp RPM DB\"\n"
+"   list-uninstalled - list \"All uninstalled packages\" in \"Repos\"\n"
+msgstr ""
+
+msgid ""
+"Options:\n"
+"   -f\tforce to remove packages nodeps"
+msgstr ""
+
+msgid "Available"
+msgstr ""
+
+msgid "Installed"
+msgstr ""

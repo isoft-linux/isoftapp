@@ -1,0 +1,175 @@
+<!DOCTYPE node PUBLIC
+"-//freedesktop//DTD D-BUS Object Introspection 1.0//EN"
+"http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd" >
+<node name="/" xmlns:doc="http://www.freedesktop.org/dbus/1.0/doc.dtd">
+  <interface name="org.isoftlinux.Isoftapp">
+    <property name="DaemonVersion" type="s" access="read">
+    </property>
+
+    <property name="UpdateDuration" type="x" access="read">
+    </property>
+    
+    <method name="Update">
+      <annotation name="org.freedesktop.DBus.GLib.Async" value=""/>
+      <arg type="b" name="result" direction="out">
+      </arg>
+    </method>
+
+    <method name="Search">
+      <annotation name="org.freedesktop.DBus.GLib.Async" value=""/>
+      <arg type="s" name="term" direction="in">
+        <doc:doc><doc:summary>搜索词，需要支持模糊匹配，不用限制COUNT，由前端界面处理10条的限制</doc:summary></doc:doc>
+      </arg>
+      <arg type="b" name="result" direction="out">
+      </arg>
+    </method>
+    
+    <method name="Upgrade">
+      <annotation name="org.freedesktop.DBus.GLib.Async" value=""/>
+      <arg type="s" name="pkgName" direction="in">
+      </arg>
+      <arg type="b" name="result" direction="out">
+      </arg>
+    </method>
+
+    <method name="Install">
+      <annotation name="org.freedesktop.DBus.GLib.Async" value=""/>
+      <arg type="s" name="pkgName" direction="in">
+      </arg>
+      <arg type="b" name="result" direction="out">
+      </arg>
+    </method>
+
+    <method name="Remove">
+      <annotation name="org.freedesktop.DBus.GLib.Async" value=""/>
+      <arg type="s" name="pkgName" direction="in">
+      </arg>
+      <arg type="b" name="nodep" direction="in">
+      </arg>
+      <arg type="b" name="result" direction="out">
+      </arg>
+    </method>
+
+    <method name="AskUpgrade">
+      <annotation name="org.freedesktop.DBus.GLib.Async" value=""/>
+      <arg type="b" name="result" direction="out">
+      </arg>
+    </method>
+
+    <method name="Check">
+      <annotation name="org.freedesktop.DBus.GLib.Async" value=""/>
+      <arg type="b" name="result" direction="out">
+      </arg>
+    </method>
+
+    <method name="ListInstalled">
+      <annotation name="org.freedesktop.DBus.GLib.Async" value=""/>
+      <arg type="b" name="result" direction="out">
+      </arg>
+    </method>
+
+    <method name="ListUninstalled">
+      <annotation name="org.freedesktop.DBus.GLib.Async" value=""/>
+      <arg type="b" name="result" direction="out">
+      </arg>
+    </method>
+
+    <method name="ListAll">
+      <arg type="s" name="term" direction="in">
+      </arg>
+      <arg type="b" name="result" direction="out">
+      </arg>
+    </method>
+
+    <method name="ListUpdate">
+      <annotation name="org.freedesktop.DBus.GLib.Async" value=""/>
+      <arg type="b" name="result" direction="out">
+      </arg>
+    </method>
+
+    <method name="GetDesktopName">
+      <annotation name="org.freedesktop.DBus.GLib.Async" value=""/>
+      <arg type="s" name="pkgName" direction="in">
+      </arg>
+      <arg type="s" name="desktopName" direction="out">
+      </arg>
+    </method>
+
+    <method name="SetPathMode">
+      <arg type="s" name="path" direction="in">
+      </arg>
+      <arg type="s" name="mode" direction="in">
+      </arg>
+    </method>
+
+    <signal name="Error">
+      <arg name="error" type="x">
+      </arg>
+      <arg name="details" type="s">
+      </arg>
+      <arg name="errcode" type="x">
+      </arg>
+    </signal>
+
+    <signal name="PercentChanged">
+      <arg name="status" type="x">
+        <doc:doc><doc:summary>得区分安装、删除！下载现在有进度了吗？优先级较低</doc:summary></doc:doc>
+      </arg>
+      <arg name="file" type="s">
+      </arg>
+      <arg name="percent" type="d">
+      </arg>
+    </signal>
+
+    <signal name="SearchChanged">
+      <arg name="pkgName" type="s">
+        <doc:doc><doc:summary>搜索返回pkgName，这样前端可以方便地通过pkgName调用Install等接口</doc:summary></doc:doc>
+      </arg>
+      <arg name="status" type="x">
+        <doc:doc><doc:summary>搜索返回pkgName的状态：已安装、未安装，这里不判断是否有升级更新，但防止以后要添加升级，所以status用枚举类型方便扩展</doc:summary></doc:doc>
+      </arg>
+    </signal>
+
+    <signal name="UpgradeChanged">
+      <arg name="pkgName" type="s">
+        <doc:doc><doc:summary>daemon后端判断出有新的更新，返回pkgName，不做COUNT限制</doc:summary></doc:doc>
+      </arg>
+    </signal>
+
+    <signal name="Finished">
+      <arg name="pkgName" type="s">
+        <doc:doc><doc:summary>返回pkgName，或者NULL</doc:summary></doc:doc>
+      </arg>
+      <arg name="status" type="x">
+        <doc:doc><doc:summary>优先级较低，区分是什么任务完成了：安装、升级、卸载</doc:summary></doc:doc>
+      </arg>
+    </signal>
+
+    <signal name="CheckChanged">
+      <arg name="Problem" type="s">
+        <doc:doc><doc:summary>检测可能会出现的问题</doc:summary></doc:doc>
+      </arg>
+    </signal>
+
+    <signal name="ListChanged">
+      <arg name="pkgName" type="s">
+        <doc:doc><doc:summary>列出安装/未安装的软件包</doc:summary></doc:doc>
+      </arg>
+    </signal>
+
+    <signal name="ListAllChanged">
+      <arg name="pkgName" type="s">
+        <doc:doc><doc:summary>列出所有软件包</doc:summary></doc:doc>
+      </arg>
+      <arg name="status" type="x">
+      </arg>
+    </signal>
+
+    <signal name="ListUpdateFinished">
+      <arg name="pkgName" type="s">
+        <doc:doc><doc:summary>列出所有需要更新的软件包</doc:summary></doc:doc>
+      </arg>
+    </signal>
+
+  </interface>
+</node>

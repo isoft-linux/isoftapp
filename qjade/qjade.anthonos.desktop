@@ -1,0 +1,20 @@
+[Desktop Entry]
+Categories=Qt;System;Settings;PackageManager;
+Comment[zh_CN]=AnthonOS AppStore
+Comment=AnthonOS AppStore
+Exec=qjade
+GenericName[zh_CN]=安同软件中心
+GenericName=安同软件中心
+Icon=qjade
+MimeType=
+Name[zh_CN]=安同软件中心
+Name=安同软件中心
+Path=
+StartupNotify=true
+Terminal=false
+TerminalOptions=
+Type=Application
+X-DBUS-ServiceName=
+X-DBUS-StartupType=
+X-KDE-SubstituteUID=false
+X-KDE-Username=

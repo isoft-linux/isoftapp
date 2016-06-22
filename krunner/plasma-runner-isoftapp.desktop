@@ -1,0 +1,23 @@
+[Desktop Entry]
+Name=iSoftApp
+Name[en_GB]=iSoftApp
+Name[fr]=iSoftApp
+Name[ia]=iSoftApp
+Name[x-test]=xxiSoftAppxx
+Name[zh_CN]=应用商店
+Name[zh_TW]=应用商店
+Comment=iSoft AppStore
+Comment[zh_CN]=应用商店
+Comment[zh_TW]=应用商店
+X-KDE-ServiceTypes=Plasma/Runner
+Type=Service
+Icon=security-high
+X-KDE-Library=krunner_isoftapp
+X-Plasma-RunnerPhase=first
+X-KDE-PluginInfo-Author=Leslie Zhai
+X-KDE-PluginInfo-Email=xiang.zhai@i-soft.com.cn
+X-KDE-PluginInfo-Name=isoftapp
+X-KDE-PluginInfo-Version=2.2.7
+X-KDE-PluginInfo-License=LGPL
+X-KDE-PluginInfo-EnabledByDefault=true
+X-Plasma-AdvertiseSingleRunnerQueryMode=true

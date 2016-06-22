@@ -1,0 +1,262 @@
+# Chinese/Simplified translation of isoftapp.
+# Copyright (C) 2015 Leslie Zhai <xiang.zhai@i-soft.com.cn>
+# This file is distributed under the same license as the isoftapp package.
+# Leslie Zhai <xiang.zhai@i-soft.com.cn>, 2015.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: 2.2.7\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2016-05-26 10:48+0800\n"
+"PO-Revision-Date: 2015-12-29 10:04+0800\n"
+"Last-Translator: Leslie Zhai <xiang.zhai@i-soft.com.cn>\n"
+"Language-Team: Leslie Zhai <xiang.zhai@i-soft.com.cn>\n"
+"Language: zh_CN\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "updating."
+msgstr ""
+
+msgid ""
+"Provides D-Bus interfaces for querying and manipulating\n"
+"iSOFT App information."
+msgstr ""
+
+#, c-format
+msgid "Selection %s not found"
+msgstr ""
+
+#, c-format
+msgid "Updating / installing...\n"
+msgstr ""
+
+msgid "Preparing..."
+msgstr ""
+
+msgid "Preparing packages..."
+msgstr ""
+
+#, c-format
+msgid "Unrecognized type abbreviation: '%c'"
+msgstr ""
+
+#, c-format
+msgid "Opening configuration file %s"
+msgstr ""
+
+#, c-format
+msgid "Syntax error %s:%u: Block starts with no name."
+msgstr ""
+
+#, c-format
+msgid "Syntax error %s:%u: Malformed Tag"
+msgstr ""
+
+#, c-format
+msgid "Syntax error %s:%u: Extra junk after value"
+msgstr ""
+
+#, c-format
+msgid "Syntax error %s:%u: Directives can only be done at the top level"
+msgstr ""
+
+#, c-format
+msgid "Syntax error %s:%u: Too many nested includes"
+msgstr ""
+
+#, c-format
+msgid "Syntax error %s:%u: Included from here"
+msgstr ""
+
+#, c-format
+msgid "Syntax error %s:%u: Unsupported directive '%s'"
+msgstr ""
+
+#, c-format
+msgid "Syntax error %s:%u: Extra junk at end of file"
+msgstr ""
+
+#, c-format
+msgid "Unable to read %s"
+msgstr ""
+
+#, c-format
+msgid "Not using locking for read only lock file %s"
+msgstr ""
+
+#, c-format
+msgid "Could not open lock file %s"
+msgstr ""
+
+#, c-format
+msgid "Not using locking for nfs mounted lock file %s"
+msgstr ""
+
+#, c-format
+msgid "Could not get lock %s"
+msgstr ""
+
+#, c-format
+msgid "Waited, for %s but it wasn't there"
+msgstr ""
+
+#, c-format
+msgid "Sub-process %s received a segmentation fault."
+msgstr ""
+
+#, c-format
+msgid "Sub-process %s returned an error code (%u)"
+msgstr ""
+
+#, c-format
+msgid "Sub-process %s exited unexpectedly"
+msgstr ""
+
+#, c-format
+msgid "Could not open file %s"
+msgstr ""
+
+msgid "Read error"
+msgstr ""
+
+#, c-format
+msgid "read, still have %lu to read but none left"
+msgstr ""
+
+msgid "Write error"
+msgstr ""
+
+#, c-format
+msgid "write, still have %lu to write but couldn't"
+msgstr ""
+
+msgid "Problem closing the file"
+msgstr ""
+
+msgid "Problem unlinking the file"
+msgstr ""
+
+msgid "Problem syncing the file"
+msgstr ""
+
+#, c-format
+msgid "Unable to parse package file %s (1)"
+msgstr ""
+
+#, c-format
+msgid "Unable to parse package file %s (2)"
+msgstr ""
+
+msgid "QSystemTrayIcon is not supported on this platform"
+msgstr "系统不支持托盘"
+
+msgid "<span style=\"font-size:16px;\">Installing</span>"
+msgstr "<span style=\"font-size:16px;\">正在安装</span>"
+
+msgid "<span style=\"font-size:16px;\">Uninstalling</span>"
+msgstr "<span style=\"font-size:16px;\">正在卸载</span>"
+
+msgid "<span style=\"font-size:16px;\">Downloading</span>"
+msgstr "<span style=\"font-size:16px;\">正在下载</span>"
+
+msgid "DEBUG MODE"
+msgstr "调试模式"
+
+msgid "Test Progress"
+msgstr "测试进度"
+
+msgid "Test Upgrade"
+msgstr "测试升级"
+
+msgid "&Quit"
+msgstr "退出"
+
+msgid "Upgrade"
+msgstr "升级"
+
+msgid ""
+"Usage: isoftapp [options] command\n"
+"       isoftapp [options] install|remove pkg1 [pkg2 ...]\n"
+msgstr ""
+
+msgid ""
+"isoftapp is a simple command line interface for downloading and\n"
+"installing packages. The most frequently used commands are update\n"
+"and install.\n"
+msgstr ""
+"isoftapp 是一款下载/安装软件包的命令行工具软件。\n"
+"最常用的命令是 更新、安装和卸载等。\n"
+
+msgid ""
+"Commands:\n"
+"   search - Search packages\n"
+"   update - Retrieve new lists of packages\n"
+"   upgrade - Perform an upgrade\n"
+"   install - Install new package (pkg is libc6 not libc6.rpm)\n"
+"   remove - Remove package\n"
+"   check - Verify that there are no broken dependencies\n"
+"   list-installed - list \"All installed package(s)\" in \"isoftapp RPM DB"
+"\"\n"
+"   list-uninstalled - list \"All uninstalled packages\" in \"Repos\"\n"
+msgstr ""
+"命令:\n"
+"    search - 查询安装包\n"
+"    update - 更新服务器仓库数据到本地数据库\n"
+"    upgrade - 升级已安装的软件包\n"
+"    install - 安装新软件包(安装包的名字是libc6,而不是libc6.rpm)\n"
+"    remove - 卸载软件\n"
+"    check - 检查本地软件包是否有依赖断裂的情况\n"
+"    list-installed - 列出所有已安装的软件\n"
+"    list-uninstalled - 列出所有在服务器仓库中未安装的软件\n"
+
+msgid ""
+"Options:\n"
+"   -f\tforce to remove packages nodeps"
+msgstr ""
+"选项:\n"
+"    -f\t强制删除软件包。"
+
+msgid ""
+"Tips:\n"
+"   try to use \"isoftapp update\" if meet with any problems."
+msgstr ""
+"提示:\n"
+"    使用中遇到问题，可以试试 isoftapp update。"
+
+msgid "Available"
+msgstr "未安装"
+
+msgid "Installed"
+msgstr "已安装"
+
+msgid "All seem ok."
+msgstr "已安装包检测正常"
+
+msgid "No this package"
+msgstr "不存在的安装包"
+
+msgid "No this package or not installed"
+msgstr "不存在/未安装的安装包"
+
+msgid "Not need upgradation"
+msgstr "不需要更新"
+
+msgid "iSoftApp"
+msgstr "应用商店"
+
+msgid "Do you want to run %1?"
+msgstr "您想运行 %1 吗?"
+
+msgid "Find App matches :q:"
+msgstr ""
+
+msgid "daemon is not ready! please wait..."
+msgstr "还没有准备好!请等待..."
+
+msgid "Install"
+msgstr "安装"
+
+msgid "Uninstall"
+msgstr "卸载"

@@ -1,0 +1,550 @@
+// Copyright (C) 2014 - 2015 Leslie Zhai <xiang.zhai@i-soft.com.cn>
+
+#include "jadedbus.h"
+#include "globaldeclarations.h"
+#include "util.h"
+
+//begin
+#include <QCoreApplication>
+#include <QObject>
+#include <iostream>
+#include <string>
+#include <QString>
+#include <QTimer>
+
+typedef struct {
+    QString pkgName;
+    char removeName[256];
+    int  status; //0-no this pkg;1-installed;2-not installed but existing;3-doing
+} t_PKGINFO;
+
+QList<t_PKGINFO> AllPkgList;
+
+/* The following enums defined in src/daemon.h;*/
+typedef enum {
+    STATUS_INSTALL,
+    STATUS_UPGRADE,
+    STATUS_REMOVE,
+    STATUS_INSTALLED,
+    STATUS_REMOVED,
+    STATUS_UPDATED,
+    STATUS_UPGRADED,
+    STATUS_SEARCHED,
+    STATUS_INSTALL_ERROR,
+    STATUS_REMOVE_ERROR,
+    STATUS_UPGRADE_ERROR,
+    STATUS_UNKNOWN,
+} Status;
+
+typedef enum {
+    INSTALLED,
+    UNINSTALLED,
+    SEARCH_UNKNOWN,
+} SearchStatus;
+
+
+typedef enum {
+    ERROR_FAILED,
+    ERROR_PERMISSION_DENIED,
+    ERROR_NOT_SUPPORTED,
+    ERROR_SEARCH,
+    ERROR_TASK_LOCKED,
+    ERROR_CHECK,
+    ERROR_INSTALL,
+    ERROR_REMOVE,
+    ERROR_UPDATE,
+    ERROR_PKG_NOT_EXIST,
+    ERROR_PKG_NOT_REMOVED,
+    ERROR_PKG_NOT_UPGRADED,
+    NUM_ERRORS
+} Error;
+
+typedef enum {
+    ERROR_CODE_NETWORK,
+    ERROR_CODE_DOWNLOAD,
+    ERROR_CODE_INSTALL,
+    ERROR_CODE_REMOVE,
+    ERROR_CODE_SEARCH,
+    ERROR_CODE_UPDATEING,
+    ERROR_CODE_OTHERS
+} ErrorCode;
+//end
+
+static bool g_hasInited = false;
+JadedBus::JadedBus(QObject *parent) 
+  : QObject(parent), 
+    m_jaded(NULL)
+{
+
+    m_jaded = new cn::com::isoft::JadedInterface("cn.com.isoft.Jaded", "/Jaded", 
+            QDBusConnection::sessionBus(), this);
+
+    //begin
+    if (!m_isoftapp)
+    m_isoftapp = new org::isoftlinux::Isoftapp("org.isoftlinux.Isoftapp",
+                                                   "/org/isoftlinux/Isoftapp",
+                                                   QDBusConnection::systemBus());
+
+    QObject::connect(m_isoftapp,
+                     &org::isoftlinux::Isoftapp::PercentChanged,
+                     this,
+                     &JadedBus::percentChged);
+
+    connect(m_isoftapp,
+                     &org::isoftlinux::Isoftapp::SearchChanged,
+                     this,
+                     &JadedBus::searchChged);
+
+    connect(m_isoftapp,
+            &org::isoftlinux::Isoftapp::ListChanged,
+            this,
+            &JadedBus::listChged);
+
+    connect(m_isoftapp,
+            &org::isoftlinux::Isoftapp::Finished,
+            this,
+            &JadedBus::updatePkgList);
+
+    // init
+    if (!g_hasInited) {
+        g_hasInited = true;
+        updatePkgList(STATUS_INSTALL);
+    } else {
+        printf("\n trace %s,%d,has init qdbus[%x],go on!!\n",__FUNCTION__,__LINE__ ,m_isoftapp);
+    }
+
+    //end
+
+    connect(m_jaded, 
+            &cn::com::isoft::JadedInterface::errored, 
+            this, 
+            &JadedBus::m_errored);
+    connect(m_jaded,                                                               
+            &cn::com::isoft::JadedInterface::getUpdateFinished,
+            this,                                                                  
+            &JadedBus::getUpdateFinished);
+    connect(m_jaded,                                                               
+            &cn::com::isoft::JadedInterface::getInstalledFinished,                    
+            this,                                                                  
+            &JadedBus::getInstalledFinished);
+    connect(m_jaded, 
+            &cn::com::isoft::JadedInterface::taskStarted, 
+            this, 
+            &JadedBus::m_taskStarted);
+    connect(m_jaded, 
+            &cn::com::isoft::JadedInterface::taskFinished, 
+            this, 
+            &JadedBus::taskFinished);
+    connect(m_jaded, 
+            &cn::com::isoft::JadedInterface::taskQueueChanged, 
+            this, 
+            &JadedBus::m_taskQueueChanged);
+}
+
+JadedBus::~JadedBus() 
+{
+    if (m_jaded) {
+        delete m_jaded;
+        m_jaded = NULL;
+    }
+    //AllPkgList.clear();
+}
+
+//begin
+#include <unistd.h>
+
+static time_t g_last_tm = 0;
+
+void JadedBus::updatePkgList(qlonglong status)
+{
+    if (status != STATUS_REMOVED &&
+        status != STATUS_UPDATED &&
+        status != STATUS_INSTALLED &&
+        status != STATUS_INSTALL) {
+        return;
+    }
+
+    if (abs(g_last_tm - time(NULL) ) < 1) {
+        return;
+    } else {
+        g_last_tm = time(NULL);
+    }
+
+    if (status == STATUS_INSTALLED)
+        m_isoftapp->ListInstalled();
+
+    usleep(3000);
+
+    if (status == STATUS_REMOVED)
+        m_isoftapp->ListUninstalled();
+
+    usleep(110000);
+
+    if (status == STATUS_INSTALLED)
+        m_isoftapp->ListInstalled();
+
+    usleep(3000);
+
+    if (status == STATUS_REMOVED)
+        m_isoftapp->ListUninstalled();
+
+    if(status == STATUS_INSTALL) {
+        m_isoftapp->ListInstalled();
+        usleep(50000);
+        m_isoftapp->ListUninstalled();
+        usleep(110000);
+
+        m_isoftapp->ListInstalled();
+        usleep(100000);
+        m_isoftapp->ListUninstalled();
+    }
+
+}
+
+/*
+* get data from isoftapp daemon and
+* update AllPkgList every 8 seconds automatically.
+*
+*/
+void JadedBus::listChged(const QString &pkgName)
+{
+    //printf("\n trace %s,%d,[%s]\n",__FUNCTION__,__LINE__,qPrintable(pkgName) );
+
+    if (pkgName.isEmpty()) {
+        return;
+    }
+    bool found = false;
+    char buf[256]="";
+    snprintf(buf,sizeof(buf),"%s",qPrintable(pkgName));
+    int status = atoi(buf);
+    QString name((char *)(buf+2));
+
+    for (int i = 0; i < AllPkgList.size(); ++i) {
+        if (AllPkgList.at(i).pkgName  == name) {
+            found = true;
+            AllPkgList[i].status = status ? 1 : 2;
+            //printf("\n trace %s,%d,[%s]status[%d]\n",__FUNCTION__,__LINE__,qPrintable(name),status );
+
+            break;
+        }
+    }
+
+    if (!found) {
+        t_PKGINFO pkg;
+        pkg.pkgName = name;
+        pkg.status = status ? 1 : 2;
+        AllPkgList.append(pkg);
+    }
+}
+
+
+void JadedBus::percentChged(qlonglong status, const QString &file, double percent)
+{
+    //printf("\n trace %s,%d\n",__FUNCTION__,__LINE__);
+
+    if (status == STATUS_INSTALLED) {
+        printf("\n trace %s,%d,[%s] installed\n",__FUNCTION__,__LINE__,qPrintable(file) );
+        return;
+    } else if (status == STATUS_REMOVED) {
+        printf("\n trace %s,%d,[%s] removed\n",__FUNCTION__,__LINE__,qPrintable(file) );
+        return;
+    }
+
+    int Percent = 100 * percent;
+
+    QString name = file.section('-',0,0);
+    //printf("\n trace %s,%d,name[%s]vs[%s],[%d]\n",__FUNCTION__,__LINE__,qPrintable(name),qPrintable(file),Percent );
+    emit perChanged(name,Percent);
+
+}
+
+void JadedBus::searchChged(const QString &pkgName,qlonglong status)
+{
+    //printf("\n trace %s,%d\n",__FUNCTION__,__LINE__);
+///home/test/gits/isoftapp/console/main.cpp
+    //todo...
+    //printf("\n trace %s,%d,name[%s]vs[%s],[%d]\n",__FUNCTION__,__LINE__,qPrintable(name),qPrintable(file),Percent );
+    //emit perChanged(name,Percent);
+
+}
+/*
+295 QString Jaded::getInfo(QString name)
+296 {
+297     if (m_packages.contains(name)) {
+298         PackageKit::Package::Info info = m_packages[name].info();
+299 #if JADED_DEBUG
+300         qDebug() << "DEBUG:" << __PRETTY_FUNCTION__ << name << info;
+301 #endif
+302         if (info == PackageKit::Package::InfoWaiting) {
+303             return "InfoWaiting";
+304         }
+305         if (info == PackageKit::Package::InfoInstalled) {
+306             return "InfoInstalled";
+307         }
+308         if (info == PackageKit::Package::InfoAvailable) {
+309             return "InfoAvailable";
+310         }
+311         if (info == PackageKit::Package::InfoUpdatable) {
+312             return "InfoUpdatable";
+313         }
+314         if (info == PackageKit::Package::InfoInstalling) {
+315             return "InfoRunning";
+316         }
+317     }
+318
+319     return "UnknownInfo";
+320 }
+
+QObject::connect(m_isoftapp, &org::isoftlinux::Isoftapp::SearchChanged,
+            [=](const QString &pkgName, qlonglong status){
+        std::cout << pkgName.toStdString() << " " <<
+            std::string(status ? _("Available") : _("Installed")) << std::endl;
+    });
+
+
+*/
+//end
+
+void JadedBus::m_errored(const QString &name) 
+{
+    emit errored(name);
+}
+
+QString JadedBus::getInfo(QString name) 
+{
+    printf("\n trace %s,%d,to get info for name[%s]\n",__FUNCTION__,__LINE__,qPrintable(name));
+    //m_isoftapp->Search(qPrintable(name));
+
+    for (int i = 0; i < AllPkgList.size(); ++i) {
+        if (AllPkgList.at(i).pkgName == name) {
+            int status = AllPkgList.at(i).status;
+            if (status == 1) {
+                return "InfoInstalled";
+            } else if (status == 2) {
+                return "InfoAvailable";
+            } else if (status == 3) {
+                return "InfoWaiting";
+            }
+
+            printf("%s,%d,all pkg list:[%s][%s]\n",__FUNCTION__,__LINE__,
+               qPrintable(AllPkgList.at(i).pkgName),status == 1?"installed":status==2?"can install":status==3?"doing":"uninstalled");
+        }
+    }
+
+    return "UnknownInfo";
+    return "abc";
+
+    //return m_jaded->getInfo(name);
+
+}
+
+void JadedBus::getUpdateFinished(const QStringList &update) 
+{
+    foreach (QString str, update) {
+        QStringList result = str.split("|");
+        if (result.size() != 5) 
+            continue;
+        QString iconPath = absIconPath(result[2]);
+        if (iconPath == "") {
+            iconPath = USR_SHARE_ICON_DIR + OXYGEN_THEME + 
+                "/48x48/categories/applications-system.png";
+        }
+        m_updateList.append(new JadedPackageObject(result[0], result[1],
+        "file://" + iconPath, result[3], result[4]));
+    }
+    emit updateChanged(m_updateList.size());
+}
+
+void JadedBus::getUpdateTimeout() 
+{
+#if QJADE_DEBUG
+    qDebug() << "DEBUG:" << __PRETTY_FUNCTION__;
+#endif
+    if (m_updateList.size() == 0)
+        emit getUpdateError();
+}
+
+void JadedBus::getUpdate() 
+{
+    m_jaded->getUpdate();
+    QTimer::singleShot(6000, this, SLOT(getUpdateTimeout()));
+}
+
+void JadedBus::getInstalledFinished(const QStringList &installed) 
+{
+    m_installedList.clear();
+    foreach (QString str, installed) {
+        QStringList result = str.split("|");
+        if (result.size() != 5) 
+            continue;
+        QString iconPath = absIconPath(result[2]);
+        if (iconPath == "") 
+            continue;
+        m_installedList.append(new JadedPackageObject(result[0], result[1],
+        "file://" + iconPath, result[3], result[4]));
+    }
+    emit installedChanged();
+}
+
+void JadedBus::getInstalledTimeout() 
+{
+#if QJADE_DEBUG
+    qDebug() << "DEBUG:" << __PRETTY_FUNCTION__;
+
+#endif
+#if 0
+    m_installedList.append(new JadedPackageObject("result[0]", "result[1]",
+    "iconPath", "result[3]", "result[4]"));
+#endif
+
+    if (m_installedList.size() == 0)
+        emit getInstalledError();
+}
+
+void JadedBus::getInstalled() 
+{
+    m_jaded->getInstalled();
+    QTimer::singleShot(6000, this, SLOT(getInstalledTimeout()));
+}
+
+void JadedBus::searchFinished(const QStringList &search)                     
+{                                                                                  
+    if (m_searchList.size()) {
+        for (int i = 0; i < m_searchList.size(); i++) {
+            delete m_searchList[i];
+            m_searchList[i] = NULL;
+        }
+        m_searchList.clear();
+    }
+    foreach (QString str, search) {                                                
+        QStringList result = str.split("|");                                      
+        if (result.size() != 5)                                                   
+            continue;                                                              
+        QString iconPath = absIconPath(result[2]);                                
+        if (iconPath == "") {                                                      
+            iconPath = USR_SHARE_ICON_DIR + OXYGEN_THEME +                         
+                "/48x48/categories/applications-system.png";                       
+        }
+        m_searchList.append(new JadedPackageObject(result[0], result[1], 
+                    "file://" + iconPath, result[3], result[4]));
+    }                                                                              
+    emit searchChanged(m_searchList.size());
+}
+
+void JadedBus::searchTimeout() 
+{
+    if (m_searchList.size() == 0)
+        emit searchError();
+}
+
+void JadedBus::search(QString name) 
+{
+    connect(m_jaded,                                                               
+            &cn::com::isoft::JadedInterface::searchFinished,                       
+            this,                                                                  
+            &JadedBus::searchFinished);
+    m_jaded->search(name);
+    QTimer::singleShot(6000, this, SLOT(searchTimeout()));
+}
+
+void JadedBus::m_taskStarted(const QString &name) 
+{
+    emit taskStarted(name);
+}
+
+void JadedBus::taskFinished(const QString &name) 
+{
+    emit taskChanged(name);
+}
+
+void JadedBus::m_taskQueueChanged(const QStringList &task) 
+{
+    if (m_taskQueue.size()) {
+        for (int i = 0; i < m_taskQueue.size(); i++) {
+            if (m_taskQueue[i]) {
+                delete m_taskQueue[i];
+                m_taskQueue[i] = NULL;
+            }
+        }
+        m_taskQueue.clear();
+    }
+    foreach (QString str, task) {
+        QStringList result = str.split("|");
+        if (result.size() != 5)
+            continue;
+
+        QString iconPath = absIconPath(result[2]);
+        if (iconPath == "" || iconPath == "lib") {
+            iconPath = USR_SHARE_ICON_DIR + OXYGEN_THEME +
+                "/48x48/categories/applications-system.png";
+        }
+
+        m_taskQueue.append(new JadedPackageObject(result[0], result[1],
+                    "file://" + iconPath, result[3], result[4]));
+    }
+
+#if 1
+
+    m_taskQueue.append(new JadedPackageObject("1", "name","","v1.2","description") );
+
+#if 0
+    JadedPackageObject(const QString &id,
+                        const QString &name,
+                        const QString &icon,
+                        const QString &version,
+                        const QString &description,
+
+#endif
+#endif
+
+    emit taskQueueChanged(m_taskQueue.size());
+}
+#include <unistd.h>
+void JadedBus::install(QString name) 
+{
+    //m_jaded->install(name);
+
+#if 1
+
+    for (int i = 0; i < AllPkgList.size(); ++i) {
+        if (AllPkgList.at(i).pkgName == "vlc") {
+            int status = AllPkgList.at(i).status;
+
+            printf("%s,%d,all pkg list:[%s][%s]\n",__FUNCTION__,__LINE__,
+               qPrintable(AllPkgList.at(i).pkgName),status == 1?"installed":status==2?"can install":status==3?"doing":"uninstalled");
+        }
+    }
+
+    printf("%s,%d,call install() to install [%s],end\n",__FUNCTION__,__LINE__,qPrintable(name));
+
+    m_isoftapp->Install(qPrintable(name));
+
+#endif
+
+
+}
+
+void JadedBus::installFile(QString filePath) 
+{
+    m_jaded->installFile(filePath);
+}
+
+void JadedBus::uninstall(QString id) 
+{
+    m_jaded->uninstall(id);
+}
+
+void JadedBus::update(QString name) 
+{
+    m_jaded->update(name);
+}
+
+void JadedBus::cancel(QString name) 
+{
+    m_jaded->cancel(name);
+}
+
+void JadedBus::getTaskQueue() 
+{
+    m_jaded->getTaskQueue();
+}

@@ -1,0 +1,15 @@
+<brand>
+    <logo>anthonos.png</logo>
+    <name>
+        <en_us>AnthonOS AppStore</en_us>
+        <zh_cn>安同软件中心</zh_cn>
+    </name>
+    <org>
+        <en_us>AnthonOS Open Source Community</en_us>
+        <zh_cn>安同开源社区</zh_cn>
+    </org>
+    <slogan>
+        <en_us>The best Linux AppStore in the universe</en_us>
+        <zh_cn>全宇宙最强大的Linux软件中心</zh_cn>
+    </slogan>
+</brand>

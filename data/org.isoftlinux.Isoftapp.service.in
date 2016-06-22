@@ -1,0 +1,5 @@
+[D-BUS Service]
+Name=org.isoftlinux.Isoftapp
+Exec=@CMAKE_INSTALL_FULL_BINDIR@/isoftapp-daemon
+User=root
+SystemdService=isoftapp-daemon.service
