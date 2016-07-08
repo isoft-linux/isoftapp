@@ -13,21 +13,28 @@
 #include <cstdio>
 #include "globallist.h"
 
-static bool isQjadePkgListInited = false;
+//#define USEOLDROUTINE
 
+static bool isQjadePkgListInited = false;
+int g_cate_number=0;
+int g_cate_act_number=0;
 CategoryModel::CategoryModel(HttpGet* parent) 
   : HttpGet(parent) 
 {
     get(CATEGORY_URI);
 
+    g_cate_number = 0;
+    g_cate_act_number = 0;
     printf("\n%s,%d,[%s]\n",__FUNCTION__,__LINE__,qPrintable(CATEGORY_URI));
 
     //-------------------------------------------------------------------------
     // FIXME: Hot Today is Chinglish, please someone else change it more native 
     //        English
     //-------------------------------------------------------------------------
+#ifdef USEOLDROUTINE
     m_dataList.append(new CategoryObject("all-pkg", tr("All_Pkg"),  //hot-today,Hot Today
-        "hot-today.png"));
+        "hot-today.png",0));
+#endif
 }
 
 CategoryModel::~CategoryModel() 
@@ -50,9 +57,6 @@ void CategoryModel::finished(QNetworkReply *reply)
         emit error();
         return;
     }
-#if QJADE_DEBUG
-    qDebug() << strData;
-#endif
 
     printf("\n%s,%d,strData[%s]\n",__FUNCTION__,__LINE__,qPrintable(strData));
     //-------------------------------------------------------------------------
@@ -67,17 +71,24 @@ void CategoryModel::finished(QNetworkReply *reply)
     //-------------------------------------------------------------------------
     // TODO: traverse all the QJsonObject from QJsonArray
     //-------------------------------------------------------------------------
+    int xx =1;
+    g_cate_number =0;
+    g_cate_act_number = 0;
     foreach (const QJsonValue & val, arr) {
         QJsonObject obj = val.toObject();
+        #ifdef USEOLDROUTINE
         m_dataList.append(
             new CategoryObject("category-" + obj["name"].toString(), 
                 obj["title"].toString(),//+"67",
-                obj["icon"].toString()));
+                obj["icon"].toString(),xx++));
 
-        // to init globle list g_qjadePkgList(declared in main.cpp)
+        printf("\n######%:%s,%d,name[%s]title[%s]icon[%d]\n",__FUNCTION__,__LINE__,
+            qPrintable(obj["name"].toString()),qPrintable(obj["title"].toString()),
+                obj["icon"].toString());
+
+        #endif
+
         if (!isQjadePkgListInited) {
-
-            // to init g_categoryList
             isExist = false;
             QString name = obj["name"].toString();
             for (int i = 0; i < g_categoryList.size(); ++i) {
@@ -93,30 +104,24 @@ void CategoryModel::finished(QNetworkReply *reply)
                 //pkg.catPkgList to insert ...
                 g_categoryList.append(pkg);
             }
-            printf("\n######%:%s,%d,[%s]name[%s]title[%s]\n",__FUNCTION__,__LINE__,
-                   isExist?"exist":"not exist",qPrintable(name),qPrintable(obj["title"].toString()));
-
 
             connect(&m_pks, SIGNAL(finished(QNetworkReply*)),
                 this, SLOT(getPackagesFinished(QNetworkReply*)));
+
             m_pks.get(QNetworkRequest(CATEGORY_PACKAGE_URI + obj["name"].toString() + "/" +
                 QLocale::system().name().toLower()));
-
-            QString tmp = PACKAGE_URI + obj["name"].toString() + "/" +
-                                         QLocale::system().name().toLower();
-            printf("\n######%s,%d,to get pkgs name by cat name:[%s]\n",__FUNCTION__,__LINE__,qPrintable(tmp));
-
         }
 
     }
 
     // my pkgs
+    #ifdef USEOLDROUTINE
     m_dataList.append(new CategoryObject("my-pkgs", tr("My_pkgs"),
-        "")); // ICON is null.
+        "",xx++)); // ICON is null.
+    #endif
 
-    isQjadePkgListInited = true;
-
-    emit categoryChanged();
+    //isQjadePkgListInited = true;
+    //emit categoryChanged();
 }
 
 QList<QObject*> CategoryModel::categories() const
@@ -130,9 +135,7 @@ void CategoryModel::getPackagesFinished(QNetworkReply *reply)
     QByteArray data = reply->readAll();
     QString strData(data);
     QJsonDocument jsondoc = QJsonDocument::fromJson(strData.toUtf8());
-#if QJADE_DEBUG
-    qDebug() << "DEBUG:" << strData;
-#endif
+
     if (!jsondoc.isObject()) return;
     QJsonObject obj = jsondoc.object();
     QJsonArray arr = obj["packages"].toArray();
@@ -141,9 +144,9 @@ void CategoryModel::getPackagesFinished(QNetworkReply *reply)
         return;
     }
 
-    printf("\n######%s,%d,pkg url:[%s],const url[%s]\n",__FUNCTION__,__LINE__,
-           qPrintable(reply->url().toString() ),qPrintable(CATEGORY_PACKAGE_URI));
-    // to find node by cate name in g_categoryList
+    printf("\n######%s,%d,pkg url:[%s],const url[%s]g_cate_act_number[%d]\n",__FUNCTION__,__LINE__,
+           qPrintable(reply->url().toString() ),qPrintable(CATEGORY_PACKAGE_URI),g_cate_act_number);
+
     // url[http://appstore.isoft-linux.org/appstore/category-packages/Games/zh_cn]
     char catPkgStr[256]="";
     char urlStr[512]="";
@@ -171,20 +174,17 @@ void CategoryModel::getPackagesFinished(QNetworkReply *reply)
             QString dstCatName = catName;
 
             if (g_categoryList[i].name == dstCatName) {
-
-                printf("\n######%s,%d,cat in list:[%s],dst[%s]\n",__FUNCTION__,__LINE__,
-                       qPrintable(g_categoryList[i].name),qPrintable(dstCatName));
-
                 iFind = i;
                 g_categoryList.at(iFind).catPkgList.clear();
                 break;
             }
-
-
         }
     }
 
     foreach (const QJsonValue & val, arr) {
+        // to compare with g_cate_ace_number;
+        g_cate_number ++;
+
         QJsonObject obj = val.toObject();
         QString pkname = obj["name"].toString();
         //---------------------------------------------------------------------
@@ -198,11 +198,12 @@ void CategoryModel::getPackagesFinished(QNetworkReply *reply)
         QString tmp = PACKAGE_URI + pkname + "/" +
                                      QLocale::system().name().toLower();
 
+        //printf("\n######%s,%d,url[%s]\n",__FUNCTION__,__LINE__,qPrintable(tmp));
+
         if (iFind >= 0) {
             g_categoryList.at(iFind).catPkgList.append(pkname);
 
         }
-
     }
     //disconnect(&m_pks, SIGNAL(finished(QNetworkReply*)),
     //    this, SLOT(getPackagesFinished(QNetworkReply*)));
@@ -214,13 +215,10 @@ void CategoryModel::getPackageFinished(QNetworkReply *reply)
     QByteArray data = reply->readAll();
     QString strData(data);
     QJsonDocument jsondoc = QJsonDocument::fromJson(strData.toUtf8());
-#if QJADE_DEBUG
-    qDebug() << "DEBUG: " << strData;
-#endif
+
     if (!jsondoc.isObject()) return;
     QJsonObject obj = jsondoc.object();
     QString pkgName = obj["name"].toString();
-
     t_QJADE_PKGINFO pkg;
     pkg.name = pkgName;
     pkg.description = obj["description"].toString();
@@ -229,38 +227,112 @@ void CategoryModel::getPackageFinished(QNetworkReply *reply)
     pkg.icon = obj["icon"].toString();
     QString cateName ="";
     bool isFind = false;
-    for (i = 0; i < g_categoryList.size(); ++i) {
-        for (int j = 0; j < g_categoryList[i].catPkgList.size(); ++j) {
+    // g_qjadePkgList 保存了服务器和isoft-daemon的交集.
+    for (int j = 0; j < AllPkgList.size(); ++j) {
+        if (AllPkgList.at(j).pkgName  == pkgName) {
+            isFind = true;
+            break;
+        }
+    }
+    if (isFind) {
+        isFind = false;
+        for (i = 0; i < g_categoryList.size(); ++i) {
+            for (int j = 0; j < g_categoryList[i].catPkgList.size(); ++j) {
 
-            if (g_categoryList[i].catPkgList[j] == pkg.title) {
-                cateName = g_categoryList[i].title;
-                isFind = true;
+                if (g_categoryList[i].catPkgList[j] == pkg.title) {
+                    cateName = g_categoryList[i].title;
+                    isFind = true;
+                    break;
+                }
+            }
+            if (isFind) {
                 break;
             }
         }
-        if (isFind) {
-            break;
+        pkg.category = isFind? cateName : "NULL";
+        if (pkg.description.length() > 25) {
+            pkg.description.resize(25);
+            pkg.description += "...";
         }
-    }
-    pkg.category = isFind? cateName : "NULL";
-
-    if (pkg.description.length() > 25) {
-        pkg.description.resize(25);
-        pkg.description += "...";
-    }
-
-    //printf("\n######%s,%d,all pkgs: name [%s]\n",__FUNCTION__,__LINE__,qPrintable(pkg.name));
-
-    /*
-     * 点击左侧的每个类别时，同步数据到appstore服务端数据列表g_qjadePkgList.
-    */
-    for (i = 0; i < g_qjadePkgList.size(); ++i) {
-        if (g_qjadePkgList[i].name == pkgName) {
-            g_qjadePkgList.removeAt(i);
-            break;
+        /*
+         * 点击左侧的每个类别时，同步数据到appstore服务端数据列表g_qjadePkgList.
+        */
+        for (i = 0; i < g_qjadePkgList.size(); ++i) {
+            if (g_qjadePkgList[i].name == pkgName) {
+                g_qjadePkgList.removeAt(i);
+                break;
+            }
         }
+        g_qjadePkgList.append(pkg);
     }
+    g_cate_act_number ++;
+    printf("\ntrace:%s,%d,num[%d] vs [%d]\n",__FUNCTION__,__LINE__,g_cate_number,g_cate_act_number);
+    if (g_cate_number == g_cate_act_number) {
 
-    g_qjadePkgList.append(pkg);
+    #ifndef USEOLDROUTINE
+        int pkgNumber = 0;
+        for (i = 0; i < g_qjadePkgList.size(); ++i) {
+            if (g_qjadePkgList[i].name.isEmpty()) {
+                continue;
+            }
+            QString size ="";
+            for (int j = 0; j < AllPkgList.size(); ++j) {
+                if (AllPkgList.at(j).pkgName  == g_qjadePkgList[i].name) {
+                    size = AllPkgList.at(j).size;
+                    break;
+                }
+            }
+            QString dstSize ="";
+            getStrSize(size,dstSize);
+            if(dstSize.isEmpty()) {
+                continue;
+            }
+
+            pkgNumber ++;
+        }
+        m_dataList.append(new CategoryObject("all-pkg", tr("All_Pkg"),  //hot-today,Hot Today
+            "hot-today.png",pkgNumber));
+
+
+        bool isFind = false;
+        for (i = 0; i < g_categoryList.size(); ++i) {
+            pkgNumber = 0;
+            for (int j = 0; j < g_qjadePkgList.size(); ++j) {
+                if (g_qjadePkgList[j].category == g_categoryList[i].title) {
+                    printf("\n######%s,%d,cate title:[%s]\n",__FUNCTION__,__LINE__,
+                       qPrintable(g_qjadePkgList[j].category) );
+                    pkgNumber ++;
+                }
+            }
+            m_dataList.append(
+                new CategoryObject("category-" + g_categoryList[i].name,
+                    g_categoryList[i].title,
+                    "",pkgNumber));
+        }
+
+        /*
+        m_dataList.append(
+            new CategoryObject("category-" + obj["name"].toString(),
+                obj["title"].toString(),//+"67",
+                obj["icon"].toString(),2));
+        */
+
+        pkgNumber = 0;
+        for (i = 0; i < AllPkgList.size(); ++i) {
+            if(AllPkgList.at(i).datetime == "0") {
+                continue;
+            }
+            for(int j =0;j< g_qjadePkgList.size();j++) {
+                if (AllPkgList.at(i).pkgName == g_qjadePkgList.at(j).name) {
+                    pkgNumber ++;
+                }
+            }
+        }
+        m_dataList.append(new CategoryObject("my-pkgs", tr("My_pkgs"),
+            "",pkgNumber)); // ICON is null.
+
+        emit categoryChanged();
+    #endif
+    }
 
 }

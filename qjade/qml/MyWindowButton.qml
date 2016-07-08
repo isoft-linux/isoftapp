@@ -8,8 +8,8 @@ import QtQuick.Window 2.1
 
 Rectangle {
     id: myWindowButton
-    width: 20
-    height: 20
+    width: 12 //20
+    height: 12 //20
     color: "transparent"
 
     property string name: "minimize"
@@ -23,8 +23,9 @@ Rectangle {
         source: "../images/window_" + name + (myWindowButton.hover ? "" : "_hover") + ".png"
         sourceSize.width: myWindowButton.sourceWidth
         sourceSize.height: myWindowButton.sourceHeight
-        anchors.verticalCenter: parent.verticalCenter 
-        anchors.horizontalCenter: parent.horizontalCenter
+        //anchors.verticalCenter: parent.verticalCenter
+        //anchors.horizontalCenter: parent.horizontalCenter
+        anchors.fill: parent
     }
     
     MouseArea {

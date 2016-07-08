@@ -71,6 +71,7 @@ void MypkgModel::getPackageFinished()
         }
     }
 
+    printf("trace:%s,%d,g_qjadePkgList[%d],AllPkgList[%d].\n",__FUNCTION__,__LINE__,g_qjadePkgList.size(),AllPkgList.size());
     if (m_dataList.size() > 0) {
         emit packageChanged();
     } else {

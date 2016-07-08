@@ -114,6 +114,11 @@ JadedBus::JadedBus(QObject *parent)
             this,
             &JadedBus::errorChged);
 
+    connect(m_isoftapp,
+            &org::isoftlinux::Isoftapp::SettingsChanged,
+            this,
+            &JadedBus::getSettingChanged);
+
     if (!g_hasInited) {
         connect(m_isoftapp,
                 &org::isoftlinux::Isoftapp::ListUpdateFinished,
@@ -125,11 +130,20 @@ JadedBus::JadedBus(QObject *parent)
         usleep(500);
 
         g_hasInited = true;
-        m_isoftapp->ListAll("pkgs");
 
         runTaskTimer = new QTimer(this);
         connect(runTaskTimer, SIGNAL(timeout()), this, SLOT(runTaskTimeOut()));
         runTaskTimer->start(20000);
+
+        getPkgListTimer = new QTimer(this);
+        connect(getPkgListTimer, SIGNAL(timeout()), this, SLOT(getPkgListTimeOut()));
+        getPkgListTimer->start(1000);
+
+
+
+
+        m_isoftapp->GetPathMode();
+
     }
 
 #if 0
@@ -214,9 +228,6 @@ void JadedBus::getAllPkgList(const QString &pkgName,qlonglong status)
             #endif
         }
     }
-
-    printf("trace:%s,%d.\n",__FUNCTION__,__LINE__);
-
     return;
 }
 
@@ -336,10 +347,8 @@ void JadedBus::percentChged(qlonglong status, const QString &file, double percen
 {
 
     if (status == STATUS_INSTALLED) {
-        printf("\n trace %s,%d,[%s] installed\n",__FUNCTION__,__LINE__,qPrintable(file) );
         return;
     } else if (status == STATUS_REMOVED) {
-        printf("\n trace %s,%d,[%s] removed\n",__FUNCTION__,__LINE__,qPrintable(file) );
         return;
     }
 
@@ -397,6 +406,7 @@ QString JadedBus::getInfo(QString name)
         }
     }
 
+    //printf("\n trace %s,%d,name[%s] is unknown\n",__FUNCTION__,__LINE__, qPrintable(name));
     return "UnknownInfo";
     //return m_jaded->getInfo(name);
 
@@ -793,6 +803,30 @@ void JadedBus::runTaskTimeOut()
 
 
 }
+int g_getPkgListCounter = 0;
+void JadedBus::getPkgListTimeOut()
+{
+    g_getPkgListCounter ++;
+    if (g_getPkgListCounter < 20) {
+        if (g_getPkgListCounter %3 != 1) {
+            return;
+        }
+    } else if (g_getPkgListCounter < 500) {
+        if (g_getPkgListCounter %60 != 59 ) {
+            return;
+        }
+    } else if (g_getPkgListCounter < 5000) {
+        if (g_getPkgListCounter %501 != 500 ) {
+            return;
+        }
+    } else {
+        if (g_getPkgListCounter %2001 != 2000 ) {
+            return;
+        }
+    }
+    m_isoftapp->ListAll("pkgs");
+}
+
 
 void JadedBus::setPathMode(QString path,QString mode)
 {
@@ -881,3 +915,23 @@ void JadedBus::getTaskQueue()
     m_taskQueueChanged(task);
     ////m_jaded->getTaskQueue();
 }
+
+void JadedBus::getSettingChanged(const QString &pathMode)
+{
+    char path_mode[600]="";
+    QStringList result = pathMode.split("|||");
+    if (result.size() <2) {
+        printf("error:%s,%d, get path_mode error\n",__FUNCTION__,__LINE__);
+        return;
+    }
+    bool ok=false;
+    emit settingChanged("file://" + result[0],result[1].toInt(&ok,10) );
+}
+
+void JadedBus::getPathMode()
+{
+    m_isoftapp->GetPathMode();
+
+    printf("trace:%s,%d\n",__FUNCTION__,__LINE__);
+}
+

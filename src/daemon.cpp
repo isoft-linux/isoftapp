@@ -843,6 +843,31 @@ daemon_set_path_mode(GdbusIsoftapp *object,
     return TRUE;
 }
 
+static gboolean
+daemon_get_path_mode(GdbusIsoftapp *object,
+            GDBusMethodInvocation *invocation)
+{
+    int ret = -1;
+    int fd = open(ISOFTAPP_CACHE_RPMPATHMODE_FILE,O_RDONLY);
+    if (fd < 1) {
+        return FALSE;
+    }
+    Daemon *daemon = (Daemon *)object;
+    t_RPMPATHMODE rpmPathMode;
+    memset(&rpmPathMode,0,sizeof(t_RPMPATHMODE));
+    ret = read(fd,&rpmPathMode,sizeof(t_RPMPATHMODE));
+    close(fd);
+    char path_mode[600]="";
+    snprintf(path_mode,600,"%s|||%d",rpmPathMode.path,rpmPathMode.mode);
+    printf("trace:%s,%d,get path mode[%s]\n",__FUNCTION__,__LINE__,path_mode);
+
+    gdbus_isoftapp_emit_settings_changed(GDBUS_ISOFTAPP(daemon),
+                                         path_mode);
+
+    return TRUE;
+}
+
+
 static gboolean 
 daemon_get_desktop_name(GdbusIsoftapp           *object, 
                         GDBusMethodInvocation   *invocation, 
@@ -921,6 +946,29 @@ daemon_isoftapp_iface_init(GdbusIsoftappIface *iface)
     iface->handle_list_all = daemon_list_all;
     iface->handle_list_update = daemon_list_update;
     iface->handle_set_path_mode = daemon_set_path_mode;
+    iface->handle_get_path_mode = daemon_get_path_mode;
+}
+
+static bool delete_rpm_files()
+{
+    const gchar *name = NULL;
+    GDir *dir = NULL;
+
+    dir = g_dir_open(g_rpmPathMode.path, 0, NULL);
+    if (!dir)
+        return false;
+
+    while ((name = g_dir_read_name(dir))) {
+        if (strstr(name,".rpm") == NULL)
+            continue;
+        gchar *filename = NULL;
+        filename = g_build_filename(g_rpmPathMode.path, name, NULL);
+        unlink(filename);
+        printf("%s, line %d:will remove rpm file[%s]!\n", __func__, __LINE__,filename);
+        g_free(filename);
+    }
+    g_dir_close(dir);
+    return true;
 }
 
 static void *
@@ -941,6 +989,10 @@ update_routine(void *arg)
 
     // todo...
     // to clean rpms in g_rpmPathMode.path
+    // to deal with xxx.rpm:1-delete now;2-after one week;other-pass
+    if (g_rpmPathMode.mode == 2) {
+        delete_rpm_files();
+    }
 
     printf("%s, line %d:......!\n", __func__, __LINE__);
 

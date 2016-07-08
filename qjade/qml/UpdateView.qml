@@ -137,7 +137,7 @@ Rectangle {
                     anchors.left: parent.left
                     anchors.leftMargin: 18
                     anchors.verticalCenter: parent.verticalCenter
-                    scale: 0.8
+                    scale: 0.9
 
                     checked: false
                     onCheckedChanged: {

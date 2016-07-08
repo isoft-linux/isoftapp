@@ -20,6 +20,18 @@ Rectangle {
 
     JadedBus {
         id: jadedBus
+        Component.onCompleted: {
+            jadedBus.getPathMode()
+        }
+
+        onSettingChanged: {
+            textInput.text = path;
+            deleteAction = mode;
+            urlText = path;
+            if (urlText.length > 510) {
+                urlText = "file:///home"
+            }
+        }
     }
 
     Rectangle {                                                                    
@@ -203,7 +215,7 @@ Rectangle {
                     anchors.top: radioRect.top
                     anchors.topMargin: 20
                     anchors.left: radioRect.left
-                    checked: true
+                    checked: deleteAction == 1? true:false
                     exclusiveGroup: tabPositionGroup
                 }
                 RadioButton {
@@ -213,6 +225,7 @@ Rectangle {
                     anchors.topMargin: 20
                     anchors.left: radioRect.left
                     exclusiveGroup: tabPositionGroup
+                    checked: deleteAction == 2? true:false
                 }
                 RadioButton {
                     text: qsTr("Manually delete")
@@ -221,6 +234,7 @@ Rectangle {
                     anchors.topMargin: 20
                     anchors.left: radioRect.left
                     exclusiveGroup: tabPositionGroup
+                    checked: deleteAction == 3? true:false
                 }
         }
 

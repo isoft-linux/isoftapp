@@ -102,6 +102,11 @@
       </arg>
     </method>
 
+    <method name="GetPathMode">
+      <arg type="b" name="result" direction="out">
+      </arg>
+    </method>
+
     <signal name="Error">
       <arg name="error" type="x">
       </arg>
@@ -168,6 +173,11 @@
     <signal name="ListUpdateFinished">
       <arg name="pkgName" type="s">
         <doc:doc><doc:summary>列出所有需要更新的软件包</doc:summary></doc:doc>
+      </arg>
+    </signal>
+
+    <signal name="SettingsChanged">
+      <arg name="pathMode" type="s">
       </arg>
     </signal>
 

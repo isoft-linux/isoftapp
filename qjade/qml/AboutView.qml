@@ -66,5 +66,6 @@ MyWindow {
         anchors.right: parent.right; anchors.bottom: parent.bottom
         anchors.margins: 30
         onClicked: close()
+        focus: true
     }
 }

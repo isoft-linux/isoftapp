@@ -33,7 +33,7 @@ Rectangle {
         x: categoryRegion.width
         width: 4
         height: parent.height                                                      
-        color: "#a6bd79"                                                           
+        color: "#a6bd79"
     }
 
     //-------------------------------------------------------------------------
@@ -41,13 +41,13 @@ Rectangle {
     //-------------------------------------------------------------------------
     Rectangle {
         id: categoryRegion
-        width: 100 //163
+        width: 110 //163
         height: parent.height
         //color: "transparent"
         
         CategoryModel {
             id: categoryModel
-            onCategoryChanged: {}
+            onCategoryChanged: {myLoader.visible = false;}
         }
 
         ListView {
@@ -64,8 +64,8 @@ Rectangle {
             delegate: Rectangle {
                 id: categoryElementItem
                 width: parent.width
-                height: 44
-                color: categoryListView.currentIndex == index ? "#e4ebd6" : (hover ? "#e4ebd6" : "transparent")
+                height: 44 // e4ebd6
+                color: categoryListView.currentIndex == index ? "#c8e4fa" : (hover ? "#c8e4fa" : "transparent")
 
                 property bool hover: false
                 property bool click: false
@@ -88,7 +88,7 @@ Rectangle {
                 }
 
                 Text {
-                    text: modelData.title == "All_Pkg" ? qsTr("All Pkg") : modelData.title =="My_pkgs" ? qsTr("My_pkgs") :modelData.title
+                    text: (modelData.title == "All_Pkg" ? qsTr("All Pkg") : modelData.title =="My_pkgs" ? qsTr("My_pkgs") :modelData.title ) + "(" + modelData.number +")"
                     x: 20 //categoryIcon.x + categoryIcon.width + 3
                     anchors.verticalCenter: parent.verticalCenter
                     width: 110
@@ -141,5 +141,7 @@ Rectangle {
                 }
             }
         }
+
+        MyLoader { id: myLoader }
     }
 }

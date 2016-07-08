@@ -807,7 +807,7 @@
     <message>
         <location filename="../qml/main.qml" line="126"/>
         <source>Uninstall</source>
-        <translation type="unfinished">软件卸载</translation>
+        <translation type="unfinished">卸载</translation>
     </message>
 </context>
 </TS>

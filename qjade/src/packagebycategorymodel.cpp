@@ -78,7 +78,8 @@ void PackageByCategoryModel::setCategory(QString category)
                 g_qjadePkgList[i].url,
                 dstSize));
         }
-
+        printf("\n%s,%d,g_qjadePkgList num[%d] AllPkgList num[%d]\n",__FUNCTION__,__LINE__,
+               g_qjadePkgList.size(),AllPkgList.size() );
         emit packageChanged();
         return;
     }
@@ -118,12 +119,24 @@ void PackageByCategoryModel::getPackageFinished(QNetworkReply *reply)
     QJsonObject obj = jsondoc.object();
     QString pkgName = obj["name"].toString();
 
+    m_pks_act_size ++;
+    bool isExist = false;
     QString size ="";
     for (int i = 0; i < AllPkgList.size(); ++i) {
         if (AllPkgList.at(i).pkgName  == pkgName) {
             size = AllPkgList.at(i).size;
+            isExist = true;
             break;
         }
+    }
+
+    // pkg in server not exist in isoftapp-daemon.
+    if (!isExist) {
+        if (m_pks_act_size == m_pks_size) {
+            printf("\n%s,%d\n",__FUNCTION__,__LINE__);
+            emit packageChanged();
+        }
+        return;
     }
 
     QString dstSize ="";
@@ -170,9 +183,12 @@ void PackageByCategoryModel::getPackageFinished(QNetworkReply *reply)
         dstSize));
 
     g_qjadePkgList.append(pkg);
-    if (m_dataList.size() == m_pks_size) {
+    if (m_pks_act_size == m_pks_size) {
+        printf("\n%s,%d\n",__FUNCTION__,__LINE__);
         emit packageChanged();
     }
+    printf("\n%s,%d,data num[%d] vs pkg num[%d]\n",__FUNCTION__,__LINE__,m_dataList.size(),m_pks_size);
+
 }
 
 void PackageByCategoryModel::getPackagesFinished(QNetworkReply *reply) 
@@ -190,6 +206,7 @@ void PackageByCategoryModel::getPackagesFinished(QNetworkReply *reply)
         emit error();
         return;
     }
+    m_pks_act_size = 0;
     m_pks_size = arr.size();
     foreach (const QJsonValue & val, arr) {
         QJsonObject obj = val.toObject();
@@ -204,7 +221,7 @@ void PackageByCategoryModel::getPackagesFinished(QNetworkReply *reply)
 
         QString tmp = PACKAGE_URI + pkname + "/" +
                                      QLocale::system().name().toLower();
-        printf("\n%s,%d,to get info by name:[%s]\n",__FUNCTION__,__LINE__,qPrintable(tmp));
+        printf("\n%s,%d,to get info by name:[%s],pkg num[%d]\n",__FUNCTION__,__LINE__,qPrintable(tmp),m_pks_size);
     }
     disconnect(&m_pks, SIGNAL(finished(QNetworkReply*)),                           
         this, SLOT(getPackagesFinished(QNetworkReply*)));

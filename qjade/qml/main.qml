@@ -44,7 +44,7 @@ ApplicationWindow {
     // TODO: Window titlebar
     //-------------------------------------------------------------------------
     Rectangle {
-        id: windowTitle; width: parent.width; height: 69; color: "#4b5b2a"
+        id: windowTitle; width: parent.width; height: 69; color: "#3296e4" //4b5b2a
 
         //---------------------------------------------------------------------
         // TODO: logo
@@ -52,19 +52,22 @@ ApplicationWindow {
         Image {
             id: logoImage
             source: brand.logo
-            sourceSize.width: 34; sourceSize.height: 34
-            anchors.top: parent.top; anchors.left: parent.left
-            anchors { topMargin: 6; leftMargin: 6 }
+            sourceSize.width: 50; sourceSize.height: 50
+            //anchors.top: parent.top;
+            anchors.left: parent.left
+            anchors.verticalCenter: parent.verticalCenter
+            anchors { topMargin: 6; leftMargin: 16 }
             smooth: true
         }
 
         Text {
             id:brandText
             text: brand.name
-            x: logoImage.x + logoImage.width + 8
+            x: logoImage.x + logoImage.width + 2
             anchors.verticalCenter: parent.verticalCenter
-            font.pixelSize: 15
-            color: "#eceeed"
+            font.pixelSize: 20
+            font.weight: Font.DemiBold
+            color: "#e3f0fc"
         }
 
         //---------------------------------------------------------------------
@@ -87,7 +90,7 @@ ApplicationWindow {
             MyToolButton {
                 id: storeToolButton
                 title: qsTr("MainPage")
-                icon: "../images/store-toolbutton.png"
+                //icon: "../images/store-toolbutton.png"
                 click: true
 
                 MouseArea {
@@ -98,14 +101,17 @@ ApplicationWindow {
                         uninstallToolButton.click = false
                         stackView.clear()
                         stackView.push(Qt.resolvedUrl("StoreView.qml"))
+                        jadedBus.getUpdate()
                     }
+                    cursorShape: Qt.PointingHandCursor
                 }
             }
             MyToolButton {
                 id: updateToolButton
                 title: qsTr("Upgrade")
-                icon: "../images/update-toolbutton.png"
-                normal_color: "#a7be7a"
+                upgrade_button:true
+                //icon: "../images/update-toolbutton.png"
+                //normal_color: "#a7be7a"
                 //anchors.top: storeToolButton.bottom
                 //anchors.left: storeToolButton.right
                 x: storeToolButton.x + storeToolButton.width +20
@@ -119,13 +125,14 @@ ApplicationWindow {
                         stackView.clear()
                         stackView.push(Qt.resolvedUrl("UpdateView.qml"))
                     }
+                    cursorShape: Qt.PointingHandCursor
                 }
             }
             MyToolButton {
                 id: uninstallToolButton
                 title: qsTr("Uninstall")
-                icon: "../images/uninstall-toolbutton.png"
-                normal_color: "#b2c689"
+                //icon: "../images/uninstall-toolbutton.png"
+                //normal_color: "#b2c689"
                 //anchors.top: updateToolButton.bottom
                 //anchors.left: updateToolButton.right
                 x: updateToolButton.x + updateToolButton.width +20
@@ -139,6 +146,7 @@ ApplicationWindow {
                         stackView.clear()
                         stackView.push(Qt.resolvedUrl("UninstallView.qml"))
                     }
+                    cursorShape: Qt.PointingHandCursor
                 }
             }
         }
@@ -149,6 +157,18 @@ ApplicationWindow {
         //---------------------------------------------------------------------
         JadedBus {
             id: jadedBus
+
+            Component.onCompleted: {
+                jadedBus.getUpdate()
+            }
+            onGetUpdateError:{
+                updateToolButton.upgrade_number = 0
+            }
+
+            onUpdateChanged:{
+                updateToolButton.upgrade_number = count
+                //updateToolButton.visible = false
+            }
         }
         
         FileDialog {
@@ -176,6 +196,7 @@ ApplicationWindow {
                     fileDialog.open()
                 }
                 enabled:false
+                visible: false
             }
 
             MenuItem {
@@ -199,7 +220,7 @@ ApplicationWindow {
         Rectangle {
             id: sysNav
             width: 26; height: 20
-            y: 40
+            y: 30
             anchors.right: parent.right
             color: "transparent"
 
@@ -218,7 +239,7 @@ ApplicationWindow {
                 source: "../images/sysMsg_icon.png"
                 anchors.horizontalCenter: sysNavIcon.left
                 anchors.verticalCenter: sysNavIcon.bottom
-                visible: false
+                visible: true
             }
 
             MouseArea {
@@ -229,6 +250,7 @@ ApplicationWindow {
                 onClicked: {
                     sysNavMenu.popup()
                 }
+                cursorShape: Qt.PointingHandCursor
             }
         }
 
@@ -260,7 +282,7 @@ ApplicationWindow {
 
             TextFieldStyle {
                 textColor: "white"
-                background: Rectangle { color: "#627639"; height: 22; }
+                background: Rectangle { color: "#e9f2f9"; height: 22; } //627639
             }
         }
 
@@ -297,6 +319,7 @@ ApplicationWindow {
                 hoverEnabled: true
                 onEntered: searchButtonRegion.hover = true
                 onExited: searchButtonRegion.hover = false
+                cursorShape: Qt.PointingHandCursor
                 onClicked: {
                     if (searchButtonRegion.name == "search_btn") {
                         if (searchTextField.text != "") {
@@ -322,12 +345,18 @@ ApplicationWindow {
         MyWindowButton {
             id: closeWindowButton
             name: "close"
-            sourceHeight: 8
+            sourceHeight: 12
             anchors.right: parent.right
-            //anchors.rightMargin: 5
+            anchors.rightMargin: 8
             anchors.topMargin: 15
+            y: parent.y + 8
         }
-        MyWindowButton { id: minWindowButton; anchors.right: closeWindowButton.left }
+        MyWindowButton {
+            id: minWindowButton;
+            anchors.right: closeWindowButton.left
+            anchors.rightMargin: 12
+            y: parent.y + 3
+        }
     }
     
     //-------------------------------------------------------------------------
@@ -337,7 +366,7 @@ ApplicationWindow {
         id: statusBar
         width: parent.width; height: 19
         anchors.bottom: parent.bottom
-        color: "#e4ecd7"
+        color: "#c0e0f9" //e4ecd7
 
         Text {
             text: qsTr("Version: %1").arg(appInfo.version) // appInfo.version

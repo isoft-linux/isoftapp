@@ -49,6 +49,7 @@ private:
     QList<QObject*> m_dataList;
     QNetworkAccessManager m_pks;
     int m_pks_size;
+    int m_pks_act_size;
     QNetworkAccessManager m_pk;
     QString m_category;
 };

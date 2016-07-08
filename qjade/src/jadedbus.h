@@ -57,6 +57,7 @@ public:
     Q_INVOKABLE void getTaskQueue();
     Q_INVOKABLE void runCmd(QString cmd);
     Q_INVOKABLE void setPathMode(QString path,QString mode);
+    Q_INVOKABLE void getPathMode();
 
     QList<QObject*> updates() const { return m_updateList; }
     QList<QObject*> installed() const { return m_installedList; }
@@ -75,6 +76,7 @@ Q_SIGNALS:
     void getInstalledError();
     void searchError();
     void perChanged(const QString &name,int perCent);
+    void settingChanged(const QString &path,int mode); // format [path|||mode]
 
 private Q_SLOTS:
     void m_errored(const QString &name,const QString &detail);
@@ -94,6 +96,8 @@ private Q_SLOTS:
     void getAllPkgList(const QString &pkgName,qlonglong status);
     void getFinished(const QString &pkgName,qlonglong status);
     void runTaskTimeOut();
+    void getPkgListTimeOut();
+    void getSettingChanged(const QString &pathMode);
 
 private:
     //cn::com::isoft::JadedInterface* m_jaded;
@@ -107,6 +111,7 @@ private:
     void m_runTask();
 
     QTimer *runTaskTimer; // runTaskTimeOut()
+    QTimer *getPkgListTimer;
 };
 
 class JadedPackageObject : public QObject 

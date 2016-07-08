@@ -28,7 +28,7 @@ Button {
 
         label: Text {
             text: percentageButton.text
-            color: textColor
+            //color: textColor
             verticalAlignment: Text.AlignVCenter
             horizontalAlignment: Text.AlignHCenter
             anchors.fill: parent

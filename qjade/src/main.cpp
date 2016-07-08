@@ -24,6 +24,8 @@
 #include "mypkgmodel.h"
 #include "globallist.h"
 
+static org::isoftlinux::Isoftapp *g_isoftapp = Q_NULLPTR;
+
 /*
 * 2016-03 新功能开发
 * 新增加三个全局列表：
@@ -84,9 +86,18 @@ int main(int argc, char *argv[])
     
     const QString productName = brand.name();
 
+    //begin
+    g_isoftapp = new org::isoftlinux::Isoftapp("org.isoftlinux.Isoftapp",
+                                                   "/org/isoftlinux/Isoftapp",
+                                                   QDBusConnection::systemBus());
+    g_isoftapp->ListAll("pkgs");
+    JadedBus jadedbus;
+    //end
+
     //-------------------------------------------------------------------------
     // TODO: qmlRegisterType
     //-------------------------------------------------------------------------
+    qmlRegisterType<JadedBus>("cn.com.isoft.qjade", 2, 0, "JadedBus");
     qmlRegisterType<Brand>("cn.com.isoft.qjade", 2, 0, "Brand");
     qmlRegisterType<AppInfo>("cn.com.isoft.qjade", 2, 0, "AppInfo");
     qmlRegisterType<CategoryModel>("cn.com.isoft.qjade", 2, 0, "CategoryModel");
@@ -96,14 +107,9 @@ int main(int argc, char *argv[])
     qmlRegisterType<FileDownloader>("cn.com.isoft.qjade", 2, 0, "FileDownloader");
     qmlRegisterType<Process>("cn.com.isoft.qjade", 2, 0, "Process");
     qmlRegisterType<PackageInfoModel>("cn.com.isoft.qjade", 2, 0, "PackageInfoModel");
-    qmlRegisterType<JadedBus>("cn.com.isoft.qjade", 2, 0, "JadedBus");
+    //qmlRegisterType<JadedBus>("cn.com.isoft.qjade", 2, 0, "JadedBus");
     qmlRegisterType<SearchModel>("cn.com.isoft.qjade", 2, 0, "SearchModel");
     qmlRegisterType<MypkgModel>("cn.com.isoft.qjade", 2, 0, "MypkgModel");
-
-
-    //begin
-
-    //end
 
     //-------------------------------------------------------------------------
     // TODO: QQmlApplicationEngine
@@ -120,6 +126,5 @@ int main(int argc, char *argv[])
     window->setTitle(productName);
     window->setIcon(QIcon(brand.logo()));
     window->show();
-    
     return app.exec();                                       
 }

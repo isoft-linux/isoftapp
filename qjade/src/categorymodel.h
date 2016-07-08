@@ -50,15 +50,17 @@ class CategoryObject : public QObject
     Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
     Q_PROPERTY(QString title READ title WRITE setTitle NOTIFY titleChanged)
     Q_PROPERTY(QString icon READ icon WRITE setIcon NOTIFY iconChanged)
+    Q_PROPERTY(int number READ number WRITE setNumber NOTIFY numberChanged)
 
 public:
     CategoryObject(const QString &name, 
                    const QString &title, 
                    const QString &icon, 
+                   const int number,
                    QObject *parent = 0)
       : QObject(parent) 
     {
-        m_name = name; m_title = title; m_icon = icon;
+        m_name = name; m_title = title; m_icon = icon;m_number = number;
     }
 
     QString name() const { return m_name; }
@@ -78,16 +80,23 @@ public:
     {
         if (icon != m_icon) m_icon = icon; emit iconChanged();
     }
+    int number() const { return m_number; }
+    void setNumber(const int number)
+    {
+        if (number != m_number) m_number = number; emit numberChanged();
+    }
 
 Q_SIGNALS:
     void nameChanged();
     void titleChanged();
     void iconChanged();
+    void numberChanged();
 
 private:
     QString m_name;
     QString m_title;
     QString m_icon;
+    int  m_number;
 };
 
 #endif  // CATEGORY_MODEL_H
