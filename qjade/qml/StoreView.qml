@@ -41,7 +41,7 @@ Rectangle {
     //-------------------------------------------------------------------------
     Rectangle {
         id: categoryRegion
-        width: 110 //163
+        width: 120 //163
         height: parent.height
         //color: "transparent"
         
@@ -69,6 +69,19 @@ Rectangle {
 
                 property bool hover: false
                 property bool click: false
+                property bool isMyPkg: modelData.title =="My_pkgs" ? true : false
+
+                JadedBus {
+                    id: jadedBus
+                    Component.onCompleted: {
+                        if (isMyPkg)
+                        jadedBus.getMyPkgNumber()
+                    }
+                    onMyPkgNumChanged:{
+                        if (isMyPkg)
+                        rightText.text =  (modelData.title == "All_Pkg" ? qsTr("All Pkg") : modelData.title =="My_pkgs" ? qsTr("My_pkgs") :modelData.title ) + "(" + count +")"
+                    }
+                }
 
                 //-------------------------------------------------------------
                 // TODO: change color based on index value
@@ -83,11 +96,12 @@ Rectangle {
                 Image {
                     id: categoryIcon
                     //source: modelData.icon
-                    x: 28
+                    x: 38
                     anchors.verticalCenter: parent.verticalCenter
                 }
 
                 Text {
+                    id: rightText
                     text: (modelData.title == "All_Pkg" ? qsTr("All Pkg") : modelData.title =="My_pkgs" ? qsTr("My_pkgs") :modelData.title ) + "(" + modelData.number +")"
                     x: 20 //categoryIcon.x + categoryIcon.width + 3
                     anchors.verticalCenter: parent.verticalCenter

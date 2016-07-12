@@ -262,7 +262,12 @@ void JadedBus::getFinished(const QString &pkgName,qlonglong status)
                 AllPkgList[i].datetime = local.toString("yyyy-MM-dd hh:mm:ss");
             } else if (status == STATUS_REMOVED) {
                 AllPkgList[i].status = 2;
+                // my pkgs will list it
+                QDateTime local(QDateTime::currentDateTime());
+                AllPkgList[i].datetime = local.toString("yyyy-MM-dd hh:mm:ss");
             }
+            getMyPkgNumber();
+
             break;
         }
     }
@@ -527,6 +532,26 @@ void JadedBus::getUpdate()
     m_isoftapp->ListUpdate();
     ////m_jaded->getUpdate();
     QTimer::singleShot(6000, this, SLOT(getUpdateTimeout()));
+}
+
+void JadedBus::getMyPkgNumTimeout()
+{
+    int count = 0;
+    for (int i = 0; i < AllPkgList.size(); ++i) {
+        if(AllPkgList.at(i).datetime == "0") {
+            continue;
+        }
+        for(int j =0;j< g_qjadePkgList.size();j++) {
+            if (AllPkgList.at(i).pkgName == g_qjadePkgList.at(j).name) {
+                count ++;
+            }
+        }
+    }
+    emit myPkgNumChanged(count);
+}
+void JadedBus::getMyPkgNumber()
+{
+    QTimer::singleShot(1000, this, SLOT(getMyPkgNumTimeout()));
 }
 
 void JadedBus::getInstalledFinished(const QStringList &installed) 
