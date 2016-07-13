@@ -270,6 +270,7 @@ void CategoryModel::getPackageFinished(QNetworkReply *reply)
     if (g_cate_number == g_cate_act_number) {
 
     #ifndef USEOLDROUTINE
+        g_cate_number = 0;
         int pkgNumber = 0;
         for (i = 0; i < g_qjadePkgList.size(); ++i) {
             if (g_qjadePkgList[i].name.isEmpty()) {

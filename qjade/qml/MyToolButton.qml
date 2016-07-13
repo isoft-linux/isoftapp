@@ -62,7 +62,7 @@ Rectangle {
             text: upgrade_number
             anchors.verticalCenter: parent.verticalCenter
             anchors.horizontalCenter: parent.horizontalCenter
-            font.pixelSize: 8
+            font.pixelSize: 10
             color: "black"
         }
     }
