@@ -35,7 +35,7 @@ Window {
         anchors.top: parent.top 
         anchors.left: parent.left
         anchors { topMargin: 10; leftMargin: 10 }
-        color: "#4b5b2a"
+        color: "#3296e4"
 
         Text { 
             text: myWindow.title
