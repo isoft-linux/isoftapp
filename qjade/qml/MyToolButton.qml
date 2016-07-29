@@ -50,20 +50,22 @@ Rectangle {
         id: uptRect
         width: 20
         height: 20
-        color: "red"
-        radius: width/2
+        color: "transparent"
+        //radius: width/2
         visible: upgrade_button ? (upgrade_number > 0 ? true : false) : false
         anchors.top: parent.top
         anchors.left: parent.left
         anchors.topMargin: 5
-        anchors.leftMargin: 10
+        anchors.leftMargin: 40
 
         Text {
             text: upgrade_number
             anchors.verticalCenter: parent.verticalCenter
             anchors.horizontalCenter: parent.horizontalCenter
-            font.pixelSize: 10
-            color: "black"
+            font.pixelSize: 15
+            font.weight: Font.Bold
+
+            color: "red"
         }
     }
 
