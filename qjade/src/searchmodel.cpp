@@ -57,8 +57,14 @@ void SearchModel::finished(QNetworkReply *reply)
     QJsonArray arr = obj["packages"].toArray();
     m_cleanup();
     QString size ="";
+    QList<QString> tmpList ;
     foreach (const QJsonValue & val, arr) {
         QJsonObject obj = val.toObject();
+        QString tmpStr = obj["name"].toString();
+        if(tmpList.contains(tmpStr)) {
+            continue;
+        }
+        tmpList.append(tmpStr);
         for (int j = 0; j < AllPkgList.size(); ++j) {
             if (AllPkgList.at(j).pkgName == obj["name"].toString()) {
                 size = AllPkgList.at(j).size;
@@ -79,6 +85,7 @@ void SearchModel::finished(QNetworkReply *reply)
                     obj["icon"].toString(),
                     dstSize));
     }
+    tmpList.clear();
     emit searchResultChanged(m_dataList.size());
 }
 
