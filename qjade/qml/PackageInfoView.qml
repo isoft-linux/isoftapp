@@ -204,6 +204,9 @@ Rectangle {
         anchors.leftMargin: 25
         orientation: Qt.Horizontal
         spacing: 35
+        anchors.right: parent.right
+        anchors.rightMargin: 25
+
         delegate: Item {
             width: 380; height: 280
 
@@ -214,6 +217,45 @@ Rectangle {
                 fillMode: Image.PreserveAspectCrop
                 clip: true
             }
+        }
+
+        property int curIdx: 0
+        property int maxIdx: snapshotView.count
+        property int gridWidth: 200
+        function advance(steps) {
+             var nextIdx = curIdx + steps
+             if (nextIdx < 0 || nextIdx > maxIdx)
+                return;
+             snapshotView.contentX += gridWidth * steps;
+             curIdx += steps;
+        }
+
+        Image {
+            source: "../images/new_array.png"
+            MouseArea{
+                anchors.fill: parent
+                onClicked: {snapshotView.advance(-1) }
+            }
+            anchors.left: parent.left
+            anchors.leftMargin: 8
+            anchors.verticalCenter: parent.verticalCenter
+            opacity: snapshotView.curIdx == 0 ? 0.2 : 1.0
+            Behavior on opacity {NumberAnimation{}}
+            visible: snapshotView.count > 2 ? true : false
+        }
+        Image {
+            source: "../images/new_array.png"
+            mirror: true
+            MouseArea{
+                anchors.fill: parent
+                onClicked: {snapshotView.advance(1)}
+            }
+            opacity: snapshotView.curIdx == snapshotView.maxIdx ? 0.2 : 1.0
+            Behavior on opacity {NumberAnimation{}}
+            anchors.right: parent.right
+            anchors.rightMargin: 8
+            anchors.verticalCenter: parent.verticalCenter
+            visible: snapshotView.count > 2 ? true : false
         }
     }
 

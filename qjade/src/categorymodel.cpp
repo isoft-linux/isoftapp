@@ -266,11 +266,12 @@ void CategoryModel::getPackageFinished(QNetworkReply *reply)
         g_qjadePkgList.append(pkg);
     }
     g_cate_act_number ++;
-    printf("\ntrace:%s,%d,num[%d] vs [%d]\n",__FUNCTION__,__LINE__,g_cate_number,g_cate_act_number);
+
     if (g_cate_number == g_cate_act_number) {
 
     #ifndef USEOLDROUTINE
         g_cate_number = 0;
+
         int pkgNumber = 0;
         for (i = 0; i < g_qjadePkgList.size(); ++i) {
             if (g_qjadePkgList[i].name.isEmpty()) {
@@ -300,8 +301,8 @@ void CategoryModel::getPackageFinished(QNetworkReply *reply)
             pkgNumber = 0;
             for (int j = 0; j < g_qjadePkgList.size(); ++j) {
                 if (g_qjadePkgList[j].category == g_categoryList[i].title) {
-                    printf("\n######%s,%d,cate title:[%s]\n",__FUNCTION__,__LINE__,
-                       qPrintable(g_qjadePkgList[j].category) );
+                    //printf("\n######%s,%d,cate title:[%s]\n",__FUNCTION__,__LINE__,
+                    //   qPrintable(g_qjadePkgList[j].category) );
                     pkgNumber ++;
                 }
             }
