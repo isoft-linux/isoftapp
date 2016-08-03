@@ -40,7 +40,7 @@
 #define NAME_TO_CLAIM "org.isoftlinux.Isoftapp"
 #define VERSION_ID_PREFIX "VERSION_ID="
 
-#define CACHE_UPDATE_DURATION (12*60*60*1000) // 12 hours
+#define CACHE_UPDATE_DURATION (4*60*60*1000) // 12 hours=>4
 
 enum {
     PROP_0,
@@ -963,8 +963,20 @@ static bool delete_rpm_files()
             continue;
         gchar *filename = NULL;
         filename = g_build_filename(g_rpmPathMode.path, name, NULL);
-        unlink(filename);
-        printf("%s, line %d:will remove rpm file[%s]!\n", __func__, __LINE__,filename);
+        struct stat st;
+        if (stat(filename, &st) < 0) {
+            printf("%s, line %d:get file modify time error[%s]!\n", __func__, __LINE__,filename);
+            g_free(filename);
+            continue;
+        }
+        time_t now = time(NULL);
+        if(((int)now - st.st_mtime ) > (7*24*60*60) ) {
+            unlink(filename);
+            printf("%s, line %d:will remove rpm file[%s]!\n", __func__, __LINE__,filename);
+        } else {
+            printf("%s, line %d:do not remove rpm file[%s],[%d]!\n", __func__, __LINE__,
+                   filename,(int)now - st.st_mtime);
+        }
         g_free(filename);
     }
     g_dir_close(dir);
@@ -987,7 +999,6 @@ update_routine(void *arg)
 
     update();
 
-    // todo...
     // to clean rpms in g_rpmPathMode.path
     // to deal with xxx.rpm:1-delete now;2-after one week;other-pass
     if (g_rpmPathMode.mode == 2) {
