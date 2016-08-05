@@ -13,7 +13,7 @@ Rectangle {
         id: storeStackView                                                          
         width: parent.width - categoryListView.width; height: parent.height 
         anchors.left: categoryRegion.right
-        initialItem: HotTodayView {}                                           
+        initialItem: HotTodayView {}
     }
 
     //-------------------------------------------------------------------------

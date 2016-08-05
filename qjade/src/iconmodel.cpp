@@ -41,7 +41,6 @@ void IconModel::m_cleanup()
 
 void IconModel::finished(QNetworkReply *reply) 
 {
-    printf("\n%s,%d\n",__FILE__,__LINE__);
     QByteArray data = reply->readAll();
     QString strData(data);
     QJsonDocument jsondoc = QJsonDocument::fromJson(strData.toUtf8());
@@ -50,10 +49,10 @@ void IconModel::finished(QNetworkReply *reply)
         return;
     }
 #if QJADE_DEBUG
-    printf("\n%s,%d,data[%s]\n",__FILE__,__LINE__,qPrintable(strData));
+    //printf("\n%s,%d,data[%s]\n",__FILE__,__LINE__,qPrintable(strData));
 
-    printf("\n######%s,%d,IconModel url:[%s]\n",__FUNCTION__,__LINE__,
-           qPrintable(reply->url().toString() ));
+    //printf("\n######%s,%d,IconModel url:[%s]\n",__FUNCTION__,__LINE__,
+    //       qPrintable(reply->url().toString() ));
 
     // finished,52,data[{"gridview":[{"name":"pidgin","title":"Pidgin",
     //"icon":"http://appstore.isoft-linux.org/sites/default/files/Pidgin.svg_.png"}
@@ -73,6 +72,5 @@ void IconModel::finished(QNetworkReply *reply)
 
 QList<QObject*> IconModel::icons() const
 {
-    printf("\n%s,%d\n",__FILE__,__LINE__);
     return m_dataList;
 }
