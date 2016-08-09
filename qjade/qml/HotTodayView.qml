@@ -60,7 +60,7 @@ Item {
 
             Text { 
                 id: nameText
-                text: modelData.title + "abccc"
+                text: modelData.title // + "abccc"
                 anchors.top: appIcon.top
                 anchors.topMargin: 5
                 anchors.left: appIcon.right

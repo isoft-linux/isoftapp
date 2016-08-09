@@ -147,13 +147,13 @@ Rectangle {
                         if (appCheckBox.checked) {
                             for (var i = 0; i < selectedItemList.length; i++) {
                                 if (selectedItemList[i] == tmpItem) {
-                                    nameText.text = modelData.name + "_findit"
+                                    nameText.text = modelData.name
                                     findit = true
                                 }
                             }
                             if (findit == false) {
                                 selectedItemList.push(modelData.name)
-                                nameText.text = modelData.name + "_first"
+                                nameText.text = modelData.name
                             }
 
                         } else {
@@ -342,7 +342,7 @@ Rectangle {
         anchors.top: beforeBottonAct.bottom
         anchors.topMargin: 10
         checked: false
-        text: qsTr("Update all selected items") //qsTr("Update") + ": " + qsTr("%1 total").arg(updateView.count)
+        text: qsTr("Update all selected items")
 
         onClicked: {
             if (checked) {
