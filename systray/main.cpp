@@ -30,6 +30,7 @@
 
 int main(int argc, char *argv[])
 {
+    return 0;
     QtSingleApplication app(argc, argv);
     if (app.isRunning())
         return 0;

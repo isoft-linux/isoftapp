@@ -101,6 +101,7 @@ private Q_SLOTS:
     void getPkgListTimeOut();
     void getSettingChanged(const QString &pathMode);
     void getMyPkgNumTimeout();
+    void getIconTimeOut();
 
 private:
     //cn::com::isoft::JadedInterface* m_jaded;
@@ -115,6 +116,7 @@ private:
 
     QTimer *runTaskTimer; // runTaskTimeOut()
     QTimer *getPkgListTimer;
+    QTimer *getIconTimer;
 };
 
 class JadedPackageObject : public QObject 

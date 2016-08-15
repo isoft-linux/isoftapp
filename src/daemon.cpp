@@ -41,6 +41,14 @@
 #define VERSION_ID_PREFIX "VERSION_ID="
 
 #define CACHE_UPDATE_DURATION (4*60*60*1000) // 12 hours=>4
+#define  ICON_CACHE_DIR "/var/cache/isoftapp/qjade"
+struct icon_cache_info {
+    char name[128];
+    char icon[512];
+    char title[128];
+    char desc[512];
+    char cate[128];
+};
 
 enum {
     PROP_0,
@@ -867,6 +875,45 @@ daemon_get_path_mode(GdbusIsoftapp *object,
     return TRUE;
 }
 
+extern int download_file(const char *src_file,const char *dst_file);
+static gboolean daemon_get_icons(GdbusIsoftapp *object,
+                                 GDBusMethodInvocation *invocation,
+                                 const gchar *arg_name,
+                                 const gchar *arg_icon,
+                                 const gchar *arg_title,
+                                 const gchar *arg_desc,
+                                 const gchar *arg_category)
+{
+    if (arg_name == NULL || arg_icon == NULL )
+        return FALSE;
+
+    if (g_mkdir_with_parents(ICON_CACHE_DIR, 0775) < 0) {
+        return FALSE;
+    }
+
+    char dst_file[512]="";
+    snprintf(dst_file,sizeof(dst_file),"%s/%s.png",ICON_CACHE_DIR,arg_name);
+    int ret = download_file(arg_icon,dst_file);
+
+    snprintf(dst_file,sizeof(dst_file),"%s/.%s.cfg",ICON_CACHE_DIR,arg_name);
+    struct icon_cache_info info;
+    memset(&info, 0, sizeof(struct icon_cache_info));
+    snprintf(info.name,sizeof(info.name),"%s",arg_name);
+    snprintf(info.icon,sizeof(info.icon),"%s/%s.png",ICON_CACHE_DIR,arg_name); // local
+    snprintf(info.title,sizeof(info.title),"%s",arg_title);
+    snprintf(info.desc,sizeof(info.desc),"%s",arg_desc);
+    snprintf(info.cate,sizeof(info.cate),"%s",arg_category);
+
+    int fd = open(dst_file,O_RDWR|O_CREAT,0644);
+    if (fd < 1) {
+        return FALSE;
+    }
+    ret = write(fd,&info,sizeof(struct icon_cache_info));
+    close(fd);
+    fd = -1;
+    return TRUE;
+
+}
 
 static gboolean 
 daemon_get_desktop_name(GdbusIsoftapp           *object, 
@@ -947,6 +994,7 @@ daemon_isoftapp_iface_init(GdbusIsoftappIface *iface)
     iface->handle_list_update = daemon_list_update;
     iface->handle_set_path_mode = daemon_set_path_mode;
     iface->handle_get_path_mode = daemon_get_path_mode;
+    iface->handle_get_icons = daemon_get_icons;
 }
 
 static bool delete_rpm_files()

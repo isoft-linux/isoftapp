@@ -1,8 +1,8 @@
 [Unit]
 Description=iSOFT app Service
 
-After=network.target
-Wants=network.target
+After=network.target isoft-update-daemon.service
+Wants=network.target isoft-update-daemon.service
 
 [Service]
 Type=dbus

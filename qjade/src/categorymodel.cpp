@@ -7,7 +7,7 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonArray>
-
+#include <QCoreApplication>
 #include "categorymodel.h"
 #include "globaldeclarations.h"
 #include <cstdio>
@@ -227,6 +227,14 @@ void CategoryModel::getPackageFinished(QNetworkReply *reply)
     pkg.icon = obj["icon"].toString();
     QString cateName ="";
     bool isFind = false;
+
+    if (AllPkgList.size() < 10 ) {
+        QTime t;
+        t.start();
+        while(AllPkgList.size() < 10 && t.elapsed() < 10000) {
+            QCoreApplication::processEvents();
+        }
+    }
     // g_qjadePkgList 保存了服务器和isoft-daemon的交集.
     for (int j = 0; j < AllPkgList.size(); ++j) {
         if (AllPkgList.at(j).pkgName  == pkgName) {

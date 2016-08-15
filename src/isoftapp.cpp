@@ -590,6 +590,21 @@ void update()
 
 }
 
+/*
+* 新封装一个接口，下载文件@src 到文件@dst
+*/
+int download_file(const char *src_file,const char *dst_file)
+{
+    DownloadData *data = NULL;
+    data = download_data_new();
+    if (!data)
+        return -1;
+
+    data->file_path = dst_file;
+    data->url = src_file;
+    download_routine(data);
+    return 0;
+}
 
 static int openPkgDB()
 {

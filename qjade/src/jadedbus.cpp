@@ -14,6 +14,19 @@
 #include <unistd.h>
 #include "globallist.h"
 
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+/* ICON_CACHE_DIR && struct icon_cache_info alse defined in daemon.cpp */
+#define  ICON_CACHE_DIR "/var/cache/isoftapp/qjade"
+struct icon_cache_info {
+    char name[128];
+    char icon[512];
+    char title[128];
+    char desc[512];
+    char cate[128];
+};
+
 QList <TaskQueue> m_taskQueue;
 static QString g_doingPkgName ="";
 /* The following enums defined in src/daemon.h;*/
@@ -140,6 +153,9 @@ JadedBus::JadedBus(QObject *parent)
         getPkgListTimer->start(1000);
 
 
+        getIconTimer= new QTimer(this);
+        connect(getIconTimer, SIGNAL(timeout()), this, SLOT(getIconTimeOut()));
+        getIconTimer->start(30000);
 
 
         m_isoftapp->GetPathMode();
@@ -578,10 +594,10 @@ void JadedBus::getInstalledTimeout()
 {
     int i = 0,j = 0;
     bool isUninstalled = false,isNotExist = true;
+    QString datetime = "",size ="";
     for (i = 0; i < g_qjadePkgList.size(); ++i) {
         isUninstalled = false;
         isNotExist    = true;
-        QString datetime = "",size ="";
         for (j = 0; j < AllPkgList.size(); ++j) {
             if (AllPkgList.at(j).pkgName == g_qjadePkgList.at(i).name) {
                 datetime = AllPkgList.at(j).datetime;
@@ -612,7 +628,53 @@ void JadedBus::getInstalledTimeout()
                                        datetime) );
     }
 
-    printf("\n trace###### %s,%d,go here,size[%d]\n",__FUNCTION__,__LINE__,g_qjadePkgList.size());
+    // offline:get png and other info from local file
+    if (m_installedList.size() < 1) {
+        m_installedList.clear();
+
+        for (j = 0; j < AllPkgList.size(); ++j) {
+            char cfg_file[512]="";
+            snprintf(cfg_file,sizeof(cfg_file),
+                     "%s/.%s.cfg",ICON_CACHE_DIR,qPrintable(AllPkgList.at(j).pkgName) );
+            QFile file_cfg(cfg_file);
+            if (!file_cfg.exists()) {
+                continue;
+            }
+            datetime = AllPkgList.at(j).datetime;
+            size = AllPkgList.at(j).size;
+            int status = AllPkgList.at(j).status;
+            if (status == 2) {
+                continue;
+            }
+
+            int fd = open(cfg_file,O_RDONLY);
+            if (fd < 1) {
+                continue;
+            }
+
+            struct icon_cache_info cfg_info;
+            memset(&cfg_info,0,sizeof(struct icon_cache_info));
+            read(fd,&cfg_info,sizeof(struct icon_cache_info));
+            close(fd);
+
+            QString dstSize ="";
+            getStrSize(size,dstSize);
+
+            m_installedList.append(new JadedPackageObject(QString(j),
+                                           cfg_info.name,
+                                           cfg_info.icon,
+                                           cfg_info.title,
+                                           cfg_info.desc,
+                                           cfg_info.cate,
+                                           dstSize,
+                                           datetime) );
+        }
+    }
+
+
+
+    printf("\n trace###### %s,%d,go here,jade[%d],all[%d]\n",__FUNCTION__,__LINE__,
+           g_qjadePkgList.size(),AllPkgList.size());
     emit installedChanged();
 
     if (m_installedList.size() == 0)
@@ -852,6 +914,58 @@ void JadedBus::getPkgListTimeOut()
     m_isoftapp->ListAll("pkgs");
 }
 
+/*
+* get icon files from server, save *.png to /var/cache/isoftapp/qjade/.
+* first-run after 30 seconds;
+* then will run every 30 minutes;
+*/
+static int g_getIconCounter = 0;
+void JadedBus::getIconTimeOut()
+{
+    g_getIconCounter ++;
+    if (g_getIconCounter == 1) {
+        if (g_qjadePkgList.size() < 1 || AllPkgList.size() <1) {
+            g_getIconCounter = 0;
+            return;
+        }
+        int i =0,j=0;
+        for (i = 0; i < g_qjadePkgList.size(); ++i) {
+            for (j = 0; j < AllPkgList.size(); ++j) {
+                if (AllPkgList.at(j).pkgName == g_qjadePkgList.at(i).name) {
+                    QString icon_path(ICON_CACHE_DIR);
+                    icon_path += "/";
+                    icon_path += g_qjadePkgList.at(i).name;
+                    icon_path += ".png";
+                    QFile file(icon_path);
+
+                    if (file.exists()) {
+                        QString cfg(ICON_CACHE_DIR);
+                        cfg += "/.";
+                        cfg += g_qjadePkgList.at(i).name;
+                        cfg += ".cfg";
+
+                        //printf("trace:%s,%d,cfg path[%s]\n",__FUNCTION__,__LINE__,qPrintable(cfg) );
+
+                        QFile file_cfg(cfg);
+                        if (file_cfg.exists()) {
+                            continue;
+                        }
+                    }
+
+                    m_isoftapp->GetIcons(g_qjadePkgList.at(i).name,
+                                         g_qjadePkgList.at(i).icon,
+                                         g_qjadePkgList.at(i).title,
+                                         g_qjadePkgList.at(i).description,
+                                         g_qjadePkgList.at(i).category);
+                }
+            }
+        }
+    } else if (g_getIconCounter > 1 && g_getIconCounter < 10) {
+        return;
+    } else {
+        g_getIconCounter = 0;
+    }
+}
 
 void JadedBus::setPathMode(QString path,QString mode)
 {
