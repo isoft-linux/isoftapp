@@ -80,10 +80,22 @@ void SearchModel::finished(QNetworkReply *reply)
             description += "...";
         }
 
+        QString title ="";
+        for (int j = 0; j < g_qjadePkgList.size(); ++j) {
+            if (g_qjadePkgList.at(j).name == obj["name"].toString()) {
+                title = g_qjadePkgList.at(j).title;
+                break;
+            }
+        }
+        if (title.isEmpty()) {
+            title = obj["name"].toString();
+        }
+
+
         m_dataList.append(new SearchObject(obj["name"].toString(),
                     description,
                     obj["icon"].toString(),
-                    dstSize));
+                    dstSize,title));
     }
     tmpList.clear();
     emit searchResultChanged(m_dataList.size());

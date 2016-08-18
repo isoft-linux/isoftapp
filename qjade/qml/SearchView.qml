@@ -28,7 +28,8 @@ Rectangle {
                 searchListModel.append({"icon": searchModel.searchResult[i].icon,
                 "pkName": searchModel.searchResult[i].name, 
                 "description": searchModel.searchResult[i].description,
-                "size": searchModel.searchResult[i].size});
+                "size": searchModel.searchResult[i].size,
+                "title": searchModel.searchResult[i].title});
             }
             searchListView.visible = searchListModel.count == 0 ? false : true;
             myResultText.visible = searchListModel.count == 0 ? true : false;
@@ -59,7 +60,7 @@ Rectangle {
 
     Rectangle {                                                                    
         id: titleRegion                                                            
-        width: parent.width; height: 60
+        width: parent.width; height: 40
         color: "#f5f5f5"
         anchors.top: searchView.top
         anchors.topMargin: 2
@@ -67,7 +68,7 @@ Rectangle {
 
         Rectangle {
             id: returnRegion
-            width: 120;height: 60
+            width: 80;height: 40
             color: "#f5f5f5"
             anchors.left: titleRegion.left
             anchors.leftMargin: 2
@@ -78,7 +79,7 @@ Rectangle {
                 id: navImage
                 anchors.top: returnRegion.top
                 anchors.left: returnRegion.left
-                anchors.leftMargin: 15
+                anchors.leftMargin: 2
                 source: "../images/navigation_previous_item.png"
                 anchors.verticalCenter: parent.verticalCenter
             }
@@ -86,8 +87,8 @@ Rectangle {
                 text:qsTr("Return")
                 anchors.top: returnRegion.top
                 anchors.left: navImage.right
-                anchors.leftMargin: 2
-                anchors.topMargin: 20
+                anchors.leftMargin: -2
+                anchors.topMargin: 10
                 font.pixelSize: 20
             }
 
@@ -103,7 +104,7 @@ Rectangle {
         Rectangle {
             id: sizeRegion
             width: (parent.width - 50)
-            height: 60
+            height: 40
             color: "#f5f5f5"
             anchors.left: returnRegion.right
             anchors.right: parent.right
@@ -135,7 +136,7 @@ Rectangle {
                     text: qsTr("Size")
                     font.pixelSize: 15
                     anchors.left: parent.left
-                    anchors.leftMargin: parent.width/2 - 20
+                    anchors.leftMargin: parent.width/2 - 10
                     anchors.verticalCenter: parent.verticalCenter
                 }
             }
@@ -148,7 +149,7 @@ Rectangle {
             searchListModel.clear();
         }
 
-        ListElement { icon: ""; pkName: ""; description: ""; size: "" }
+        ListElement { icon: ""; pkName: ""; description: ""; size: "" ;title: ""}
     }
 
     ScrollView {
@@ -176,6 +177,15 @@ Rectangle {
                     anchors.left: parent.left
                     anchors.leftMargin: 7
                     anchors.verticalCenter: parent.verticalCenter
+
+                    MouseArea {
+                        anchors.fill: parent
+                        onClicked: {
+                            stackView.push({item: Qt.resolvedUrl("PackageInfoView.qml"),
+                            properties: {packageTitle: title,
+                                         stackView: stackView}})
+                        }
+                    }
                 }
 
                 // 安装/卸载时，显示此进度条

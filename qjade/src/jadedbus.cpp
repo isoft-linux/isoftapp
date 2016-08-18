@@ -707,7 +707,7 @@ void JadedBus::searchFinished(const QStringList &search)
         }
         m_searchList.append(new JadedPackageObject(result[0], result[1],
                     "file://" + iconPath, result[3], result[4],"category","",""));
-    }                                                                              
+    }
     emit searchChanged(m_searchList.size());
 }
 

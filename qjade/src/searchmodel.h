@@ -45,19 +45,21 @@ class SearchObject : public QObject
     Q_OBJECT
 
     Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
-    Q_PROPERTY(QString description READ description WRITE setTitle NOTIFY descriptionChanged)
+    Q_PROPERTY(QString description READ description WRITE setDesc NOTIFY descriptionChanged)
     Q_PROPERTY(QString icon READ icon WRITE setIcon NOTIFY iconChanged)
     Q_PROPERTY(QString size READ size WRITE setSize NOTIFY sizeChanged)
+    Q_PROPERTY(QString title READ title WRITE setTitle NOTIFY titleChanged)
 
 public:
     SearchObject(const QString &name, 
                const QString &description, 
                const QString &icon, 
                const QString &size,
+               const QString &title,
                QObject *parent = 0)
       : QObject(parent) 
     {
-        m_name = name; m_description = description; m_icon = icon;m_size = size;
+        m_name = name; m_description = description; m_icon = icon;m_size = size;m_title = title;
     }
 
     QString name() const { return m_name; }
@@ -67,9 +69,14 @@ public:
     }
 
     QString description() const { return m_description; }
-    void setTitle(const QString &description) 
+    void setDesc(const QString &description)
     {
         if (description != m_description) m_description = description; emit descriptionChanged();
+    }
+    QString title() const { return m_title; }
+    void setTitle(const QString &title)
+    {
+        if (title != m_title) m_title = title; emit titleChanged();
     }
 
     QString icon() const { return m_icon; }
@@ -88,12 +95,14 @@ Q_SIGNALS:
     void descriptionChanged();
     void iconChanged();
     void sizeChanged();
+    void titleChanged();
 
 private:
     QString m_name;
     QString m_description;
     QString m_icon;
     QString m_size;
+    QString m_title;
 };
 
 #endif  // SEARCH_MODEL_H
