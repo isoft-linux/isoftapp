@@ -80,6 +80,17 @@ Item {
                 }
             }
 
+            // 安装时，显示此进度条
+            ProgressBar {
+                id: progressInfo
+                width:  appIcon.width
+                anchors.left: appIcon.left
+                y: appIcon.y + appIcon.height - 15
+                maximumValue:  100
+                value : 0
+                visible: false
+            }
+
             JadedBus {
                 id: jadedBus
                 
@@ -134,7 +145,24 @@ Item {
                             funcButton.text = qsTr("Install")
                             infoText.visible = false
                         }
+
+                        progressInfo.visible = false
                     }                                                          
+                }
+
+                // 安装时 接收到的进度
+                onPerChanged: {
+                    if (name == modelData.name) {
+                        progressInfo.value = perCent;
+                        if (perCent != 100) {
+                            funcButton.visible = false
+                            infoText.visible = true
+                            infoText.text = qsTr("Waiting")
+                            progressInfo.visible = true
+
+                        }
+
+                    }
                 }
             }
 
