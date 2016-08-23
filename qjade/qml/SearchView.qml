@@ -182,7 +182,7 @@ Rectangle {
                         anchors.fill: parent
                         onClicked: {
                             stackView.push({item: Qt.resolvedUrl("PackageInfoView.qml"),
-                            properties: {packageTitle: title,
+                            properties: {packageName:pkName,packageTitle: title,
                                          stackView: stackView}})
                         }
                     }
@@ -249,10 +249,12 @@ Rectangle {
                             funcButton.visible = false;
                             infoText.visible = true;
                             infoText.text = qsTr("Running"); // 运行中
+                            actCombox.visible = false
                         } else if (jadedBus.info == "InfoWaiting") {
                             funcButton.visible = false
                             infoText.visible = true
                             infoText.text = qsTr("Waiting") // 等待
+                            actCombox.visible = false
                         } else if (jadedBus.info == "InfoInstalled") {
                             funcButton.visible = false
                             infoText.visible = false // 已安装最新版本
@@ -347,6 +349,11 @@ Rectangle {
                             jadedBus.update(pkName)
                         }
                         currentIndex = 3
+                        if (index != 0) {
+                            actCombox.visible = false
+                            infoText.visible = true
+                            infoText.text = qsTr("Waiting")
+                        }
                     }
                 }
 

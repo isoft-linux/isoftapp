@@ -29,7 +29,13 @@ Item {
                 source: modelData.icon
                 asynchronous: true
                 width: slideShow.width
-                height: slideShow.height 
+                height: slideShow.height
+                MouseArea {
+                    anchors.fill: parent
+                    onClicked: {
+                        Qt.openUrlExternally(modelData.url)
+                    }
+                }
             }
         }
     }

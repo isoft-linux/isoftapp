@@ -11,6 +11,7 @@ Rectangle {
     id: packageInfoView
     width: parent.width; height: parent.height
 
+    property string packageName
     property string packageTitle
     property StackView stackView
     property Rectangle rect
@@ -43,7 +44,6 @@ Rectangle {
             anchors.leftMargin: 10
             anchors.topMargin: 20
             font.pixelSize: 20
-            //font.weight: Font.
         }
         MouseArea {
             anchors.fill: parent
@@ -81,8 +81,8 @@ Rectangle {
             anchors.top: iconImage.top
             anchors.left: iconImage.right
             anchors.leftMargin: 15
-            width: (parent.width -60)
-            height: parent.height
+            width: parent.width*2/3
+            height: parent.height - 10
             color: "transparent"
 
             Text {
@@ -101,6 +101,155 @@ Rectangle {
                 anchors.topMargin: 5
                 font.pixelSize: 15
                 font.weight: Font.Light
+            }
+        }
+
+        JadedBus {
+            id: jadedBus
+
+            property bool isError: false
+            property string info: "UnknownInfo"
+
+            Component.onCompleted: {
+                jadedBus.info = jadedBus.getInfo(packageName)
+
+                if (jadedBus.info == "UnknownInfo") {
+                    funcButton.text = "unknown"
+                } else if (jadedBus.info == "InfoRunning") {
+                    actCombox.visible = false
+                    funcButton.visible = false;
+                    infoText.visible = true;
+                    infoText.text = qsTr("Running"); // 运行中
+                } else if (jadedBus.info == "InfoWaiting") {
+                    funcButton.visible = false
+                    actCombox.visible = false
+                    infoText.visible = true
+                    infoText.text = qsTr("Waiting") // 等待
+                } else if (jadedBus.info == "InfoInstalled") {
+                    funcButton.visible = false
+                    infoText.visible = false // 已安装最新版本
+                    actCombox.visible = true // 已经安装，则显示下拉框
+                } else if (jadedBus.info == "InfoUpdatable") {
+                    funcButton.text = qsTr("Update") // 软件升级
+                }
+            }
+            onErrored: {
+                if (name == packageName) {
+                    if (detail == "lastest")
+                        titleText.text = packageInfoModel.title + " (" + qsTr("Is lastest") + ")"
+                    else
+                    titleText.text = packageInfoModel.title + " (" + qsTr("Error") + ")"
+                    funcButton.visible = true;
+                    infoText.visible = false;
+                }
+            }
+
+            // 安装/卸载时 接收到的进度
+            onPerChanged: {
+                if (name == packageInfoModel.name) {
+                    progressInfo.value = perCent;
+                    if (perCent != 100) {
+                        actCombox.visible = false
+                        funcButton.visible = false
+                        infoText.visible = true
+                        infoText.text = qsTr("Waiting")
+                        progressInfo.visible = true
+
+                    }
+
+                }
+            }
+
+            onTaskChanged: {
+                if (name == packageInfoModel.name) {
+                    jadedBus.info = jadedBus.getInfo(name)
+                    if (jadedBus.info == "InfoInstalled") {
+                        funcButton.visible = false
+                        infoText.visible = false // 已安装最新版本
+                        actCombox.visible = true // 已经安装，则显示下拉框
+                        progressInfo.visible = false;
+
+                    } else {
+                        funcButton.visible = true
+                        infoText.visible = false
+                        actCombox.visible = false
+                        progressInfo.visible = false;
+                    }
+                }
+            }
+        }
+
+        // 安装/卸载时，显示此进度条
+        ProgressBar {
+            id: progressInfo
+            width:  iconImage.width
+            anchors.left: iconImage.left
+            //anchors.top:  appIcon.bottom
+            y: iconImage.y + iconImage.height - 15 // 进度条位置
+            maximumValue:  100
+            value : 0
+            visible: false
+        }
+
+        // 安装按钮
+        PercentageButton {
+            id: funcButton
+            text: qsTr("Install")
+            anchors.right: parent.right
+            anchors.rightMargin: 17
+            anchors.verticalCenter: parent.verticalCenter
+            onClicked: {
+                if (funcButton.text == qsTr("Install")) {
+                    jadedBus.install(packageInfoModel.name)
+                } else if (funcButton.text == qsTr("Update")) {
+                    jadedBus.update(packageInfoModel.name)
+                }
+                funcButton.visible = false
+                infoText.visible = true
+                infoText.text = qsTr("Waiting")
+            }
+        }
+
+        // 安装提示信息
+        Text {
+            id: infoText
+            text: qsTr("Installed")
+            anchors.top: funcButton.top
+            anchors.left: funcButton.left
+            font.pixelSize: 11
+            color: "#979797"
+            visible: false
+        }
+
+        // 打开/卸载/升级 下拉框
+        ComboBox {
+            id: actCombox
+            width: funcButton.width
+            anchors.top: funcButton.top
+            anchors.left: funcButton.left
+            model: [qsTr("Open"), qsTr("Uninstall"), qsTr("Upgrade"),qsTr("SelectOp") ]
+            visible: false
+            currentIndex: 3
+
+            onPressedChanged:     {
+                currentIndex = 3
+            }
+            onActivated: {
+                if (index == 0) {
+                    jadedBus.runCmd(packageInfoModel.name)
+                } else if (index == 1) {
+                    //nameText.text = packageInfoModel.title
+                    jadedBus.uninstall(packageInfoModel.name)
+                } else if (index == 2) {
+                    jadedBus.update(packageInfoModel.name)
+                }
+                currentIndex = 3
+
+                if (index != 0) {
+                    actCombox.visible = false
+                    infoText.visible = true
+                    infoText.text = qsTr("Waiting")
+                }
             }
         }
     }
@@ -142,28 +291,8 @@ Rectangle {
             titleText.text =  packageInfoModel.title
             versionText.text = qsTr("Version:") + " " + packageInfoModel.version +
                     "        " + qsTr("Size:") +  " " + packageInfoModel.size
-        }
-    }
 
-    // 打开/卸载/升级 下拉框
-    ComboBox {
-        id: actCombox
-        width: 90
-        //anchors.top: rightRect.top
-        anchors.right: parent.right
-        anchors.rightMargin: 30
-        //anchors.topMargin: rightRect.height/2 - actCombox.height/2
-        visible: false
-        model: ["Operation", qsTr("Open"), qsTr("Uninstall"), qsTr("Upgrade") ]
-        onActivated: {
-            descText.text = "test"+ index; //test
-            if (index == 1) {
-                descText.text = "open it"
-            } else if (index == 2) {
-                descText.text = "Uninstall it"
-            } else if (index == 3) {
-                descText.text = "Upgrade it"
-            }
+            jadedBus.info = jadedBus.getInfo(packageInfoModel.name)
         }
     }
 

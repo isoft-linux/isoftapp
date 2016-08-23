@@ -12,6 +12,7 @@
 
 #include "iconmodel.h"
 #include "globaldeclarations.h"
+#include "globallist.h"
 #define QJADE_DEBUG 1
 IconModel::IconModel(HttpGet* parent) 
   : HttpGet(parent) 
@@ -64,9 +65,20 @@ void IconModel::finished(QNetworkReply *reply)
     foreach (const QJsonValue & val, arr) {
         QJsonObject obj = val.toObject();
         QString pkgName = obj["name"].toString();
+        bool isExist = false;
+        for (int i = 0; i < AllPkgList.size(); ++i) {
+            if(AllPkgList.at(i).pkgName == pkgName) {
+                isExist = true;
+                break;
+            }
+        }
+        if ( !isExist ) {
+            continue;
+        }
         m_dataList.append(new IconObject(pkgName, obj["title"].toString(), 
             obj["icon"].toString(), obj["url"].toString()));
     }
+    printf("\n######%s,%d,IconModel size:[%d]\n",__FUNCTION__,__LINE__,m_dataList.size());
     emit iconChanged();
 }
 

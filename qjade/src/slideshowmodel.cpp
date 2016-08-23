@@ -52,7 +52,7 @@ void SlideShowModel::finished(QNetworkReply *reply)
         QJsonObject obj = val.toObject();
         m_dataList.append(
             new SlideShowObject(obj["name"].toString(), 
-                obj["title"].toString(), obj["icon"].toString()));
+                obj["title"].toString(), obj["icon"].toString(),obj["url"].toString()));
         i++;
     }
     emit slideshowChanged();

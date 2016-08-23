@@ -48,15 +48,17 @@ class SlideShowObject : public QObject
     Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
     Q_PROPERTY(QString title READ title WRITE setTitle NOTIFY titleChanged)
     Q_PROPERTY(QString icon READ icon WRITE setIcon NOTIFY iconChanged)
+    Q_PROPERTY(QString url READ url WRITE setIcon NOTIFY urlChanged)
 
 public:
     SlideShowObject(const QString &name, 
                     const QString &title, 
                     const QString &icon, 
+                    const QString &url,
                     QObject *parent = 0)
       : QObject(parent) 
     {
-        m_name = name; m_title = title; m_icon = icon;
+        m_name = name; m_title = title; m_icon = icon; m_url = url;
     }
 
     QString name() const { return m_name; }
@@ -77,15 +79,23 @@ public:
         if (icon != m_icon) m_icon = icon; emit iconChanged();
     }
 
+    QString url() const { return m_url; }
+    void setUrl(const QString &url)
+    {
+        if (url != m_url) m_url = url; emit urlChanged();
+    }
+
 Q_SIGNALS:
     void nameChanged();
     void titleChanged();
     void iconChanged();
+    void urlChanged();
 
 private:
     QString m_name;
     QString m_title;
     QString m_icon;
+    QString m_url;
 };
 
 #endif  // SLIDESHOW_MODEL_H

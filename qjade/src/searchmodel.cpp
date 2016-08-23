@@ -65,11 +65,17 @@ void SearchModel::finished(QNetworkReply *reply)
             continue;
         }
         tmpList.append(tmpStr);
+
+        bool isExist = false;
         for (int j = 0; j < AllPkgList.size(); ++j) {
             if (AllPkgList.at(j).pkgName == obj["name"].toString()) {
                 size = AllPkgList.at(j).size;
+                isExist = true;
                 break;
             }
+        }
+        if ( !isExist ) {
+            continue;
         }
         QString dstSize ="";
         getStrSize(size,dstSize);
@@ -91,13 +97,13 @@ void SearchModel::finished(QNetworkReply *reply)
             title = obj["name"].toString();
         }
 
-
         m_dataList.append(new SearchObject(obj["name"].toString(),
                     description,
                     obj["icon"].toString(),
                     dstSize,title));
     }
     tmpList.clear();
+    printf("\n######%s,%d,search result num:[%d]\n",__FUNCTION__,__LINE__,m_dataList.size());
     emit searchResultChanged(m_dataList.size());
 }
 

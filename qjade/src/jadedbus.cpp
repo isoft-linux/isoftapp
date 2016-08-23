@@ -427,7 +427,7 @@ QString JadedBus::getInfo(QString name)
         }
     }
 
-    //printf("\n trace %s,%d,name[%s] is unknown\n",__FUNCTION__,__LINE__, qPrintable(name));
+    printf("\n trace %s,%d,name[%s] is unknown\n",__FUNCTION__,__LINE__, qPrintable(name));
     return "UnknownInfo";
     //return m_jaded->getInfo(name);
 

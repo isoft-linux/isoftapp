@@ -163,7 +163,7 @@ Rectangle {
                         anchors.fill: parent
                         onClicked: {
                             stackView.push({item: Qt.resolvedUrl("PackageInfoView.qml"),
-                            properties: {packageTitle: modelData.title,
+                            properties: {packageName:modelData.name,packageTitle: modelData.title,
                                          stackView: stackView}})
                         }
                     }
@@ -195,7 +195,7 @@ Rectangle {
                         anchors.fill: parent
                         onClicked: {
                             stackView.push({item: Qt.resolvedUrl("PackageInfoView.qml"),
-                            properties: {packageTitle: modelData.title,
+                            properties: {packageName:modelData.name,packageTitle: modelData.title,
                                          stackView: stackView}});
                         }
                     }
