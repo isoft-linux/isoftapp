@@ -65,7 +65,7 @@ Rectangle {
             font.pixelSize: 15
             font.weight: Font.Bold
 
-            color: "red"
+            color: "#e3f0fc"
         }
     }
 

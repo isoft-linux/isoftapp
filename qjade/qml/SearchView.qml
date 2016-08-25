@@ -314,15 +314,19 @@ Rectangle {
                     anchors.right: parent.right
                     anchors.rightMargin: 17
                     anchors.verticalCenter: parent.verticalCenter
-                    onClicked: {
-                        if (funcButton.text == qsTr("Install")) {                  
-                            jadedBus.install(pkName)                       
-                        } else if (funcButton.text == qsTr("Update")) {            
-                            jadedBus.update(pkName)                        
-                        }                                                          
-                        funcButton.visible = false                                 
-                        infoText.visible = true                                    
-                        infoText.text = qsTr("Waiting")
+                    MouseArea {
+                        anchors.fill: parent
+                        cursorShape: Qt.PointingHandCursor
+                        onClicked: {
+                            if (funcButton.text == qsTr("Install")) {
+                                jadedBus.install(pkName)
+                            } else if (funcButton.text == qsTr("Update")) {
+                                jadedBus.update(pkName)
+                            }
+                            funcButton.visible = false
+                            infoText.visible = true
+                            infoText.text = qsTr("Waiting")
+                        }
                     }
                 }
 

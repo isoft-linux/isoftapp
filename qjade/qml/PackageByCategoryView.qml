@@ -81,6 +81,7 @@ Rectangle {
 
                     Component.onCompleted: {
                         jadedBus.info = jadedBus.getInfo(modelData.name)
+                        //allChecked.text = index
 
                         var item = pkListView.contentItem.children[index]
                         item.state = "checked"
@@ -295,16 +296,22 @@ Rectangle {
                     anchors.right: parent.right
                     anchors.rightMargin: 17
                     anchors.verticalCenter: parent.verticalCenter
-                    onClicked: {
-                        if (funcButton.text == qsTr("Install")) {
-                            jadedBus.install(modelData.name)
-                        } else if (funcButton.text == qsTr("Update")) {
-                            jadedBus.update(modelData.name)
+                    MouseArea {
+                        anchors.fill: parent
+                        cursorShape: Qt.PointingHandCursor
+
+                        onClicked: {
+                            if (funcButton.text == qsTr("Install")) {
+                                jadedBus.install(modelData.name)
+                            } else if (funcButton.text == qsTr("Update")) {
+                                jadedBus.update(modelData.name)
+                            }
+                            funcButton.visible = false
+                            infoText.visible = true
+                            infoText.text = qsTr("Waiting")
                         }
-                        funcButton.visible = false
-                        infoText.visible = true
-                        infoText.text = qsTr("Waiting")
                     }
+
                 }
 
                 // 安装提示信息

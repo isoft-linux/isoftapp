@@ -264,7 +264,7 @@ ApplicationWindow {
             anchors.bottom: sysNav.bottom
             anchors.bottomMargin: -5
             placeholderText: qsTr("Search...")
-            style: activeFocus ? searchFocusStyle : searchStyle
+            //style: activeFocus ? searchFocusStyle : searchStyle
             onAccepted: {
                 if (text != "") {
                     if (searchButtonRegion.name == "clear") stackView.pop()
