@@ -53,7 +53,8 @@ target_link_libraries(qjade
 #install -m 644 -p /home/test/gits/isoftapp/qjade/brand/isoft.png /usr/share/qjade/
 
 install(TARGETS qjade RUNTIME DESTINATION bin)
-install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/qjade.desktop DESTINATION ${CMAKE_INSTALL_SYSCONFDIR}/xdg/autostart)
+#install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/qjade.isoft.desktop DESTINATION ${CMAKE_INSTALL_SYSCONFDIR}/xdg/autostart)
+install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/qjade.isoft.desktop DESTINATION  ${DATADIR}/applications)
 install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/brand/isoft.xml DESTINATION ${DATADIR}/qjade)
 install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/brand/isoft.png DESTINATION ${DATADIR}/qjade)
 install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/qml DESTINATION ${DATADIR}/qjade)

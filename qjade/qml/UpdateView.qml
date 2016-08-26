@@ -350,7 +350,7 @@ Rectangle {
             }
 
             delete selectedItemList
-            bottonAct.text = "total:" + updateListView.count
+            //bottonAct.text = "total:" + updateListView.count
             for (var i = 0; i < updateListView.count; i++) {
                 var item = updateListView.contentItem.children[i]
                 if (typeof(item) == 'undefined' ||
