@@ -65,16 +65,18 @@ class PackageObject : public QObject
     Q_PROPERTY(QString url READ url WRITE setUrl NOTIFY urlChanged)
 
     Q_PROPERTY(QString size READ size WRITE setSize NOTIFY sizeChanged)
+    Q_PROPERTY(QString needInstall READ needInstall WRITE setNeedInstall NOTIFY needInstallChanged)
 
 public:
     PackageObject(QObject *parent = 0) : QObject(parent) {}
     PackageObject(const QString &name, const QString &title, 
-        const QString &description, const QString &icon, const QString &url, const QString &size,
+        const QString &description, const QString &icon, const QString &url, const QString &size,const QString &needInstall,
         QObject *parent = 0)
       : QObject(parent) 
     {
         m_name = name; m_title = title; m_description = description; 
         m_icon = icon; m_url = url;m_size = size;
+        m_needInstall = needInstall;
     }
 
     QString name() const { return m_name; }
@@ -115,6 +117,12 @@ public:
         if (size != m_size) m_size = size; emit sizeChanged();
     }
 
+    QString needInstall() const { return m_needInstall; }
+    void setNeedInstall(const QString &needInstall)
+    {
+        if (needInstall != m_needInstall) m_needInstall = needInstall; emit needInstallChanged();
+    }
+
 Q_SIGNALS:
     void nameChanged();
     void titleChanged();
@@ -122,6 +130,7 @@ Q_SIGNALS:
     void iconChanged();
     void urlChanged();
     void sizeChanged();
+    void needInstallChanged();
 
 private:
     QString m_name;
@@ -130,6 +139,7 @@ private:
     QString m_icon;
     QString m_url;
     QString m_size;
+    QString m_needInstall;
 };
 
 #endif  // PACKAGE_BY_CATEGORY_MODEL_H

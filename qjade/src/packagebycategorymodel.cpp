@@ -57,9 +57,11 @@ void PackageByCategoryModel::setCategory(QString category)
             }
 
             QString size ="";
+            int status = 9;// 2 need not install
             for (int j = 0; j < AllPkgList.size(); ++j) {
                 if (AllPkgList.at(j).pkgName  == g_qjadePkgList[i].name) {
                     size = AllPkgList.at(j).size;
+                    status = AllPkgList.at(j).status;
                     break;
                 }
             }
@@ -71,15 +73,18 @@ void PackageByCategoryModel::setCategory(QString category)
                 continue;
             }
 
+            QString needInstall = QString::number(status, 10);
             m_dataList.append(new PackageObject(g_qjadePkgList[i].name,
                 g_qjadePkgList[i].title,
                 g_qjadePkgList[i].description,
                 g_qjadePkgList[i].icon,
                 g_qjadePkgList[i].url,
-                dstSize));
+                dstSize,needInstall));
+            //printf("\n%s,%dname[%d] needinstall[%s]\n",__FUNCTION__,__LINE__,
+            //       qPrintable(g_qjadePkgList[i].name) ,qPrintable(needInstall) );
         }
         printf("\n%s,%d,g_qjadePkgList num[%d] AllPkgList num[%d]\n",__FUNCTION__,__LINE__,
-               g_qjadePkgList.size(),AllPkgList.size() );
+               g_qjadePkgList.size(),AllPkgList.size());
         emit packageChanged();
         return;
     }
@@ -122,9 +127,11 @@ void PackageByCategoryModel::getPackageFinished(QNetworkReply *reply)
     m_pks_act_size ++;
     bool isExist = false;
     QString size ="";
+    int  status = 9;
     for (int i = 0; i < AllPkgList.size(); ++i) {
         if (AllPkgList.at(i).pkgName  == pkgName) {
             size = AllPkgList.at(i).size;
+            status = AllPkgList.at(i).status;
             isExist = true;
             break;
         }
@@ -177,17 +184,19 @@ void PackageByCategoryModel::getPackageFinished(QNetworkReply *reply)
         pkg.description += "...";
     }
 
+    QString needInstall = QString::number(status, 10);
     m_dataList.append(new PackageObject(pkgName, obj["title"].toString(),
         pkg.description, obj["icon"].toString(),
         obj["url"].toString(),
-        dstSize));
+        dstSize,needInstall));
 
     g_qjadePkgList.append(pkg);
     if (m_pks_act_size == m_pks_size) {
         printf("\n%s,%d\n",__FUNCTION__,__LINE__);
         emit packageChanged();
     }
-    printf("\n%s,%d,data num[%d] vs pkg num[%d]\n",__FUNCTION__,__LINE__,m_dataList.size(),m_pks_size);
+    printf("\n%s,%d,data num[%d] vs pkg num[%d],name[%s],needinstall[%s]\n",__FUNCTION__,__LINE__,
+           m_dataList.size(),m_pks_size,qPrintable(pkgName ),qPrintable(needInstall));
 
 }
 

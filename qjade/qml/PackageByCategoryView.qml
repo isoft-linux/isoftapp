@@ -18,6 +18,7 @@ Rectangle {
     property bool loading
 
     property var selectedItemList:[]
+    property var notInstallItemList:[]
 
     PackageByCategoryModel {
         id: pkModel
@@ -51,11 +52,13 @@ Rectangle {
         height: parent.height - titleRegion.height - 60 //bottonAct.height
         anchors.top: titleRegion.bottom
         flickableItem.interactive: true
+        verticalScrollBarPolicy:Qt.ScrollBarAlwaysOn
 
         ListView {
             id: pkListView
             model: pkModel.packages
             anchors.fill: parent
+            property int pre_index:-1
 
             delegate: Rectangle {
                 id: pkRect
@@ -81,10 +84,33 @@ Rectangle {
 
                     Component.onCompleted: {
                         jadedBus.info = jadedBus.getInfo(modelData.name)
-                        //allChecked.text = index
+
+                        // 上下滚动时，自动去掉选择状态
+                        if (pkListView.pre_index != pkListView.index) {
+                            if (allChecked.checked) {
+                                allChecked.checked = false
+                                allChecked.pressed = false
+
+                                delete selectedItemList
+                                delete notInstallItemList
+                                for (var i = 0; i < pkListView.contentItem.children.length; ++i) {
+                                    var item = pkListView.contentItem.children[i]
+                                    if (typeof(item) == 'undefined' ) {
+                                        continue;
+                                    }
+                                    else if(item.objectName != "rectItem") {
+                                        continue;
+                                    }
+                                    item.checkItem(false)
+                                }
+                            }
+                            bottonAct.enabled = false
+                        }
 
                         var item = pkListView.contentItem.children[index]
+                        if (typeof(item) != 'undefined' ) {
                         item.state = "checked"
+                        }
                         pkRect.objectName = "rectItem"
                         if (jadedBus.info == "UnknownInfo") {
                             // 过滤
@@ -110,7 +136,9 @@ Rectangle {
                             appCheckBox.enabled = false
 
                             // 已经安装的，不再次安装
+                            if (typeof(item) != 'undefined' ) {
                             item.state = "" // for allChecked
+                            }
                         } else if (jadedBus.info == "InfoUpdatable") {
                             funcButton.text = qsTr("Update") // 软件升级
                         }
@@ -188,6 +216,7 @@ Rectangle {
                         // 软件包前面的单选按钮被按下的处理
                         var tmpItem = modelData.name
                         var findit = false
+                        var k = 0
                         if (appCheckBox.checked) {
                             for (var i = 0; i < selectedItemList.length; i++) {
                                 if (selectedItemList[i] == tmpItem) {
@@ -200,12 +229,32 @@ Rectangle {
                                 nameText.text = modelData.title
                             }
 
+                            // 选中时，从 notInstallItemList 中去掉
+                            for (k = 0; k < notInstallItemList.length; k++) {
+                                if (notInstallItemList[k] == tmpItem) {
+                                    var nullItem = ""
+                                    notInstallItemList[k] = nullItem
+                                }
+                            }
+
+
                         } else {
                             for (var j = 0; j < selectedItemList.length; j++) {
                                 if (selectedItemList[j] == tmpItem) {
                                     var nullVar = ""
                                     selectedItemList[j] = nullVar
                                 }
+                            }
+
+                            // 未选中时，插入到表 notInstallItemList
+                            findit = false
+                            for (k = 0; k < notInstallItemList.length; k++) {
+                                if (notInstallItemList[k] == tmpItem) {
+                                    findit = true
+                                }
+                            }
+                            if (findit == false) {
+                                notInstallItemList.push(modelData.name)
                             }
                         }
                     }
@@ -303,6 +352,15 @@ Rectangle {
                         onClicked: {
                             if (funcButton.text == qsTr("Install")) {
                                 jadedBus.install(modelData.name)
+
+                                //this pkg can not do installation now.
+                                for(var i = 0 ; i < pkModel.packages.length;i++) {
+                                    if (pkModel.packages[i].name == modelData.name) {
+                                        pkModel.packages[i].needInstall = "9" ;
+                                        break;
+                                    }
+                                }
+
                             } else if (funcButton.text == qsTr("Update")) {
                                 jadedBus.update(modelData.name)
                             }
@@ -344,6 +402,14 @@ Rectangle {
                         } else if (index == 1) {
                             nameText.text = modelData.title
                             jadedBus.uninstall(modelData.name)
+
+                            //this pkg can do installation now.
+                            for(var i = 0 ; i < pkModel.packages.length;i++) {
+                                if (pkModel.packages[i].name == modelData.name) {
+                                    pkModel.packages[i].needInstall = "2" ;
+                                    break;
+                                }
+                            }
                         } else if (index == 2) {
                             jadedBus.update(modelData.name)
                         }
@@ -422,15 +488,44 @@ Rectangle {
         enabled: allChecked.checked? true:false
 
         onClicked: {
-            // 遍历每个被选中的软件包，作相同的动作
-            for (var i = 0; i < selectedItemList.length; i++) {
+            // 遍历每个被选中的软件包，删除选中记录
+            var i =0
+            for (i = 0; i < selectedItemList.length; i++) {
                 if (selectedItemList[i] != "") {
-                    jadedBus.install(selectedItemList[i])
+                    //jadedBus.install(selectedItemList[i])
+                }
+
+                selectedItemList[i] = ""
+            }
+
+            // 遍历所有软件包，去掉没有被选中的记录；
+            for(i = 0 ; i < pkModel.packages.length;i++) {
+                if (pkModel.packages[i].needInstall == "2") {
+                    var find = false
+                    for (var j = 0; j < notInstallItemList.length; j++) {
+                        if (notInstallItemList[j] == pkModel.packages[i].name) {
+                            find = true;
+                            notInstallItemList[j] = "";
+                            break;
+                        }
+                    }
+                    if (find) {
+                        continue;
+                    }
+                    jadedBus.install(pkModel.packages[i].name)
                 }
             }
 
+            delete notInstallItemList
+
             allChecked.checked = false
             bottonAct.enabled = false
+
+            if(typeof(pkListView.index) == 'undefined' ) {
+                pkListView.pre_index = -2
+            } else {
+                pkListView.pre_index = pkListView.index
+            }
         }
     }
 

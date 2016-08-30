@@ -14,6 +14,8 @@ Rectangle {
 
     property int count: uninstallListView.count
     property var selectedItemList:[]
+    property var notInstallItemList:[]
+    property int pre_index:-1
 
     JadedBus {                                                                     
         id: uninstallJadedBus
@@ -141,6 +143,28 @@ Rectangle {
                             infoText.visible = true
                             infoText.text = qsTr("Waiting")
                         }
+
+                        // 上下滚动时，自动去掉选择状态
+                        if (pre_index != uninstallListView.index) {
+                            if (allChecked.checked) {
+                                allChecked.checked = false
+                                allChecked.pressed = false
+
+                                delete selectedItemList
+                                delete notInstallItemList
+                                for (var i = 0; i < uninstallListView.contentItem.children.length; ++i) {
+                                    var item = uninstallListView.contentItem.children[i]
+                                    if (typeof(item) == 'undefined' ) {
+                                        continue;
+                                    }
+                                    else if(item.objectName != "rectItem") {
+                                        continue;
+                                    }
+                                    item.checkItem(false,1)
+                                }
+                            }
+                            bottonAct.enabled = false
+                        }
                     }
                     onErrored: {
                         if (name == modelData.name) {
@@ -173,7 +197,14 @@ Rectangle {
                             uninstallRect.visible = false
                             uninstallRect.height = 0
                             uninstallView.count--
-                            countText.text = qsTr("Uninstall") + ": " + qsTr("%1 total").arg(uninstallView.count)
+                            var newCount = 0
+                            for(var i = 0 ; i < uninstallJadedBus.installed.length;i++) {
+                                if (uninstallJadedBus.installed[i].category != "unknown") {
+                                    // inited in jadeddbus.cpp
+                                    newCount ++
+                                }
+                            }
+                            countText.text = qsTr("Uninstall") + ": " + qsTr("%1 total").arg(newCount)
                         }
                     }
                 }
@@ -192,6 +223,7 @@ Rectangle {
                         var tmpItem = modelData.name
                         var findit = false
                         var x = 9999
+                        var k = 0
                         if (appCheckBox.checked) {
                             for (var i = 0; i < selectedItemList.length; i++) {
                                 if (selectedItemList[i] == tmpItem) {
@@ -211,12 +243,31 @@ Rectangle {
                                 nameText.text = modelData.version
                             }
 
+                            // 选中时，从 notInstallItemList 中去掉
+                            for (k = 0; k < notInstallItemList.length; k++) {
+                                if (notInstallItemList[k] == tmpItem) {
+                                    var nullItem = ""
+                                    notInstallItemList[k] = nullItem
+                                }
+                            }
+
                         } else {
                             for (var j = 0; j < selectedItemList.length; j++) {
                                 if (selectedItemList[j] == tmpItem) {
                                     var nullVar = ""
                                     selectedItemList[j] = nullVar
                                 }
+                            }
+
+                            // 未选中时，插入到表 notInstallItemList
+                            findit = false
+                            for (k = 0; k < notInstallItemList.length; k++) {
+                                if (notInstallItemList[k] == tmpItem) {
+                                    findit = true
+                                }
+                            }
+                            if (findit == false) {
+                                notInstallItemList.push(modelData.name)
                             }
                         }
                     }
@@ -289,14 +340,6 @@ Rectangle {
                     anchors.left: parent.left
                     anchors.leftMargin: parent.width/8*6 // - cateText.width/6
                     anchors.verticalCenter: parent.verticalCenter
-                    //anchors.horizontalCenter: parent.horizontalCenter
-/*
-                    anchors.left: appIcon.right
-                    anchors.leftMargin: 8
-                    anchors.top: parent.top
-                    anchors.topMargin: 6
-                    font.pixelSize: 14
-                    */
                 }
 
                 PercentageButton {
@@ -306,11 +349,35 @@ Rectangle {
                     anchors.right: parent.right
                     anchors.rightMargin: 10
                     anchors.verticalCenter: parent.verticalCenter
-                    onClicked: { 
-                        visible = false
-                        jadedBus.uninstall(modelData.name) //modelData.id
-                        infoText.visible = true
-                        infoText.text = qsTr("Waiting")
+                    MouseArea {
+                        anchors.fill: parent
+                        cursorShape: Qt.PointingHandCursor
+
+                        onClicked: {
+                            visible = false
+                            jadedBus.uninstall(modelData.name) //modelData.id
+                            infoText.visible = true
+                            infoText.text = qsTr("Waiting")
+                            removeButton.visible = false
+
+                            for(var i = 0 ; i < uninstallJadedBus.installed.length;i++) {
+                                if (modelData.name == uninstallJadedBus.installed[i].name) {
+                                    uninstallJadedBus.installed[i].category = "unknown"
+                                }
+                            }
+
+                            // 未选中时，插入到表 notInstallItemList
+                            var findit = false
+                            for (var k = 0; k < notInstallItemList.length; k++) {
+                                if (notInstallItemList[k] == modelData.name) {
+                                    findit = true
+                                }
+                            }
+                            if (findit == false) {
+                                notInstallItemList.push(modelData.name)
+                            }
+                        }
+
                     }
                 }
 
@@ -382,12 +449,33 @@ Rectangle {
             for (var i = 0; i < selectedItemList.length; i++) {
                 if (selectedItemList[i] != "") {
                     enabled = false
-                    jadedBus.uninstall(selectedItemList[i]) //modelData.id
+                    //jadedBus.uninstall(selectedItemList[i]) //modelData.id
                     selectedItemList[i] = ""
                 }
             }
 
-            //allChecked.text = "total:" + uninstallListView.count
+            // 遍历所有软件包，去掉没有被选中的记录；
+            for(i = 0 ; i < uninstallJadedBus.installed.length;i++) {
+                var find = false
+                for (var j = 0; j < notInstallItemList.length; j++) {
+                    if (notInstallItemList[j] == uninstallJadedBus.installed[i].name) {
+                        find = true;
+                        break;
+                    }
+                }
+                if (find == true ) {
+                    continue;
+                }
+                jadedBus.uninstall(uninstallJadedBus.installed[i].name )
+                uninstallJadedBus.installed[i].category = "unknown"
+            }
+
+            if(typeof(uninstallListView.index) == 'undefined' ) {
+                pre_index = -2
+            } else {
+                pre_index = uninstallListView.index
+            }
+
             allChecked.checked = false
             bottonAct.enabled = false
         }

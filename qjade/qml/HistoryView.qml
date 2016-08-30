@@ -74,7 +74,9 @@ Rectangle {
                         jadedBus.info = jadedBus.getInfo(modelData.name)
 
                         var item = pkListView.contentItem.children[index]
-                        item.state = "checked"
+                        if (typeof(item) != 'undefined' ) {
+                            item.state = "checked"
+                        }
                         if (jadedBus.info == "UnknownInfo") {
                             pkRect.visible = false; // 不显示此软件包的信息
                             pkRect.height = 0;
