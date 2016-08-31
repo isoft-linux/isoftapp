@@ -5,6 +5,7 @@
 #include "util.h"
 
 //begin
+#include <QImageReader>
 #include <QCoreApplication>
 #include <QObject>
 #include <iostream>
@@ -439,7 +440,7 @@ void JadedBus::getUpdateFinished(const QString &pkgInfo)
 {
 
     m_updateInfo = pkgInfo;
-    printf("%s,%d,all update pkg list:[%s]\n",__FUNCTION__,__LINE__,qPrintable(m_updateInfo));
+    printf("%s,%d,all update pkg list:[%s]time[%d]\n",__FUNCTION__,__LINE__,qPrintable(m_updateInfo),(int)time(NULL));
 #if 0
     foreach (QString str, update) {
         QStringList result = str.split("|");
@@ -460,7 +461,7 @@ void JadedBus::getUpdateFinished(const QString &pkgInfo)
 
 void JadedBus::getUpdateTimeout() 
 {
-    printf("\n trace %s,%d,get upt info[%s]\n",__FUNCTION__,__LINE__,qPrintable(m_updateInfo));
+    printf("\n trace %s,%d,get upt info[%s]time[%d]\n",__FUNCTION__,__LINE__,qPrintable(m_updateInfo),(int)time(NULL));
     if (m_updateInfo.isEmpty()) {
         emit getUpdateError();
         return;
@@ -542,12 +543,12 @@ void JadedBus::getUpdateTimeout()
 
 void JadedBus::getUpdate() 
 {
-    printf("%s,%d,will get upt info[%s]\n",__FUNCTION__,__LINE__,qPrintable(m_updateInfo));
+    printf("%s,%d,will get upt info[%s]time[%d]\n",__FUNCTION__,__LINE__,qPrintable(m_updateInfo),(int)time(NULL));
 
     m_updateInfo = "";
     m_isoftapp->ListUpdate();
     ////m_jaded->getUpdate();
-    QTimer::singleShot(6000, this, SLOT(getUpdateTimeout()));
+    QTimer::singleShot(9000, this, SLOT(getUpdateTimeout()));
 }
 
 void JadedBus::getMyPkgNumTimeout()
@@ -659,7 +660,11 @@ void JadedBus::getInstalledTimeout()
 
             QString dstSize ="";
             getStrSize(size,dstSize);
+            QImageReader reader(cfg_info.icon);
 
+            if (reader.format() != "png") {
+                cfg_info.icon[0]=0;
+            }
             m_installedList.append(new JadedPackageObject(QString(j),
                                            cfg_info.name,
                                            cfg_info.icon,

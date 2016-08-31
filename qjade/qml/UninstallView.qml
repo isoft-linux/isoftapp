@@ -123,6 +123,7 @@ Rectangle {
                 width: parent.width
                 height: 60
                 color: index % 2 == 0 ? "white" : "#f5f5f5"
+                property var category_bak : modelData.category
 
                 // 批处理单选按钮 allChecked 按下时发送信号
                 signal checkItem(bool checked,int i)
@@ -336,7 +337,7 @@ Rectangle {
 
                 Text {
                     id: categoryText
-                    text: modelData.category
+                    text: category_bak //modelData.category
                     anchors.left: parent.left
                     anchors.leftMargin: parent.width/8*6 // - cateText.width/6
                     anchors.verticalCenter: parent.verticalCenter
@@ -362,6 +363,7 @@ Rectangle {
 
                             for(var i = 0 ; i < uninstallJadedBus.installed.length;i++) {
                                 if (modelData.name == uninstallJadedBus.installed[i].name) {
+                                    categoryText.text = category_bak
                                     uninstallJadedBus.installed[i].category = "unknown"
                                 }
                             }
@@ -385,8 +387,10 @@ Rectangle {
                     id: infoText
                     text: qsTr("Uninstalling")
                     visible: false
-                    anchors.right: removeButton.right
-                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.top: removeButton.top
+                    anchors.left: removeButton.left
+                    font.pixelSize: 11
+                    color: "#979797"
                 }
             }
         }
