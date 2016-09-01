@@ -13,7 +13,7 @@
 // TODO: Software relative information
 //-----------------------------------------------------------------------------
 const QString CODE_NAME = "qjade";
-const QString APPLICATION_VERSION = "2.2.8";
+const QString APPLICATION_VERSION = "2.2.9";
 const QString APPLICATION_ENCODING = "UTF-8";
 const QString TRANSLATIONS_PATH = "translations";
 
