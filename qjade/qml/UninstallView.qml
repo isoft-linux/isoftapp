@@ -123,7 +123,6 @@ Rectangle {
                 width: parent.width
                 height: 60
                 color: index % 2 == 0 ? "white" : "#f5f5f5"
-                property var category_bak : modelData.category
 
                 // 批处理单选按钮 allChecked 按下时发送信号
                 signal checkItem(bool checked,int i)
@@ -200,7 +199,7 @@ Rectangle {
                             uninstallView.count--
                             var newCount = 0
                             for(var i = 0 ; i < uninstallJadedBus.installed.length;i++) {
-                                if (uninstallJadedBus.installed[i].category != "unknown") {
+                                if (uninstallJadedBus.installed[i].id != "unknown") {
                                     // inited in jadeddbus.cpp
                                     newCount ++
                                 }
@@ -337,7 +336,7 @@ Rectangle {
 
                 Text {
                     id: categoryText
-                    text: category_bak //modelData.category
+                    text: modelData.category
                     anchors.left: parent.left
                     anchors.leftMargin: parent.width/8*6 // - cateText.width/6
                     anchors.verticalCenter: parent.verticalCenter
@@ -363,8 +362,7 @@ Rectangle {
 
                             for(var i = 0 ; i < uninstallJadedBus.installed.length;i++) {
                                 if (modelData.name == uninstallJadedBus.installed[i].name) {
-                                    categoryText.text = category_bak
-                                    uninstallJadedBus.installed[i].category = "unknown"
+                                    uninstallJadedBus.installed[i].id = "unknown"
                                 }
                             }
 
@@ -471,7 +469,7 @@ Rectangle {
                     continue;
                 }
                 jadedBus.uninstall(uninstallJadedBus.installed[i].name )
-                uninstallJadedBus.installed[i].category = "unknown"
+                uninstallJadedBus.installed[i].id = "unknown"
             }
 
             if(typeof(uninstallListView.index) == 'undefined' ) {
