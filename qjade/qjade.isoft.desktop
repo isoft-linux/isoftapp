@@ -1,13 +1,13 @@
 [Desktop Entry]
 Categories=System;
-Comment[zh_CN]=普华软件中心
+Comment[zh_CN]=普华桌面软件管家
 Comment=iSoft Center
 Exec=qjade
-GenericName[zh_CN]=普华软件中心
+GenericName[zh_CN]=普华桌面软件管家
 GenericName=iSoft Center
 Icon=isoft
 MimeType=
-Name[zh_CN]=普华软件中心
+Name[zh_CN]=普华桌面软件管家
 Name=iSoft Center
 Path=
 StartupNotify=false
