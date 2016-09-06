@@ -469,7 +469,11 @@ Rectangle {
                     item.checkItem(checked)
 
             }
-            bottonAct.enabled = true
+            if (checked) {
+                bottonAct.enabled = true
+            } else {
+                bottonAct.enabled = false
+            }
         }
 
     }
@@ -485,6 +489,10 @@ Rectangle {
         anchors.topMargin: 10
         // 批处理单选按钮 被按下了，此按钮才会可用
         enabled: allChecked.checked? true:false
+
+        MouseArea {
+            anchors.fill: parent
+            cursorShape: Qt.PointingHandCursor
 
         onClicked: {
             // 遍历每个被选中的软件包，删除选中记录
@@ -525,6 +533,7 @@ Rectangle {
             } else {
                 pkListView.pre_index = pkListView.index
             }
+        }
         }
     }
 

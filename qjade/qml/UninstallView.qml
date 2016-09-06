@@ -418,6 +418,8 @@ Rectangle {
         onClicked: {
             if (checked) {
                 bottonAct.enabled = true
+            } else {
+                bottonAct.enabled = false
             }
 
             delete selectedItemList
@@ -445,6 +447,9 @@ Rectangle {
         anchors.topMargin: 10
         // 批处理单选按钮 被按下了，此按钮才会可用
         enabled: allChecked.checked? true:false
+        MouseArea {
+            anchors.fill: parent
+            cursorShape: Qt.PointingHandCursor
 
         onClicked: {
             // 遍历每个被选中的软件包，作相同的动作
@@ -480,6 +485,7 @@ Rectangle {
 
             allChecked.checked = false
             bottonAct.enabled = false
+        }
         }
     }
 
