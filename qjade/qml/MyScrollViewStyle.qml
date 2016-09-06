@@ -10,7 +10,7 @@ ScrollViewStyle {
     
     handle: Rectangle {                                                    
         implicitWidth: 7                                                   
-        color: "#9bb26c"                                                   
+        color: "#4dc0ff"
         anchors.fill: parent                                               
         anchors.topMargin: 6                                               
         anchors.bottomMargin: 6                                            
@@ -20,7 +20,7 @@ ScrollViewStyle {
     scrollBarBackground: Rectangle {                                       
         implicitWidth: 7                                                   
         border.width: 1                                                    
-        border.color: "#e4e4e4"                                            
+        border.color: "#e4e4e4"
         color: "#fdfdfd"                                                   
         radius: 6                                                          
     }                                                                      

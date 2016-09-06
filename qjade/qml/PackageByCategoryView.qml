@@ -52,7 +52,6 @@ Rectangle {
         height: parent.height - titleRegion.height - 60 //bottonAct.height
         anchors.top: titleRegion.bottom
         flickableItem.interactive: true
-        verticalScrollBarPolicy:Qt.ScrollBarAlwaysOn
 
         ListView {
             id: pkListView
