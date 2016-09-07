@@ -455,8 +455,7 @@ Rectangle {
             // 遍历每个被选中的软件包，作相同的动作
             for (var i = 0; i < selectedItemList.length; i++) {
                 if (selectedItemList[i] != "") {
-                    enabled = false
-                    //jadedBus.uninstall(selectedItemList[i]) //modelData.id
+                    //jadedBus.uninstall(selectedItemList[i])
                     selectedItemList[i] = ""
                 }
             }
@@ -477,14 +476,14 @@ Rectangle {
                 uninstallJadedBus.installed[i].id = "unknown"
             }
 
+            allChecked.checked = false
+            bottonAct.enabled = false
+
             if(typeof(uninstallListView.index) == 'undefined' ) {
                 pre_index = -2
             } else {
                 pre_index = uninstallListView.index
             }
-
-            allChecked.checked = false
-            bottonAct.enabled = false
         }
         }
     }

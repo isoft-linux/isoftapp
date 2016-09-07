@@ -455,8 +455,8 @@ Rectangle {
         anchors.topMargin: 10
         checked: false
         text: qsTr("install all selected items") // + pkListView.count
-        onClicked: { // todo...
-            delete selectedItemList
+        onClicked: {
+            selectedItemList = []
             for (var i = 0; i < pkListView.contentItem.children.length; ++i) {
                 var item = pkListView.contentItem.children[i]
                 if (typeof(item) == 'undefined' ) {
@@ -520,10 +520,12 @@ Rectangle {
                         continue;
                     }
                     jadedBus.install(pkModel.packages[i].name)
+                    pkModel.packages[i].needInstall = "9"
                 }
             }
 
-            delete notInstallItemList
+            selectedItemList = []
+            notInstallItemList = []
 
             allChecked.checked = false
             bottonAct.enabled = false
