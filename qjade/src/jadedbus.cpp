@@ -981,6 +981,10 @@ void JadedBus::setPathMode(QString path,QString mode)
 
 void JadedBus::runCmd(QString cmd)
 {
+    if (cmd.isEmpty()) {
+        return;
+    }
+
     QProcess *runProcess = new QProcess();
     runProcess->start(cmd);
 
@@ -991,6 +995,9 @@ void JadedBus::install(QString name)
 {
     printf("trace:%s,%d, to install [%s]m[%d]\n",__FUNCTION__,__LINE__,
            qPrintable(name),m_taskQueue.size());
+    if (name.isEmpty()) {
+        return;
+    }
 
     if (m_isTaskExist(name))
         return;
@@ -1015,6 +1022,9 @@ void JadedBus::uninstall(QString name)
 
     printf("trace:%s,%d, to uninstall [%s]m[%d]\n",__FUNCTION__,__LINE__,
            qPrintable(name),m_taskQueue.size());
+    if (name.isEmpty()) {
+        return;
+    }
 
     if (m_isTaskExist(name))
         return;
@@ -1032,6 +1042,9 @@ void JadedBus::update(QString name)
 {
     printf("trace:%s,%d, to upgrade [%s]m[%d]\n",__FUNCTION__,__LINE__,
            qPrintable(name),m_taskQueue.size());
+    if (name.isEmpty()) {
+        return;
+    }
 
     if (m_isTaskExist(name))
         return;
