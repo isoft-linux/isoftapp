@@ -472,9 +472,14 @@ Rectangle {
                 if (find == true ) {
                     continue;
                 }
-                jadedBus.uninstall(uninstallJadedBus.installed[i].name )
+                if (uninstallJadedBus.installed[i].id != "unknown") {
+                    jadedBus.uninstall(uninstallJadedBus.installed[i].name )
+                }
                 uninstallJadedBus.installed[i].id = "unknown"
             }
+
+            selectedItemList = []
+            notInstallItemList = []
 
             allChecked.checked = false
             bottonAct.enabled = false
