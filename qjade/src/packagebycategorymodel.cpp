@@ -80,8 +80,6 @@ void PackageByCategoryModel::setCategory(QString category)
                 g_qjadePkgList[i].icon,
                 g_qjadePkgList[i].url,
                 dstSize,needInstall));
-            //printf("\n%s,%dname[%d] needinstall[%s]\n",__FUNCTION__,__LINE__,
-            //       qPrintable(g_qjadePkgList[i].name) ,qPrintable(needInstall) );
         }
         printf("\n%s,%d,g_qjadePkgList num[%d] AllPkgList num[%d]\n",__FUNCTION__,__LINE__,
                g_qjadePkgList.size(),AllPkgList.size());
@@ -105,8 +103,6 @@ void PackageByCategoryModel::m_httpGet()
         QLocale::system().name().toLower()));
     QString tmp = CATEGORY_PACKAGE_URI + m_category.mid(9) + "/" +
             QLocale::system().name().toLower();
-    printf("\n%s,%d,[%s]\n",__FUNCTION__,__LINE__,qPrintable(tmp));
-    //m_httpGet,69,[http://appstore.isoft-linux.org/appstore/category-packages/Video-Graphics/zh_cn]
 }
 
 /*

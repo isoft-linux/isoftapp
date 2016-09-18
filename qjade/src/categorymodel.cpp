@@ -144,10 +144,6 @@ void CategoryModel::getPackagesFinished(QNetworkReply *reply)
         return;
     }
 
-    //printf("\n######%s,%d,pkg url:[%s],const url[%s]g_cate_act_number[%d]\n",__FUNCTION__,__LINE__,
-    //       qPrintable(reply->url().toString() ),qPrintable(CATEGORY_PACKAGE_URI),g_cate_act_number);
-
-    // url[http://appstore.isoft-linux.org/appstore/category-packages/Games/zh_cn]
     char catPkgStr[256]="";
     char urlStr[512]="";
     char catName[128]="";
@@ -197,8 +193,6 @@ void CategoryModel::getPackagesFinished(QNetworkReply *reply)
 
         QString tmp = PACKAGE_URI + pkname + "/" +
                                      QLocale::system().name().toLower();
-
-        //printf("\n######%s,%d,url[%s]\n",__FUNCTION__,__LINE__,qPrintable(tmp));
 
         if (iFind >= 0) {
             g_categoryList.at(iFind).catPkgList.append(pkname);
@@ -309,8 +303,6 @@ void CategoryModel::getPackageFinished(QNetworkReply *reply)
             pkgNumber = 0;
             for (int j = 0; j < g_qjadePkgList.size(); ++j) {
                 if (g_qjadePkgList[j].category == g_categoryList[i].title) {
-                    //printf("\n######%s,%d,cate title:[%s]\n",__FUNCTION__,__LINE__,
-                    //   qPrintable(g_qjadePkgList[j].category) );
                     pkgNumber ++;
                 }
             }

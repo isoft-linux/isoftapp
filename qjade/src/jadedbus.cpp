@@ -95,8 +95,6 @@ JadedBus::JadedBus(QObject *parent)
     m_isoftapp = new org::isoftlinux::Isoftapp("org.isoftlinux.Isoftapp",
                                                    "/org/isoftlinux/Isoftapp",
                                                    QDBusConnection::systemBus());
-    printf("trace:%s,%d.[m_isoftapp = new org::isoftlinux::Isoftapp]\n",__FUNCTION__,__LINE__);
-
     }
 
     connect(m_isoftapp,
@@ -158,37 +156,9 @@ JadedBus::JadedBus(QObject *parent)
         connect(getIconTimer, SIGNAL(timeout()), this, SLOT(getIconTimeOut()));
         getIconTimer->start(30000);
 
-
         m_isoftapp->GetPathMode();
 
     }
-
-#if 0
-    connect(m_jaded, 
-            &cn::com::isoft::JadedInterface::errored, 
-            this, 
-            &JadedBus::m_errored);
-    connect(m_jaded,                                                               
-            &cn::com::isoft::JadedInterface::getUpdateFinished,
-            this,                                                                  
-            &JadedBus::getUpdateFinished);
-    connect(m_jaded,                                                               
-            &cn::com::isoft::JadedInterface::getInstalledFinished,                    
-            this,                                                                  
-            &JadedBus::getInstalledFinished);
-    connect(m_jaded, 
-            &cn::com::isoft::JadedInterface::taskStarted, 
-            this, 
-            &JadedBus::m_taskStarted);
-    connect(m_jaded, 
-            &cn::com::isoft::JadedInterface::taskFinished, 
-            this, 
-            &JadedBus::taskFinished);
-    connect(m_jaded, 
-            &cn::com::isoft::JadedInterface::taskQueueChanged, 
-            this, 
-            &JadedBus::m_taskQueueChanged);
-#endif
 }
 
 JadedBus::~JadedBus() 
@@ -235,14 +205,6 @@ void JadedBus::getAllPkgList(const QString &pkgName,qlonglong status)
 
             AllPkgList.append(pkg);
             memset(name,0,sizeof(name));
-
-            #if 0
-            printf("trace:%s,%d.get all pkg info[%s][%s][%s][%s] from daemon.\n",__FUNCTION__,__LINE__,
-                   qPrintable(pkg.pkgName),
-                   qPrintable(pkg.size),
-                   qPrintable(pkg.datetime),
-                   qPrintable(pkg.version));
-            #endif
         }
     }
     return;
@@ -279,7 +241,6 @@ void JadedBus::getFinished(const QString &pkgName,qlonglong status)
                 AllPkgList[i].datetime = local.toString("yyyy-MM-dd hh:mm:ss");
             } else if (status == STATUS_REMOVED) {
                 AllPkgList[i].status = 2;
-                // my pkgs will list it
                 QDateTime local(QDateTime::currentDateTime());
                 AllPkgList[i].datetime = local.toString("yyyy-MM-dd hh:mm:ss");
             }
@@ -292,10 +253,6 @@ void JadedBus::getFinished(const QString &pkgName,qlonglong status)
     taskFinished(pkgName);
 
     for (i = 0; i < m_taskQueue.size(); i++) {
-        if (0&&m_taskQueue[i].status == "doing") {
-            printf("\n trace %s,%d,pkg[%s][%d] is doing.[%s] \n",__FUNCTION__,__LINE__,
-                   qPrintable(m_taskQueue[i].name),i,qPrintable(pkgName));
-        }
         if (m_taskQueue[i].status == "doing" &&
             pkgName == m_taskQueue[i].name) {
             printf("trace:%s,%d,name[%s],index[%d] task will be finished.\n",__FUNCTION__,__LINE__,
@@ -347,11 +304,6 @@ void JadedBus::listChged(const QString &pkgName)
 
 void JadedBus::errorChged(qlonglong error, const QString &details, qlonglong errcode)
 {
-#if 0
-    printf("\n trace %s,%d,error[%d]vs[%d] errcode[%d]vs[%d],details[%s] \n",__FUNCTION__,__LINE__,
-           error,ERROR_PKG_NOT_UPGRADED,
-           errcode ,ERROR_CODE_OTHERS,qPrintable(details));
-#endif
     if(error == ERROR_PKG_NOT_UPGRADED) {
         if (errcode == ERROR_CODE_OTHERS) {
             //Not need upgradation
@@ -390,11 +342,7 @@ void JadedBus::percentChged(qlonglong status, const QString &file, double percen
 
 void JadedBus::searchChged(const QString &pkgName,qlonglong status)
 {
-    //todo...
-    //printf("\n trace %s,%d,name[%s]vs[%s],[%d]\n",__FUNCTION__,__LINE__,
-    //  qPrintable(name),qPrintable(file),Percent );
     //emit perChanged(name,Percent);
-
 }
 
 
@@ -748,31 +696,6 @@ void JadedBus::taskFinished(const QString &name)
 
 void JadedBus::m_taskQueueChanged(const QStringList &task) 
 {
-#if 0
-    if (m_oldQueue.size()) {
-        for (int i = 0; i < m_oldQueue.size(); i++) {
-            if (m_oldQueue[i]) {
-                delete m_oldQueue[i];
-                m_oldQueue[i] = NULL;
-            }
-        }
-        m_oldQueue.clear();
-    }
-    foreach (QString str, task) {
-        QStringList result = str.split("|");
-        if (result.size() != 5)
-            continue;
-
-        QString iconPath = absIconPath(result[2]);
-        if (iconPath == "" || iconPath == "lib") {
-            iconPath = USR_SHARE_ICON_DIR + OXYGEN_THEME +
-                "/48x48/categories/applications-system.png";
-        }
-
-        m_oldQueue.append(new JadedPackageObject(result[0], result[1],
-                    "file://" + iconPath, result[3], result[4],"category","",""));
-    }
-#endif
     m_oldQueue.clear();
 
     for (int i = 0; i < m_taskQueue.size(); i++) {

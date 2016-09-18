@@ -27,8 +27,6 @@ IconModel::~IconModel()
 
 void IconModel::refresh() 
 {
-    printf("\n%s,%d,icon refresh[%s]\n",__FILE__,__LINE__,qPrintable(GRIDVIEW_URI));
-    //http://appstore.isoft-linux.org/appstore/sticky/zh_cn
     get(GRIDVIEW_URI);
 }
 
@@ -49,15 +47,7 @@ void IconModel::finished(QNetworkReply *reply)
         emit error();
         return;
     }
-#if QJADE_DEBUG
-    //printf("\n%s,%d,data[%s]\n",__FILE__,__LINE__,qPrintable(strData));
 
-    //printf("\n######%s,%d,IconModel url:[%s]\n",__FUNCTION__,__LINE__,
-    //       qPrintable(reply->url().toString() ));
-
-    // finished,52,data[{"gridview":[{"name":"pidgin","title":"Pidgin",
-    //"icon":"http://appstore.isoft-linux.org/sites/default/files/Pidgin.svg_.png"}
-#endif
     if (!jsondoc.isObject()) return;
     QJsonObject obj = jsondoc.object();
     QJsonArray arr = obj["gridview"].toArray();
