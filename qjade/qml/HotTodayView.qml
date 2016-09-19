@@ -28,7 +28,7 @@ Item {
     GridView {
         id: iconView
         model: iconModel.icons
-        width: parent.width - 30 //668
+        width: parent.width - 30
         height: parent.height - slideShow.height
         anchors.top: slideShow.bottom
         anchors.topMargin: 8
@@ -36,7 +36,7 @@ Item {
         cellWidth: 167; cellHeight: 85
         focus: true
         anchors.left: parent.left
-        anchors.leftMargin: 50 // 每个软件包的左边开始位置
+        anchors.leftMargin: 50
         
         delegate: Item {
             width: parent.width; height: parent.height
@@ -60,7 +60,7 @@ Item {
 
             Text { 
                 id: nameText
-                text: modelData.title // + "abccc"
+                text: modelData.title
                 anchors.top: appIcon.top
                 anchors.topMargin: 5
                 anchors.left: appIcon.right
@@ -80,7 +80,6 @@ Item {
                 }
             }
 
-            // 安装时，显示此进度条
             ProgressBar {
                 id: progressInfo
                 width:  appIcon.width
@@ -150,7 +149,6 @@ Item {
                     }                                                          
                 }
 
-                // 安装时 接收到的进度
                 onPerChanged: {
                     if (name == modelData.name) {
                         progressInfo.value = perCent;

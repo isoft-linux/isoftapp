@@ -27,7 +27,6 @@ Rectangle {
         onError: myLoader.visible = false;
     }
 
-    // 全部软件：共有xx款软件
     Rectangle {
         id: titleRegion
         width: parent.width; height: 43
@@ -42,14 +41,13 @@ Rectangle {
             anchors.verticalCenter: parent.verticalCenter
         }
 
-        // 分割线
         Rectangle { y: parent.height - 1; width: parent.width; height: 1; color: "#e4ecd7"}
     }
 
     ScrollView {
         id: viewScroll
         width: parent.width
-        height: parent.height - titleRegion.height - 60 //bottonAct.height
+        height: parent.height - titleRegion.height - 60
         anchors.top: titleRegion.bottom
         flickableItem.interactive: true
 
@@ -64,9 +62,8 @@ Rectangle {
                 objectName: "rectItem"
                 width: parent.width
                 height: 60
-                color: index % 2 == 0 ? "white" : "#f5f5f5" // 每条记录颜色区别;index 不准确
+                color: index % 2 == 0 ? "white" : "#f5f5f5"
 
-                // 批处理单选按钮 allChecked 按下时发送信号
                 signal checkItem(bool checked)
 
                 onCheckItem: {
@@ -84,7 +81,6 @@ Rectangle {
                     Component.onCompleted: {
                         jadedBus.info = jadedBus.getInfo(modelData.name)
 
-                        // 上下滚动时，自动去掉选择状态
                         if (pkListView.pre_index != pkListView.index) {
                             if (allChecked.checked) {
                                 allChecked.checked = false
@@ -112,34 +108,31 @@ Rectangle {
                         }
                         pkRect.objectName = "rectItem"
                         if (jadedBus.info == "UnknownInfo") {
-                            // 过滤
-                            item.state = "" // for allChecked
-
-                            pkRect.visible = false; // 不显示此软件包的信息
+                            item.state = ""
+                            pkRect.visible = false;
                             pkRect.height = 0;
                             pkModel.removeAt(index);
                         } else if (jadedBus.info == "InfoRunning") {
                             actCombox.visible = false
                             funcButton.visible = false;
                             infoText.visible = true;
-                            infoText.text = qsTr("Running"); // 运行中
+                            infoText.text = qsTr("Running");
                         } else if (jadedBus.info == "InfoWaiting") {
                             funcButton.visible = false
                             actCombox.visible = false
                             infoText.visible = true
-                            infoText.text = qsTr("Waiting") // 等待
+                            infoText.text = qsTr("Waiting")
                         } else if (jadedBus.info == "InfoInstalled") {
                             funcButton.visible = false
-                            infoText.visible = false // 已安装最新版本
-                            actCombox.visible = true // 已经安装，则显示下拉框
+                            infoText.visible = false
+                            actCombox.visible = true
                             appCheckBox.enabled = false
 
-                            // 已经安装的，不再次安装
                             if (typeof(item) != 'undefined' ) {
                             item.state = "" // for allChecked
                             }
                         } else if (jadedBus.info == "InfoUpdatable") {
-                            funcButton.text = qsTr("Update") // 软件升级
+                            funcButton.text = qsTr("Update")
                         }
                     }
                     onErrored: {
@@ -153,7 +146,6 @@ Rectangle {
                         }
                     }
 
-                    // 安装/卸载时 接收到的进度
                     onPerChanged: {
                         if (name == modelData.name) {
                             progressInfo.value = perCent;
@@ -174,11 +166,10 @@ Rectangle {
                             jadedBus.info = jadedBus.getInfo(name)
                             if (jadedBus.info == "InfoInstalled") {
                                 funcButton.visible = false
-                                infoText.visible = false // 已安装最新版本
-                                actCombox.visible = true // 已经安装，则显示下拉框
+                                infoText.visible = false
+                                actCombox.visible = true
                                 appCheckBox.enabled = false
 
-                                // 已经安装的，不再次安装
                                 var item = pkListView.contentItem.children[index]
                                 item.state = "" // for allChecked
 
@@ -202,7 +193,7 @@ Rectangle {
                         }
                     }
                 }
-                // 图标前面的单选按钮
+
                 CheckBox {
                     id: appCheckBox
                     anchors.left: parent.left
@@ -212,7 +203,6 @@ Rectangle {
 
                     checked: false
                     onCheckedChanged: {
-                        // 软件包前面的单选按钮被按下的处理
                         var tmpItem = modelData.name
                         var findit = false
                         var k = 0
@@ -228,7 +218,6 @@ Rectangle {
                                 nameText.text = modelData.title
                             }
 
-                            // 选中时，从 notInstallItemList 中去掉
                             for (k = 0; k < notInstallItemList.length; k++) {
                                 if (notInstallItemList[k] == tmpItem) {
                                     var nullItem = ""
@@ -245,7 +234,6 @@ Rectangle {
                                 }
                             }
 
-                            // 未选中时，插入到表 notInstallItemList
                             findit = false
                             for (k = 0; k < notInstallItemList.length; k++) {
                                 if (notInstallItemList[k] == tmpItem) {
@@ -260,7 +248,6 @@ Rectangle {
 
                     }
 
-                // 软件图标
                 Image {
                     id: appIcon
                     source: modelData.icon
@@ -280,19 +267,17 @@ Rectangle {
                     }
                 }
 
-                // 安装/卸载时，显示此进度条
                 ProgressBar {
                     id: progressInfo
                     width:  appIcon.width
                     anchors.left: appIcon.left
                     //anchors.top:  appIcon.bottom
-                    y: appIcon.y + appIcon.height - 15 // 进度条位置
+                    y: appIcon.y + appIcon.height - 15
                     maximumValue:  100
                     value : 0
                     visible: false
                 }
 
-                // 软件名称
                 Text {
                     id: nameText
                     text: modelData.title
@@ -312,7 +297,6 @@ Rectangle {
                     }
                 }
 
-                // 软件简单描述
                 Text {
                     text: modelData.description
                     width: parent.width/2
@@ -325,7 +309,6 @@ Rectangle {
                     color: "#b7b7b7"
                 }
 
-                // 软件包大小 xxM
                 Text {
                     id: sizeText
                     text: modelData.size
@@ -337,7 +320,6 @@ Rectangle {
                     visible: true
                 }
 
-                // 安装按钮
                 PercentageButton {
                     id: funcButton
                     text: qsTr("Install")
@@ -352,7 +334,6 @@ Rectangle {
                             if (funcButton.text == qsTr("Install")) {
                                 jadedBus.install(modelData.name)
 
-                                //this pkg can not do installation now.
                                 for(var i = 0 ; i < pkModel.packages.length;i++) {
                                     if (pkModel.packages[i].name == modelData.name) {
                                         pkModel.packages[i].needInstall = "9" ;
@@ -371,7 +352,6 @@ Rectangle {
 
                 }
 
-                // 安装提示信息
                 Text {
                     id: infoText
                     text: qsTr("Installed")
@@ -382,7 +362,6 @@ Rectangle {
                     visible: false
                 }
 
-                // 安装完成后，显示下拉框
                 ComboBox {
                     id: actCombox
                     width: funcButton.width
@@ -402,7 +381,6 @@ Rectangle {
                             nameText.text = modelData.title
                             jadedBus.uninstall(modelData.name)
 
-                            //this pkg can do installation now.
                             for(var i = 0 ; i < pkModel.packages.length;i++) {
                                 if (pkModel.packages[i].name == modelData.name) {
                                     pkModel.packages[i].needInstall = "2" ;
@@ -422,7 +400,6 @@ Rectangle {
                     }
                 }
 
-                // 分割线
                 Rectangle {
                     width: parent.width; height: 1
                     anchors.top: pkRect.bottom
@@ -437,7 +414,6 @@ Rectangle {
         style: MyScrollViewStyle {}
     }
 
-    // 分割线
     Rectangle {
         id: beforeBottonAct
         anchors.top: viewScroll.bottom
@@ -446,7 +422,6 @@ Rectangle {
         color: "#e4ecd7"
     }
 
-    // 批处理单选按钮
     CheckBox {
         id: allChecked
         anchors.left: parent.left
@@ -454,7 +429,7 @@ Rectangle {
         anchors.top: beforeBottonAct.bottom
         anchors.topMargin: 10
         checked: false
-        text: qsTr("install all selected items") // + pkListView.count
+        text: qsTr("install all selected items")
         onClicked: {
             selectedItemList = []
             for (var i = 0; i < pkListView.contentItem.children.length; ++i) {
@@ -478,8 +453,6 @@ Rectangle {
 
     }
 
-
-    // 多选，一键安装/卸载/升级
     PercentageButton {
         id: bottonAct
         text: qsTr("InstallAll")
@@ -487,7 +460,6 @@ Rectangle {
         anchors.rightMargin: 17
         anchors.top: beforeBottonAct.bottom
         anchors.topMargin: 10
-        // 批处理单选按钮 被按下了，此按钮才会可用
         enabled: allChecked.checked? true:false
 
         MouseArea {
@@ -495,7 +467,6 @@ Rectangle {
             cursorShape: Qt.PointingHandCursor
 
         onClicked: {
-            // 遍历每个被选中的软件包，删除选中记录
             var i =0
             for (i = 0; i < selectedItemList.length; i++) {
                 if (selectedItemList[i] != "") {
@@ -505,7 +476,6 @@ Rectangle {
                 selectedItemList[i] = ""
             }
 
-            // 遍历所有软件包，去掉没有被选中的记录；
             for(i = 0 ; i < pkModel.packages.length;i++) {
                 if (pkModel.packages[i].needInstall == "2") {
                     var find = false
@@ -538,8 +508,6 @@ Rectangle {
         }
         }
     }
-
-
 
     MyLoader { id: myLoader; isVisible: packageByCategoryView.loading }
 }

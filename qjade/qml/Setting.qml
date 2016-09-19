@@ -11,7 +11,6 @@ import QtQuick.Controls 1.4
 Rectangle {
     id: settingView
     width: parent.width; height: parent.height
-    //color: "red"
 
     property StackView stackView
     property int count: 0
@@ -63,7 +62,6 @@ Rectangle {
         Rectangle { y: parent.height - 1; width: parent.width; height: 1; color: "#e4ecd7"}
     }
 
-    // path Rectangle
     Rectangle {
         id: pathRegion
         anchors.top: titleRegion.bottom
@@ -71,7 +69,6 @@ Rectangle {
         anchors.leftMargin: parent.width/20
         width: parent.width
         height: parent.height*3/10
-        //color: "green"
 
         Text {
             id: dlPathText
@@ -124,7 +121,7 @@ Rectangle {
                 onAccepted: wrapper.accepted()
                 readOnly: true
 
-                property int maxLength: 80 //最大输入长度
+                property int maxLength: 80
                 onLengthChanged:
                 {
                     if(textInput.length >= maxLength)
@@ -169,7 +166,7 @@ Rectangle {
             selectMultiple: false
             onFileUrlChanged: {
                 urlText = fileUrl;
-                if (urlText.length > 510) { // daemon.cpp limited:512
+                if (urlText.length > 510) {
                     urlText = "file:///home"
                 }
 
@@ -178,7 +175,6 @@ Rectangle {
         }
     }
 
-    // action Rectangle
     Rectangle {
         id: actionRegion
         anchors.top: pathRegion.bottom
@@ -186,7 +182,6 @@ Rectangle {
         anchors.leftMargin: parent.width/20
         width: parent.width
         height: parent.height*4/10
-        //color: "yellow"
 
         Text {
             id: actionText
@@ -206,7 +201,6 @@ Rectangle {
 
             width: parent.width*6/10
             height: parent.height*5/10
-            //color: "red"
 
                 ExclusiveGroup { id: tabPositionGroup }
                 RadioButton {
@@ -247,8 +241,6 @@ Rectangle {
             anchors.topMargin: 50
             onClicked: {
                 deleteAction = delRadio.checked ? 1:weekRadio.checked ? 2:manRadio.checked ? 3:-1
-                //actionText.text = urlText + ":" + deleteAction
-
                 jadedBus.setPathMode(urlText,deleteAction)
                 settingView.stackView.pop()
             }
@@ -267,7 +259,6 @@ Rectangle {
         }
     }
 
-    // button Rectangle
     Rectangle {
         id: buttonRegion
         anchors.top: actionRegion.bottom
@@ -275,7 +266,6 @@ Rectangle {
         anchors.leftMargin: parent.width/20
         width: parent.width
         height: parent.height*3/10
-        //color: "green"
     }
 
     MyResultText { id: myResultText; result: qsTr("Setting!") }

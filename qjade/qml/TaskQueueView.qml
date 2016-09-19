@@ -145,7 +145,7 @@ Rectangle {
                         taskRect.height = 0
                         taskRect.visible = false
                     }                                                              
-                    enabled: modelData.datetime == "doing" ? false:true // modelData.datetime is status
+                    enabled: modelData.datetime == "doing" ? false:true
                 }
 
                 Text {

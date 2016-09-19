@@ -49,7 +49,6 @@ Rectangle {
             anchors.topMargin: 10
         }                                                                          
 
-        // 安装时间 大小 类别
         Rectangle {
             id: secondTitleRegion
             anchors.top: countText.bottom
@@ -109,7 +108,7 @@ Rectangle {
     ScrollView {
         id: viewScroll
         width: parent.width
-        height: parent.height - titleRegion.height - 60 // 60 for button on bottom
+        height: parent.height - titleRegion.height - 60
         anchors.top: titleRegion.bottom
         flickableItem.interactive: true
 
@@ -124,7 +123,6 @@ Rectangle {
                 height: 60
                 color: index % 2 == 0 ? "white" : "#f5f5f5"
 
-                // 批处理单选按钮 allChecked 按下时发送信号
                 signal checkItem(bool checked,int i)
 
                 onCheckItem: {
@@ -144,7 +142,6 @@ Rectangle {
                             infoText.text = qsTr("Waiting")
                         }
 
-                        // 上下滚动时，自动去掉选择状态
                         if (pre_index != uninstallListView.index) {
                             if (allChecked.checked) {
                                 allChecked.checked = false
@@ -174,7 +171,6 @@ Rectangle {
                         }
                     }
 
-                    // 安装/卸载时 接收到的进度
                     onPerChanged: {
                         if (name == modelData.name) {
                             removeButton.visible = false
@@ -200,7 +196,6 @@ Rectangle {
                             var newCount = 0
                             for(var i = 0 ; i < uninstallJadedBus.installed.length;i++) {
                                 if (uninstallJadedBus.installed[i].id != "unknown") {
-                                    // inited in jadeddbus.cpp
                                     newCount ++
                                 }
                             }
@@ -208,8 +203,6 @@ Rectangle {
                         }
                     }
                 }
-
-                // 图标前面的单选按钮
                 CheckBox {
                     id: appCheckBox
                     anchors.left: parent.left
@@ -219,7 +212,6 @@ Rectangle {
 
                     checked: false
                     onCheckedChanged: {
-                        // 软件包前面的单选按钮被按下的处理
                         var tmpItem = modelData.name
                         var findit = false
                         var x = 9999
@@ -243,7 +235,6 @@ Rectangle {
                                 nameText.text = modelData.version
                             }
 
-                            // 选中时，从 notInstallItemList 中去掉
                             for (k = 0; k < notInstallItemList.length; k++) {
                                 if (notInstallItemList[k] == tmpItem) {
                                     var nullItem = ""
@@ -259,7 +250,6 @@ Rectangle {
                                 }
                             }
 
-                            // 未选中时，插入到表 notInstallItemList
                             findit = false
                             for (k = 0; k < notInstallItemList.length; k++) {
                                 if (notInstallItemList[k] == tmpItem) {
@@ -271,8 +261,6 @@ Rectangle {
                             }
                         }
                     }
-
-                    //text: qsTr("example")
                     }
 
                 Image {
@@ -284,13 +272,11 @@ Rectangle {
                     sourceSize.width: 48; sourceSize.height: 48
                 }
 
-                // 安装/卸载时，显示此进度条
                 ProgressBar {
                     id: progressInfo
                     width:  appIcon.width
                     anchors.left: appIcon.left
-                    //anchors.top:  appIcon.bottom
-                    y: appIcon.y + appIcon.height - 15 // 进度条位置
+                    y: appIcon.y + appIcon.height - 15
                     maximumValue:  100
                     value : 0
                     visible: false
@@ -298,7 +284,7 @@ Rectangle {
 
                 Text {
                     id: nameText
-                    text: modelData.version // version in jadedbus.cpp is title
+                    text: modelData.version
                     anchors.left: appIcon.right
                     anchors.leftMargin: 8
                     anchors.top: parent.top
@@ -338,7 +324,7 @@ Rectangle {
                     id: categoryText
                     text: modelData.category
                     anchors.left: parent.left
-                    anchors.leftMargin: parent.width/8*6 // - cateText.width/6
+                    anchors.leftMargin: parent.width/8*6
                     anchors.verticalCenter: parent.verticalCenter
                 }
 
@@ -355,7 +341,7 @@ Rectangle {
 
                         onClicked: {
                             visible = false
-                            jadedBus.uninstall(modelData.name) //modelData.id
+                            jadedBus.uninstall(modelData.name)
                             infoText.visible = true
                             infoText.text = qsTr("Waiting")
                             removeButton.visible = false
@@ -366,7 +352,6 @@ Rectangle {
                                 }
                             }
 
-                            // 未选中时，插入到表 notInstallItemList
                             var findit = false
                             for (var k = 0; k < notInstallItemList.length; k++) {
                                 if (notInstallItemList[k] == modelData.name) {
@@ -396,7 +381,6 @@ Rectangle {
         style: MyScrollViewStyle {}
     }
 
-    // 分割线
     Rectangle {
         id: beforeBottonAct
         anchors.top: viewScroll.bottom
@@ -405,7 +389,6 @@ Rectangle {
         color: "#e4ecd7"
     }
 
-    // 批处理单选按钮
     CheckBox {
         id: allChecked
         anchors.left: parent.left
@@ -423,7 +406,6 @@ Rectangle {
             }
 
             delete selectedItemList
-            //bottonAct.text = "total:" + uninstallListView.count
             for (var i = 0; i < uninstallListView.count; i++) {
                 var item = uninstallListView.contentItem.children[i]
                 if (typeof(item) == 'undefined' ||
@@ -436,8 +418,6 @@ Rectangle {
         }
     }
 
-
-    // 多选，一键卸载
     PercentageButton {
         id: bottonAct
         text: qsTr("UnstallAll")
@@ -445,14 +425,12 @@ Rectangle {
         anchors.rightMargin: 17
         anchors.top: beforeBottonAct.bottom
         anchors.topMargin: 10
-        // 批处理单选按钮 被按下了，此按钮才会可用
         enabled: allChecked.checked? true:false
         MouseArea {
             anchors.fill: parent
             cursorShape: Qt.PointingHandCursor
 
         onClicked: {
-            // 遍历每个被选中的软件包，作相同的动作
             for (var i = 0; i < selectedItemList.length; i++) {
                 if (selectedItemList[i] != "") {
                     //jadedBus.uninstall(selectedItemList[i])
@@ -460,7 +438,6 @@ Rectangle {
                 }
             }
 
-            // 遍历所有软件包，去掉没有被选中的记录；
             for(i = 0 ; i < uninstallJadedBus.installed.length;i++) {
                 var find = false
                 for (var j = 0; j < notInstallItemList.length; j++) {

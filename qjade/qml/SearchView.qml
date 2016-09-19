@@ -154,7 +154,7 @@ Rectangle {
 
     ScrollView {
         width: parent.width
-        height: parent.height - titleRegion.height // - secondTitleRegion.height
+        height: parent.height - titleRegion.height
         anchors.top: titleRegion.bottom
         anchors.left: titleRegion.left
         flickableItem.interactive: true
@@ -188,13 +188,11 @@ Rectangle {
                     }
                 }
 
-                // 安装/卸载时，显示此进度条
                 ProgressBar {
                     id: progressInfo
                     width:  appIcon.width
                     anchors.left: appIcon.left
-                    //anchors.top:  appIcon.bottom
-                    y: appIcon.y + appIcon.height - 15 // 进度条位置
+                    y: appIcon.y + appIcon.height - 15
                     maximumValue:  100
                     value : 0
                     visible: false
@@ -212,7 +210,7 @@ Rectangle {
 
                 Text {
                     text: description
-                    width: parent.width/3 //parent.width - appIcon.width - nameText.width - funcButton.width
+                    width: parent.width/3
                     anchors.left: nameText.left
                     anchors.top: nameText.bottom
                     anchors.topMargin: 8                                           
@@ -222,10 +220,8 @@ Rectangle {
                     color: "#b7b7b7"
                 }
 
-                // 软件包大小 xxM
                 Text {
-                    //id: sizeText
-                    text: size //modelData.size
+                    text: size
                     font.pixelSize: 11
                     color: "#979797"
                     anchors.left: parent.left
@@ -243,24 +239,24 @@ Rectangle {
                     Component.onCompleted: {
                         jadedBus.info = jadedBus.getInfo(pkName)
                         if (jadedBus.info == "UnknownInfo") {
-                            itemRect.visible = false; // 不显示此软件包的信息
+                            itemRect.visible = false;
                             itemRect.height = 0;
                         } else if (jadedBus.info == "InfoRunning") {
                             funcButton.visible = false;
                             infoText.visible = true;
-                            infoText.text = qsTr("Running"); // 运行中
+                            infoText.text = qsTr("Running");
                             actCombox.visible = false
                         } else if (jadedBus.info == "InfoWaiting") {
                             funcButton.visible = false
                             infoText.visible = true
-                            infoText.text = qsTr("Waiting") // 等待
+                            infoText.text = qsTr("Waiting")
                             actCombox.visible = false
                         } else if (jadedBus.info == "InfoInstalled") {
                             funcButton.visible = false
-                            infoText.visible = false // 已安装最新版本
-                            actCombox.visible = true // 已经安装，则显示下拉框
+                            infoText.visible = false
+                            actCombox.visible = true
                         } else if (jadedBus.info == "InfoUpdatable") {
-                            funcButton.text = qsTr("Update") // 软件升级
+                            funcButton.text = qsTr("Update")
                         }
                     }
 
@@ -280,8 +276,8 @@ Rectangle {
                             jadedBus.info = jadedBus.getInfo(name)
                             if (jadedBus.info == "InfoInstalled") {
                                 funcButton.visible = false
-                                infoText.visible = false // 已安装最新版本
-                                actCombox.visible = true // 已经安装，则显示下拉框
+                                infoText.visible = false
+                                actCombox.visible = true
                                 progressInfo.visible = false;
                             } else {
                                 funcButton.visible = true
@@ -292,7 +288,6 @@ Rectangle {
                         }
                     }
 
-                    // 安装/卸载时 接收到的进度
                     onPerChanged: {
                         if (name == pkName) {
                             progressInfo.value = perCent;
@@ -330,7 +325,6 @@ Rectangle {
                     }
                 }
 
-                // 安装完成后，显示下拉框
                 ComboBox {
                     id: actCombox
                     width: funcButton.width

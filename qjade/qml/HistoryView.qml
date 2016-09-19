@@ -27,7 +27,6 @@ Rectangle {
         }
     }
 
-    // 全部软件：共有xx款软件
     Rectangle {
         id: titleRegion
         width: parent.width; height: 43
@@ -42,7 +41,6 @@ Rectangle {
             anchors.verticalCenter: parent.verticalCenter
         }
 
-        // 分割线
         Rectangle { y: parent.height - 1; width: parent.width; height: 1; color: "#e4ecd7"}
     }
 
@@ -62,7 +60,7 @@ Rectangle {
                 id: pkRect
                 width: parent.width
                 height: 60
-                color: index % 2 == 0 ? "white" : "#f5f5f5" // 每条记录颜色区别;index 不准确
+                color: index % 2 == 0 ? "white" : "#f5f5f5"
 
                 JadedBus {
                     id: jadedBus
@@ -78,7 +76,7 @@ Rectangle {
                             item.state = "checked"
                         }
                         if (jadedBus.info == "UnknownInfo") {
-                            pkRect.visible = false; // 不显示此软件包的信息
+                            pkRect.visible = false;
                             pkRect.height = 0;
                             pkModel.removeAt(index);
 
@@ -86,20 +84,19 @@ Rectangle {
                             actCombox.visible = false;
                             funcButton.visible = false;
                             infoText.visible = true;
-                            infoText.text = qsTr("Running"); // 运行中
+                            infoText.text = qsTr("Running");
                         } else if (jadedBus.info == "InfoWaiting") {
                             actCombox.visible = false
                             funcButton.visible = false
                             infoText.visible = true
-                            infoText.text = qsTr("Waiting") // 等待
+                            infoText.text = qsTr("Waiting")
                         } else if (jadedBus.info == "InfoInstalled") {
                             funcButton.visible = false
-                            infoText.visible = false // 已安装最新版本
-                            actCombox.visible = true // 已经安装，则显示下拉框
-                            //statusText.text = qsTr("Installed")
+                            infoText.visible = false
+                            actCombox.visible = true
 
                         } else if (jadedBus.info == "InfoUpdatable") {
-                            funcButton.text = qsTr("Update") // 软件升级
+                            funcButton.text = qsTr("Update")
                         }
                     }
                     onErrored: {
@@ -113,7 +110,6 @@ Rectangle {
                         }
                     }
 
-                    // 安装/卸载时 接收到的进度
                     onPerChanged: {
                         if (name == modelData.name) {
                             progressInfo.value = perCent;
@@ -134,8 +130,8 @@ Rectangle {
                             jadedBus.info = jadedBus.getInfo(name)
                             if (jadedBus.info == "InfoInstalled") {
                                 funcButton.visible = false
-                                infoText.visible = false // 已安装最新版本
-                                actCombox.visible = true // 已经安装，则显示下拉框
+                                infoText.visible = false
+                                actCombox.visible = true
                                 statusText.text = qsTr("Installed")
 
                                 progressInfo.visible = false;
@@ -151,7 +147,6 @@ Rectangle {
                     }
                 }
 
-                // 软件图标
                 Image {
                     id: appIcon
                     source: modelData.icon
@@ -171,19 +166,16 @@ Rectangle {
                     }
                 }
 
-                // 安装/卸载时，显示此进度条
                 ProgressBar {
                     id: progressInfo
                     width:  appIcon.width
                     anchors.left: appIcon.left
-                    //anchors.top:  appIcon.bottom
-                    y: appIcon.y + appIcon.height - 15 // 进度条位置
+                    y: appIcon.y + appIcon.height - 15
                     maximumValue:  100
                     value : 0
                     visible: false
                 }
 
-                // 软件名称
                 Text {
                     id: nameText
                     text: modelData.title
@@ -203,9 +195,8 @@ Rectangle {
                     }
                 }
 
-                // 软件简单描述
                 Text {
-                    text: modelData.description // 需要限制长度
+                    text: modelData.description
                     width: parent.width/2
                     height: appIcon.height - nameText.height
                     anchors.left: nameText.left
@@ -216,7 +207,6 @@ Rectangle {
                     color: "#b7b7b7"
                 }
 
-                // 软件包状态：已安装/已卸载
                 Text {
                     id: statusText
                     text: modelData.size == "1" ? qsTr("Installed") :qsTr("Uninstalled")
@@ -228,7 +218,6 @@ Rectangle {
                     visible: true
                 }
 
-                // 安装按钮
                 PercentageButton {
                     id: funcButton
                     text: qsTr("Install")
@@ -251,7 +240,6 @@ Rectangle {
                     }
                 }
 
-                // 安装提示信息
                 Text {
                     id: infoText
                     text: qsTr("Installed")
@@ -262,7 +250,6 @@ Rectangle {
                     visible: false
                 }
 
-                // 安装完成后，显示下拉框
                 ComboBox {
                     id: actCombox
                     width: funcButton.width
@@ -293,7 +280,6 @@ Rectangle {
                     }
                 }
 
-                // 分割线
                 Rectangle {
                     width: parent.width; height: 1
                     anchors.top: pkRect.bottom
@@ -308,7 +294,7 @@ Rectangle {
         style: MyScrollViewStyle {}
     }
 
-    MyLoader { id: myLoader; isVisible: true } //historyView.loading
+    MyLoader { id: myLoader; isVisible: true }
 
     MyResultText { id: myResultText; result: qsTr("No Installed Available") }
 }
