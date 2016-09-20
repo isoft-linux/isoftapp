@@ -23,8 +23,8 @@ Brand::Brand(QObject *parent)
     else 
         qDebug() << "ERROR: fail to open brand file" << filePath;
 
-    printf("\n trace %s,%d,DATADIR[%s],TARGET[%s]BRAND[%s]filePath[%s]!!\n",
-           __FUNCTION__,__LINE__ ,DATADIR,TARGET,BRAND,qPrintable(filePath));
+    //printf("\n trace %s,%d,DATADIR[%s],TARGET[%s]BRAND[%s]filePath[%s]!!\n",
+    //       __FUNCTION__,__LINE__ ,DATADIR,TARGET,BRAND,qPrintable(filePath));
 }
 
 void Brand::m_parseElement(QDomElement e, QString locale, QString &v) 
@@ -58,8 +58,8 @@ void Brand::m_parse(QFile &file)
     m_parseElement(root.firstChildElement("slogan"), locale, m_slogan); 
     emit sloganChanged();
 
-    printf("\n trace %s,%d,name[%s],org[%s]slogan[%s]m_logo[%s]!!\n",__FUNCTION__,__LINE__ ,
-           qPrintable(m_name),qPrintable(m_org),qPrintable(m_slogan),qPrintable(m_logo));
+    //printf("\n trace %s,%d,name[%s],org[%s]slogan[%s]m_logo[%s]!!\n",__FUNCTION__,__LINE__ ,
+    //       qPrintable(m_name),qPrintable(m_org),qPrintable(m_slogan),qPrintable(m_logo));
 }
 
 QString Brand::logo() const { return m_logo; }

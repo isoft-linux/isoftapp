@@ -191,8 +191,8 @@ void PackageByCategoryModel::getPackageFinished(QNetworkReply *reply)
         printf("\n%s,%d\n",__FUNCTION__,__LINE__);
         emit packageChanged();
     }
-    printf("\n%s,%d,data num[%d] vs pkg num[%d],name[%s],needinstall[%s]\n",__FUNCTION__,__LINE__,
-           m_dataList.size(),m_pks_size,qPrintable(pkgName ),qPrintable(needInstall));
+    //printf("\n%s,%d,data num[%d] vs pkg num[%d],name[%s],needinstall[%s]\n",__FUNCTION__,__LINE__,
+    //       m_dataList.size(),m_pks_size,qPrintable(pkgName ),qPrintable(needInstall));
 
 }
 
@@ -226,7 +226,7 @@ void PackageByCategoryModel::getPackagesFinished(QNetworkReply *reply)
 
         QString tmp = PACKAGE_URI + pkname + "/" +
                                      QLocale::system().name().toLower();
-        printf("\n%s,%d,to get info by name:[%s],pkg num[%d]\n",__FUNCTION__,__LINE__,qPrintable(tmp),m_pks_size);
+        //printf("\n%s,%d,to get info by name:[%s],pkg num[%d]\n",__FUNCTION__,__LINE__,qPrintable(tmp),m_pks_size);
     }
     disconnect(&m_pks, SIGNAL(finished(QNetworkReply*)),                           
         this, SLOT(getPackagesFinished(QNetworkReply*)));

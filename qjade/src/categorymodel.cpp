@@ -25,7 +25,6 @@ CategoryModel::CategoryModel(HttpGet* parent)
 
     g_cate_number = 0;
     g_cate_act_number = 0;
-    printf("\n%s,%d,[%s]\n",__FUNCTION__,__LINE__,qPrintable(CATEGORY_URI));
 
     //-------------------------------------------------------------------------
     // FIXME: Hot Today is Chinglish, please someone else change it more native 
@@ -58,7 +57,6 @@ void CategoryModel::finished(QNetworkReply *reply)
         return;
     }
 
-    printf("\n%s,%d,strData[%s]\n",__FUNCTION__,__LINE__,qPrintable(strData));
     //-------------------------------------------------------------------------
     // TODO: To forbit json original string is not object
     //-------------------------------------------------------------------------

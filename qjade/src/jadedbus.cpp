@@ -467,7 +467,7 @@ void JadedBus::getUpdateTimeout()
         m_updateList.append(new JadedPackageObject(QString(i),
             name,icon,preVer,desc,"category",dstSize,lastestVer));
 
-            #if 1
+            #if 0
             printf("trace:%s,%d.get update pkg info name[%s]icon[%s],perver[%s]"
                    "last[%s],size[%s]desc[%s] from daemon.\n",
                    __FUNCTION__,__LINE__,
