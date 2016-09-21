@@ -334,9 +334,9 @@ Rectangle {
         delegate: Item {
             width: 380; height: 280
 
-            Image { 
+            Image {
                 source: modelData 
-                width: parent.width 
+                width: parent.width
                 height: parent.height 
                 fillMode: Image.PreserveAspectCrop
                 clip: true
@@ -345,12 +345,12 @@ Rectangle {
 
         property int curIdx: 0
         property int maxIdx: snapshotView.count
-        property int gridWidth: 200
+        property int gridWidth: 415
         function advance(steps) {
              var nextIdx = curIdx + steps
              if (nextIdx < 0 || nextIdx > maxIdx)
                 return;
-             snapshotView.contentX += gridWidth * steps;
+             snapshotView.contentX = (gridWidth * nextIdx);
              curIdx += steps;
         }
 
@@ -374,7 +374,7 @@ Rectangle {
                 anchors.fill: parent
                 onClicked: {snapshotView.advance(1)}
             }
-            opacity: snapshotView.curIdx == snapshotView.maxIdx ? 0.2 : 1.0
+            opacity: snapshotView.curIdx == (snapshotView.maxIdx-1) ? 0.2 : 1.0
             Behavior on opacity {NumberAnimation{}}
             anchors.right: parent.right
             anchors.rightMargin: 8
