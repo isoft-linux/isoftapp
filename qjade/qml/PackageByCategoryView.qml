@@ -171,7 +171,9 @@ Rectangle {
                                 appCheckBox.enabled = false
 
                                 var item = pkListView.contentItem.children[index]
+                                if (typeof(item) != 'undefined' ) {
                                 item.state = "" // for allChecked
+                                }
 
                                 progressInfo.visible = false;
 

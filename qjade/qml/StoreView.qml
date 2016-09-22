@@ -44,6 +44,7 @@ Rectangle {
         width: 120 //163
         height: parent.height
         //color: "transparent"
+        property bool isFirst: true
         
         CategoryModel {
             id: categoryModel
@@ -65,7 +66,8 @@ Rectangle {
                 id: categoryElementItem
                 width: parent.width
                 height: 44 // e4ebd6
-                color: categoryListView.currentIndex == index ? "#c8e4fa" : (hover ? "#c8e4fa" : "transparent")
+                color: categoryListView.currentIndex == index ? (categoryRegion.isFirst ? (hover ? "#c8e4fa" : "transparent") : ( categoryListView.currentIndex == index ? "#c8e4fa" : (hover ? "#c8e4fa" : "transparent") ) ) : (hover ? "#c8e4fa" : "transparent")
+                //color: categoryListView.currentIndex == index ? "#c8e4fa" : (hover ? "#c8e4fa" : "transparent")
 
                 property bool hover: false
                 property bool click: false
@@ -130,6 +132,7 @@ Rectangle {
                     onEntered: categoryElementItem.hover = true
                     onExited: categoryElementItem.hover = false
                     onClicked: { 
+                        categoryRegion.isFirst = false
                         var patt = /^category-/;
                         categoryListView.currentIndex = index
                         if (modelData.title =="My_pkgs") {
