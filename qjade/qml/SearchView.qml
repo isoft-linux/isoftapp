@@ -98,6 +98,7 @@ Rectangle {
                     searchView.rect.name = "search_btn"
                     searchView.stackView.pop()
                 }
+                cursorShape: Qt.PointingHandCursor
             }
         }
 
@@ -185,6 +186,7 @@ Rectangle {
                             properties: {packageName:pkName,packageTitle: title,
                                          stackView: stackView}})
                         }
+                        cursorShape: Qt.PointingHandCursor
                     }
                 }
 

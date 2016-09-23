@@ -266,6 +266,7 @@ Rectangle {
                             properties: {packageName:modelData.name,packageTitle: modelData.title,
                                          stackView: stackView}})
                         }
+                        cursorShape: Qt.PointingHandCursor
                     }
                 }
 
@@ -296,6 +297,7 @@ Rectangle {
                             properties: {packageName:modelData.name,packageTitle: modelData.title,
                                          stackView: stackView}});
                         }
+                        cursorShape: Qt.PointingHandCursor
                     }
                 }
 

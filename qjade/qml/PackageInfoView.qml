@@ -48,6 +48,7 @@ Rectangle {
         MouseArea {
             anchors.fill: parent
             onClicked: { packageInfoView.stackView.pop() }
+            cursorShape: Qt.PointingHandCursor
         }
                                                                                    
      }
