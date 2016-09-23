@@ -212,6 +212,8 @@ ApplicationWindow {
                 onTriggered: {
                     var component = Qt.createComponent("AboutView.qml");
                     var aboutWin = component.createObject(rootWindow);
+                    aboutWin.x = rootWindow.x + (rootWindow.width-440)/2;
+                    aboutWin.y = rootWindow.y + (rootWindow.height-266)/2;
                     aboutWin.show();
                 }
             }

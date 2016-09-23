@@ -121,10 +121,18 @@ Item {
                 }
                 onErrored: {
                     if (name == modelData.name) {
-                        jadedBus.isError = true;
+                        if (detail == "lastest") {
+                            nameText.text = modelData.title
+                            funcButton.visible = false;
+                            infoText.visible = true;
+                        }
+                        else {
                         nameText.text = modelData.title + " (" + qsTr("Error") + ")"
+                        jadedBus.isError = true;
+                        //nameText.text = modelData.title + " (" + qsTr("Error") + ")"
                         funcButton.visible = true;
                         infoText.visible = false;
+                        }
                     }
                 }
                 onTaskChanged: {                                               

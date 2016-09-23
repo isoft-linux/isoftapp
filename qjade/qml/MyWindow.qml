@@ -10,7 +10,7 @@ Window {
     id: myWindow
     width: 442; height: 266
     flags: Qt.FramelessWindowHint 
-    x: (Screen.width - width) / 2; y: (Screen.height - height) / 2
+    //x: (Screen.width - width) / 2; y: (Screen.height - height) / 2
     color: "transparent"
 
     property string title: "Title"
