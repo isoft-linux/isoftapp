@@ -54,6 +54,7 @@ Item {
                         stackView.push({item: Qt.resolvedUrl("PackageInfoView.qml"), 
                         properties: {packageName:modelData.name,packageTitle: modelData.title,
                                      stackView: stackView}})
+
                     }
                     cursorShape: Qt.PointingHandCursor
                 }
@@ -181,10 +182,21 @@ Item {
                 anchors.topMargin: 9
                 anchors.left: nameText.left
 
+                onClicked: {
+                    if (funcButton.text == qsTr("Install")) {
+                        jadedBus.install(modelData.name)
+                    } else if (funcButton.text == qsTr("Update")) {
+                        jadedBus.update(modelData.name)
+                    }
+                    funcButton.visible = false
+                    infoText.visible = true
+                    infoText.text = qsTr("Waiting")
+                }
+
+/*
                 MouseArea {
                     anchors.fill: parent
                     cursorShape: Qt.PointingHandCursor
-
                     onClicked: {
                         if (funcButton.text == qsTr("Install")) {
                             jadedBus.install(modelData.name)
@@ -196,6 +208,9 @@ Item {
                         infoText.text = qsTr("Waiting")
                     }
                 }
+
+*/
+
             }
 
             Text {

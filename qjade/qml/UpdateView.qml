@@ -54,7 +54,7 @@ Rectangle {
             text: qsTr("Update") + ": " + qsTr("%1 total").arg(updateView.count)
             font.pixelSize: 14                                                     
             anchors.left: parent.left
-            anchors.leftMargin: 10                                                 
+            anchors.leftMargin: 70
             anchors.top: parent.top
             anchors.topMargin:10
         }                                                                          
@@ -71,7 +71,7 @@ Rectangle {
                 text: qsTr("Name")
                 font.pixelSize: 14
                 anchors.left: parent.left
-                anchors.leftMargin: parent.width/9
+                anchors.leftMargin: parent.width/9 - 35
                 anchors.verticalCenter: parent.verticalCenter
             }
 
@@ -96,7 +96,7 @@ Rectangle {
                 text: qsTr("Action")
                 font.pixelSize: 14
                 anchors.left: parent.left
-                anchors.leftMargin: parent.width/10*9
+                anchors.leftMargin: parent.width/10*9 + 20
                 anchors.verticalCenter: parent.verticalCenter
             }
         }
@@ -290,30 +290,26 @@ Rectangle {
                     anchors.rightMargin: 10
                     anchors.verticalCenter: parent.verticalCenter
 
-                    MouseArea {
-                        anchors.fill: parent
-                        cursorShape: Qt.PointingHandCursor
-                        hoverEnabled: true
-                        onEntered:{
-                            updateButton.textColor = "#4dc0ff"
-                        }
-                        onExited: {
-                            updateButton.textColor = "#f9fafc"
-                        }
+                    //MouseArea {
+                    //    anchors.fill: parent
+                    //    cursorShape: Qt.PointingHandCursor
+                    //    hoverEnabled: true
+
                         onClicked: {
                             jadedBus.update(modelData.name)
-                            visible = false
+                            updateButton.visible = false
                             infoText.visible = true
                             infoText.text = qsTr("Waiting")
                         }
-                    }
+                    //}
                 }
 
                 Text {
                     id: infoText
                     visible: false
-                    anchors.right: updateButton.right
-                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.top: updateButton.top
+                    anchors.left: updateButton.left
+                    //anchors.verticalCenter: parent.verticalCenter
                 }
             }
         }
@@ -366,9 +362,9 @@ Rectangle {
         anchors.top: beforeBottonAct.bottom
         anchors.topMargin: 10
         enabled: allChecked.checked? true:false
-        MouseArea {
-            anchors.fill: parent
-            cursorShape: Qt.PointingHandCursor
+        //MouseArea {
+        //    anchors.fill: parent
+        //    cursorShape: Qt.PointingHandCursor
 
         onClicked: {
             for (var i = 0; i < selectedItemList.length; i++) {
@@ -382,7 +378,7 @@ Rectangle {
             allChecked.checked = false
             bottonAct.enabled = false
         }
-        }
+        //}
     }
 
     MyLoader { id: myLoader }

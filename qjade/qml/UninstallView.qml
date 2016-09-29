@@ -43,7 +43,7 @@ Rectangle {
             text: qsTr("Uninstall") + ": " + qsTr("%1 total").arg(uninstallView.count)
             font.pixelSize: 14                                                     
             anchors.left: parent.left                                              
-            anchors.leftMargin: 10                                                 
+            anchors.leftMargin: 70
             //anchors.verticalCenter: parent.verticalCenter
             anchors.top: parent.top
             anchors.topMargin: 10
@@ -61,7 +61,7 @@ Rectangle {
                 text: qsTr("Name")
                 font.pixelSize: 14
                 anchors.left: parent.left
-                anchors.leftMargin: parent.width/8
+                anchors.leftMargin: parent.width/9 - 35
                 anchors.verticalCenter: parent.verticalCenter
             }
             Text {
@@ -93,7 +93,7 @@ Rectangle {
                 text: qsTr("Action")
                 font.pixelSize: 14
                 anchors.left: parent.left
-                anchors.leftMargin: parent.width/10*9
+                anchors.leftMargin: parent.width/10*9 + 20
                 anchors.verticalCenter: parent.verticalCenter
             }
 
@@ -335,9 +335,9 @@ Rectangle {
                     anchors.right: parent.right
                     anchors.rightMargin: 10
                     anchors.verticalCenter: parent.verticalCenter
-                    MouseArea {
-                        anchors.fill: parent
-                        cursorShape: Qt.PointingHandCursor
+                    //MouseArea {
+                    //    anchors.fill: parent
+                    //    cursorShape: Qt.PointingHandCursor
 
                         onClicked: {
                             visible = false
@@ -363,7 +363,7 @@ Rectangle {
                             }
                         }
 
-                    }
+                    //}
                 }
 
                 Text {
@@ -426,9 +426,9 @@ Rectangle {
         anchors.top: beforeBottonAct.bottom
         anchors.topMargin: 10
         enabled: allChecked.checked? true:false
-        MouseArea {
-            anchors.fill: parent
-            cursorShape: Qt.PointingHandCursor
+        //MouseArea {
+        //    anchors.fill: parent
+        //    cursorShape: Qt.PointingHandCursor
 
         onClicked: {
             for (var i = 0; i < selectedItemList.length; i++) {
@@ -467,7 +467,7 @@ Rectangle {
                 pre_index = uninstallListView.index
             }
         }
-        }
+        //}
     }
 
     MyLoader { id: myLoader }

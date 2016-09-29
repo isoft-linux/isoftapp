@@ -6,10 +6,11 @@ Button {
     id: percentageButton
     width: 90
     height: 21
+    activeFocusOnPress: true
 
     property int percentage: 0
     property string textColor: "#61a917"
-
+/*
     style: ButtonStyle {
         background: Rectangle {
             implicitWidth: parent.width
@@ -34,4 +35,5 @@ Button {
             anchors.fill: parent
         }
     }
+    */
 }

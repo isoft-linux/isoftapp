@@ -268,7 +268,7 @@ Rectangle {
             text:qsTr("Desc")
             anchors.top: descRegion.top
             anchors.left: descRegion.left
-            anchors.leftMargin: 25
+            anchors.leftMargin: 25 + navImage.width
             anchors.topMargin: 10
             font.pixelSize: 18
         }
@@ -312,7 +312,7 @@ Rectangle {
         anchors.top: listRegion.top
         anchors.topMargin: 10
         anchors.left: listRegion.left
-        anchors.leftMargin: 25
+        anchors.leftMargin: 25 + navImage.width
         anchors.right: parent.right
         anchors.rightMargin: 30
         wrapMode: Text.WordWrap
@@ -326,7 +326,7 @@ Rectangle {
         anchors.top: listRegion.top
         anchors.topMargin: 100
         anchors.left: parent.left
-        anchors.leftMargin: 25
+        anchors.leftMargin: 25 + navImage.width
         orientation: Qt.Horizontal
         spacing: 35
         anchors.right: parent.right
@@ -363,7 +363,8 @@ Rectangle {
             }
             anchors.left: parent.left
             anchors.leftMargin: 8
-            anchors.verticalCenter: parent.verticalCenter
+            anchors.top: parent.top
+            anchors.topMargin: 100
             opacity: snapshotView.curIdx == 0 ? 0.2 : 1.0
             Behavior on opacity {NumberAnimation{}}
             visible: snapshotView.count > 2 ? true : false
@@ -379,7 +380,8 @@ Rectangle {
             Behavior on opacity {NumberAnimation{}}
             anchors.right: parent.right
             anchors.rightMargin: 8
-            anchors.verticalCenter: parent.verticalCenter
+            anchors.top: parent.top
+            anchors.topMargin: 100
             visible: snapshotView.count > 2 ? true : false
         }
     }

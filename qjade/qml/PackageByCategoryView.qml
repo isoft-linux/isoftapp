@@ -330,9 +330,9 @@ Rectangle {
                     anchors.right: parent.right
                     anchors.rightMargin: 17
                     anchors.verticalCenter: parent.verticalCenter
-                    MouseArea {
-                        anchors.fill: parent
-                        cursorShape: Qt.PointingHandCursor
+                    //MouseArea {
+                    //    anchors.fill: parent
+                    //    cursorShape: Qt.PointingHandCursor
 
                         onClicked: {
                             if (funcButton.text == qsTr("Install")) {
@@ -352,7 +352,7 @@ Rectangle {
                             infoText.visible = true
                             infoText.text = qsTr("Waiting")
                         }
-                    }
+                    //}
 
                 }
 
@@ -466,9 +466,9 @@ Rectangle {
         anchors.topMargin: 10
         enabled: allChecked.checked? true:false
 
-        MouseArea {
-            anchors.fill: parent
-            cursorShape: Qt.PointingHandCursor
+        //MouseArea {
+        //    anchors.fill: parent
+        //    cursorShape: Qt.PointingHandCursor
 
         onClicked: {
             var i =0
@@ -510,7 +510,7 @@ Rectangle {
                 pkListView.pre_index = pkListView.index
             }
         }
-        }
+        //}
     }
 
     MyLoader { id: myLoader; isVisible: packageByCategoryView.loading }

@@ -5,43 +5,33 @@
 import QtQuick 2.2
 
 Rectangle {
+    id: myToolButton
     property string title
     property string icon
     property string normal_color: "transparent"
-    property string hover_color: "#1dd7fc"
+    property string hover_color: "#0b79ce"
     property bool hover:false
     property bool click:false
     property int  upgrade_number:0
     property bool  upgrade_button:false
 
-    width: 70
-    height: 60
-    color: "transparent"
-
-/*
-    Rectangle {
-        width: 0 //5
-        height: parent.height
-        color: click ? "#4b5b2a" : (hover ? "#4b5b2a" : "transparent")
-    }
+    width: 90
+    height: 69
+    color: click ? "white" : (hover ? "white"  : "transparent")
 
     Rectangle {
+        id: buttonRect
         width: parent.width
-        height: 1
-        color: "#e3ebd4"
+        height: 5
+        anchors.bottom: parent.bottom
+        color: myToolButton.click ? "#0b79ce" : "#3296e4"
     }
 
-    Image {
-        id: myToolButtonIcon
-        source: icon
-        y: 12 // 14
-        anchors.horizontalCenter: parent.horizontalCenter
-    }
-*/
     Text {
         text: title
         anchors.verticalCenter: parent.verticalCenter
-        font.pixelSize: 22 //13
+        anchors.horizontalCenter: parent.horizontalCenter
+        font.pixelSize: 22
         color: click ? hover_color : (hover ? hover_color : "#e3f0fc")
     }
 
@@ -55,8 +45,8 @@ Rectangle {
         visible: upgrade_button ? (upgrade_number > 0 ? true : false) : false
         anchors.top: parent.top
         anchors.left: parent.left
-        anchors.topMargin: 5
-        anchors.leftMargin: 40
+        anchors.topMargin: 10
+        anchors.leftMargin: 20 + parent.width/2
 
         Text {
             text: upgrade_number
@@ -64,8 +54,7 @@ Rectangle {
             anchors.horizontalCenter: parent.horizontalCenter
             font.pixelSize: 15
             font.weight: Font.Bold
-
-            color: "#e3f0fc"
+            color: "red"
         }
     }
 

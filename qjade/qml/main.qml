@@ -84,7 +84,7 @@ ApplicationWindow {
             //anchors.top: parent.top//windowTitle.bottom
             //anchors.left: brandText.right
             x: brandText.x + brandText.width + 30
-            y: parent.y + 5
+            y: parent.y
             color: "#e4ecd7"
 
             MyToolButton {
@@ -102,6 +102,7 @@ ApplicationWindow {
                         stackView.clear()
                         stackView.push(Qt.resolvedUrl("StoreView.qml"))
                         jadedBus.getUpdate()
+                        //storeToolButton.click_color = "white"
                     }
                     cursorShape: Qt.PointingHandCursor
                 }

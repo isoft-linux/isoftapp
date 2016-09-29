@@ -33,7 +33,7 @@ Rectangle {
         x: categoryRegion.width
         width: 4
         height: parent.height                                                      
-        color: "#a6bd79"
+        color: "#c1c1c1"
     }
 
     //-------------------------------------------------------------------------
