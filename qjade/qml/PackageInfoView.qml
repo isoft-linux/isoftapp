@@ -193,9 +193,9 @@ Rectangle {
             anchors.right: parent.right
             anchors.rightMargin: 17
             anchors.verticalCenter: parent.verticalCenter
-            MouseArea {
-                anchors.fill: parent
-                cursorShape: Qt.PointingHandCursor
+            //MouseArea {
+            //    anchors.fill: parent
+            //    cursorShape: Qt.PointingHandCursor
 
                 onClicked: {
                     if (funcButton.text == qsTr("Install")) {
@@ -207,7 +207,7 @@ Rectangle {
                     infoText.visible = true
                     infoText.text = qsTr("Waiting")
                 }
-            }
+            //}
         }
 
         Text {
