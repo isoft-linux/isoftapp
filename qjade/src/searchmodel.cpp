@@ -58,6 +58,7 @@ void SearchModel::finished(QNetworkReply *reply)
     m_cleanup();
     QString size ="";
     QList<QString> tmpList ;
+    QList<QString> realList ;
     foreach (const QJsonValue & val, arr) {
         QJsonObject obj = val.toObject();
         QString tmpStr = obj["name"].toString();
@@ -96,13 +97,33 @@ void SearchModel::finished(QNetworkReply *reply)
         if (title.isEmpty()) {
             title = obj["name"].toString();
         }
+        if(realList.contains(obj["name"].toString())) {
+            continue;
+        }
+        realList.append(obj["name"].toString());
 
-        m_dataList.append(new SearchObject(obj["name"].toString(),
+        bool find = false;
+        int k = 0;
+        for (k = 0; k < realList.size(); k++) {
+            if (realList[k] > obj["name"].toString()) {
+                find = true;
+                break;
+            }
+        }
+        if (!find || k == 0) {
+            m_dataList.append(new SearchObject(obj["name"].toString(),
                     description,
                     obj["icon"].toString(),
                     dstSize,title));
+        } else {
+            m_dataList.insert(k,new SearchObject(obj["name"].toString(),
+                    description,
+                    obj["icon"].toString(),
+                    dstSize,title));
+        }
     }
     tmpList.clear();
+    realList.clear();
     printf("\n######%s,%d,search result num:[%d]\n",__FUNCTION__,__LINE__,m_dataList.size());
     emit searchResultChanged(m_dataList.size());
 }
