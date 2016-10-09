@@ -2185,6 +2185,10 @@ void listUnInstalled(int argc, char *argv[],
     cout << endl;
 }
 
+bool comp(t_PKGS& a,t_PKGS& b){
+    int ret = strcmp(a.pkgName ,b.pkgName);
+    return (ret < 0 ? true : false);
+}
 void search(int argc, char *argv[],
              void (*result_handle)(void *arg_data_, char *pkgName, gint64 *arg_status),
              void *arg_data,bool getAllPkg)
@@ -2238,6 +2242,7 @@ void search(int argc, char *argv[],
             goto cleanup;
         }
 
+        searchResList.sort(comp);
         list<t_PKGS>::iterator it;
         for(it = searchResList.begin(); it != searchResList.end();it++) {
             if ((*it).uri == NULL || (*it).uri[0] == 0)
