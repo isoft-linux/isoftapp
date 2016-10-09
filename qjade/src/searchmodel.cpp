@@ -100,7 +100,6 @@ void SearchModel::finished(QNetworkReply *reply)
         if(realList.contains(obj["name"].toString())) {
             continue;
         }
-        realList.append(obj["name"].toString());
 
         bool find = false;
         int k = 0;
@@ -110,16 +109,18 @@ void SearchModel::finished(QNetworkReply *reply)
                 break;
             }
         }
-        if (!find || k == 0) {
+        if (!find ) {
             m_dataList.append(new SearchObject(obj["name"].toString(),
                     description,
                     obj["icon"].toString(),
                     dstSize,title));
+            realList.append(obj["name"].toString());
         } else {
             m_dataList.insert(k,new SearchObject(obj["name"].toString(),
                     description,
                     obj["icon"].toString(),
                     dstSize,title));
+            realList.insert(k, obj["name"].toString() );
         }
     }
     tmpList.clear();
