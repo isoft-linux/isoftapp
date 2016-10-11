@@ -45,6 +45,7 @@ target_link_libraries(qjade
     Qt5::Xml
     Qt5::Widgets
     KF5::I18n
+    KF5::Service
 )
 
 #install -m 755 -p qjade /usr/bin/qjade

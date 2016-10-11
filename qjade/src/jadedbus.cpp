@@ -3,7 +3,7 @@
 #include "jadedbus.h"
 #include "globaldeclarations.h"
 #include "util.h"
-
+#include <KService>
 //begin
 #include <QImageReader>
 #include <QCoreApplication>
@@ -236,13 +236,33 @@ void JadedBus::getFinished(const QString &pkgName,qlonglong status)
     for (i = 0; i < AllPkgList.size(); ++i) {
         if (AllPkgList.at(i).pkgName  == pkgName) {
             if (status == STATUS_INSTALLED) {
-                AllPkgList[i].status = 1;
-                QDateTime local(QDateTime::currentDateTime());
-                AllPkgList[i].datetime = local.toString("yyyy-MM-dd hh:mm:ss");
+                if (AllPkgList[i].status != 1) {
+                    AllPkgList[i].status = 1;
+                    QDateTime local(QDateTime::currentDateTime());
+                    AllPkgList[i].datetime = local.toString("yyyy-MM-dd hh:mm:ss");
+
+                    QString desktopName = m_isoftapp->GetDesktopName(pkgName).value();
+                    if (!desktopName.isEmpty())
+                        desktopName = desktopName.left(desktopName.size() - 8);
+                    KService::Ptr service = KService::serviceByDesktopName(desktopName);
+                    if (!service) {
+                        service = KService::serviceByDesktopName(pkgName);
+                    }
+                    if (service) {
+                        if (!service->exec().isEmpty() && !service->noDisplay()) {
+                            QFile::link(service->entryPath(),
+                                QStandardPaths::writableLocation(QStandardPaths::DesktopLocation) +
+                                "/" + service->name() + ".desktop");
+                        }
+                    }
+                }
+
             } else if (status == STATUS_REMOVED) {
-                AllPkgList[i].status = 2;
-                QDateTime local(QDateTime::currentDateTime());
-                AllPkgList[i].datetime = local.toString("yyyy-MM-dd hh:mm:ss");
+                if (AllPkgList[i].status != 2) {
+                    AllPkgList[i].status = 2;
+                    QDateTime local(QDateTime::currentDateTime());
+                    AllPkgList[i].datetime = local.toString("yyyy-MM-dd hh:mm:ss");
+                }
             }
             getMyPkgNumber();
 
@@ -260,7 +280,6 @@ void JadedBus::getFinished(const QString &pkgName,qlonglong status)
             m_taskQueue[i].status = "done";
             g_doingPkgName = "";
             m_taskQueue.removeFirst();
-            // to restart task...
             m_runTask();
             return;
         }
@@ -306,7 +325,6 @@ void JadedBus::errorChged(qlonglong error, const QString &details, qlonglong err
 {
     if(error == ERROR_PKG_NOT_UPGRADED) {
         if (errcode == ERROR_CODE_OTHERS) {
-            //Not need upgradation
             emit errored(details,QString("lastest"));
         }
         return;
@@ -327,8 +345,6 @@ void JadedBus::percentChged(qlonglong status, const QString &file, double percen
     }
 
     int Percent = 100 * percent;
-
-    // use original pkg name for other's percent
 
     QString name = "";
     if(g_doingPkgName.isEmpty()) {
@@ -353,7 +369,6 @@ void JadedBus::m_errored(const QString &name,const QString &detail)
 
 QString JadedBus::getInfo(QString name) 
 {
-    //m_isoftapp->Search(qPrintable(name));
     int i = 0,j = 0;
     for (i = 0; i < AllPkgList.size(); ++i) {
         if (AllPkgList.at(i).pkgName == name) {
@@ -375,11 +390,7 @@ QString JadedBus::getInfo(QString name)
             }
         }
     }
-
-    printf("\n trace %s,%d,name[%s] is unknown\n",__FUNCTION__,__LINE__, qPrintable(name));
     return "UnknownInfo";
-    //return m_jaded->getInfo(name);
-
 }
 
 static QString m_updateInfo;
@@ -466,21 +477,7 @@ void JadedBus::getUpdateTimeout()
         // datetime:lastest ver;-->used in .qml
         m_updateList.append(new JadedPackageObject(QString(i),
             name,icon,preVer,desc,"category",dstSize,lastestVer));
-
-            #if 0
-            printf("trace:%s,%d.get update pkg info name[%s]icon[%s],perver[%s]"
-                   "last[%s],size[%s]desc[%s] from daemon.\n",
-                   __FUNCTION__,__LINE__,
-                   qPrintable(name),
-                   qPrintable(icon),
-                   qPrintable(preVer),
-                   qPrintable(lastestVer),
-                   qPrintable(size),
-                   qPrintable(desc));
-            #endif
     }
-
-    printf("\n trace %s,%d,go here,size[%d]\n",__FUNCTION__,__LINE__,m_updateList.size());
 
     if (m_updateList.size() >0) {
         emit updateChanged(m_updateList.size());
@@ -491,8 +488,6 @@ void JadedBus::getUpdateTimeout()
 
 void JadedBus::getUpdate() 
 {
-    printf("%s,%d,will get upt info[%s]time[%d]\n",__FUNCTION__,__LINE__,qPrintable(m_updateInfo),(int)time(NULL));
-
     m_updateInfo = "";
     m_isoftapp->ListUpdate();
     ////m_jaded->getUpdate();
@@ -770,6 +765,18 @@ void JadedBus::m_runTask()
         //m_pkt->updatePackage(package);
     } else if (action == "uninstall") {
         printf("%s,%d, will uninstall [%s].\n",__FUNCTION__,__LINE__,qPrintable(name));
+        QString desktopName = m_isoftapp->GetDesktopName(name).value();
+        if (!desktopName.isEmpty())
+            desktopName = desktopName.left(desktopName.size() - 8);
+
+        KService::Ptr service2 = KService::serviceByDesktopName(desktopName);
+        if (!service2) {
+            service2 = KService::serviceByDesktopName(name);
+        }
+        if (service2) {
+            QFile::remove(QStandardPaths::writableLocation(QStandardPaths::DesktopLocation) +
+                "/" + service2->name() + ".desktop");
+        }
         m_isoftapp->Remove(qPrintable(name),false);
     }
 
