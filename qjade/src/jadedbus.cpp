@@ -909,12 +909,38 @@ void JadedBus::setPathMode(QString path,QString mode)
 }
 
 
-void JadedBus::runCmd(QString cmd)
+void JadedBus::runCmd(QString pkgName)
 {
-    if (cmd.isEmpty()) {
+    if (pkgName.isEmpty()) {
         return;
     }
 
+    KService::Ptr service = KService::serviceByDesktopName(pkgName);
+    QString cmd = pkgName;
+    if (!service) {
+        QString desktopName = m_isoftapp->GetDesktopName(pkgName).value();
+        if (!desktopName.isEmpty()) {
+            desktopName = desktopName.left(desktopName.size() - 8);
+            service = KService::serviceByDesktopName(desktopName);
+        }
+    }
+
+    if (service) {
+        char name[256]="";
+        snprintf(name,sizeof(name),"%s",qPrintable(service->exec()) );
+        for(int i = 0; i < strlen(name); i++) {
+            if(name[i] == ' ' || name[i] == '\t' || name[i] == '\n') {
+                name[i] = 0;
+                break;
+            }
+        }
+        if(strlen(name) > 0) {
+            cmd = QString(name);
+        }
+    }
+    if (cmd.isEmpty()) {
+        return;
+    }
     QProcess *runProcess = new QProcess();
     runProcess->start(cmd);
 
