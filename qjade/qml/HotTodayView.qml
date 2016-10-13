@@ -137,6 +137,16 @@ Item {
                         infoText.visible = false;
                         }
                     }
+
+                    if (detail == "offline") {
+                        myLoader.visible = true;
+                        Global.isNetworkAvailable = false
+                        hotTodayView.enabled = false
+                    } else if (detail == "online") {
+                        myLoader.visible = false
+                        Global.isNetworkAvailable = true
+                        hotTodayView.enabled = true
+                    }
                 }
                 onTaskChanged: {                                               
                     if (name == modelData.name) {

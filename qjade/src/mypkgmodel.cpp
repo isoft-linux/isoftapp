@@ -14,6 +14,7 @@
 #include "globaldeclarations.h"
 #include "util.h"
 #include "globallist.h"
+extern bool g_offline;
 
 MypkgModel::MypkgModel(QObject *parent)
   : QObject(parent), 
@@ -72,7 +73,7 @@ void MypkgModel::getPackageFinished()
     }
 
     printf("trace:%s,%d,g_qjadePkgList[%d],AllPkgList[%d].\n",__FUNCTION__,__LINE__,g_qjadePkgList.size(),AllPkgList.size());
-    if (m_dataList.size() > 0) {
+    if (m_dataList.size() > 0 && g_offline != true) {
         emit packageChanged();
     } else {
         emit error();

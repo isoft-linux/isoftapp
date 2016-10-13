@@ -122,11 +122,32 @@ nm_signal(GDBusProxy *proxy,
 
     g_variant_get (state, "(u)", &nm_state);
     g_variant_unref (state);
-
+#if 0
     if(nm_state >= NM_STATE_CONNECTED_LOCAL) {
         checkDB(daemon);
     }
+#else
 
+    // online or offline for qjade
+    if(nm_state > NM_STATE_CONNECTED_LOCAL) {
+        checkDB(daemon);
+
+        char errStr[512]="";
+        snprintf(errStr,"%s","online");
+        gdbus_isoftapp_emit_error(GDBUS_ISOFTAPP(daemon),
+            ERROR_NETWORK_ONLINE,
+            errStr,
+            ERROR_CODE_NETWORK);
+    } else if (nm_state == NM_STATE_CONNECTED_LOCAL) { // offline
+        char errStr[512]="";
+        snprintf(errStr,"%s","offline");
+        gdbus_isoftapp_emit_error(GDBUS_ISOFTAPP(daemon),
+            ERROR_NETWORK_OFFLINE,
+            errStr,
+            ERROR_CODE_NETWORK);
+    }
+
+#endif
 }
 
 static void

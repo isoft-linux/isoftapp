@@ -7,6 +7,7 @@ import QtQuick.Controls 1.0
 import QtQuick.Controls.Styles 1.0
 import cn.com.isoft.qjade 2.0
 import QtQml.Models 2.2
+import "global.js" as Global
 
 Rectangle {
     id: packageByCategoryView
@@ -24,7 +25,7 @@ Rectangle {
         id: pkModel
         category: packageByCategoryView.category
         onPackageChanged: myLoader.visible = false;
-        onError: myLoader.visible = false;
+        onError: myLoader.visible = true;
     }
 
     Rectangle {
@@ -143,6 +144,16 @@ Rectangle {
                             nameText.text = modelData.title + " (" + qsTr("Error") + ")"
                             funcButton.visible = true;
                             infoText.visible = false;
+                        }
+
+                        if (detail == "offline") {
+                            myLoader.visible = true;
+                            packageByCategoryView.enabled = false
+                            Global.isNetworkAvailable = false
+                        } else if (detail == "online") {
+                            myLoader.visible = false
+                            packageByCategoryView.enabled = true
+                            Global.isNetworkAvailable = true
                         }
                     }
 

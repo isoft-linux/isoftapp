@@ -14,6 +14,7 @@
 #include "globaldeclarations.h"
 #include "util.h"
 #include "globallist.h"
+extern bool g_offline;
 
 PackageByCategoryModel::PackageByCategoryModel(QObject *parent) 
   : QObject(parent), 
@@ -50,6 +51,10 @@ void PackageByCategoryModel::setCategory(QString category)
 {
     // 全部软件：直接使用cache；
     if (category == "all-pkg") {
+        if(g_offline) {
+            emit error();
+            return;
+        }
         m_dataList.clear();
         for (int i = 0; i < g_qjadePkgList.size(); ++i) {
             if (g_qjadePkgList[i].name.isEmpty()) {

@@ -66,6 +66,8 @@ typedef enum {
     ERROR_PKG_NOT_EXIST,
     ERROR_PKG_NOT_REMOVED,
     ERROR_PKG_NOT_UPGRADED,
+    ERROR_NETWORK_ONLINE,
+    ERROR_NETWORK_OFFLINE,
     NUM_ERRORS
 } Error;
 
@@ -80,6 +82,7 @@ typedef enum {
 } ErrorCode;
 //end
 
+bool g_offline = false;
 static bool g_hasInited = false;
 static org::isoftlinux::Isoftapp *m_isoftapp = Q_NULLPTR;
 JadedBus::JadedBus(QObject *parent) 
@@ -329,6 +332,16 @@ void JadedBus::errorChged(qlonglong error, const QString &details, qlonglong err
         }
         return;
     }
+    if(errcode == ERROR_CODE_NETWORK) {
+        if (error == ERROR_NETWORK_ONLINE) {
+            g_offline = false;
+            emit errored(details,QString("online"));
+        } else if (error == ERROR_NETWORK_OFFLINE) {
+            g_offline = true;
+            emit errored(details,QString("offline"));
+        }
+        return;
+    }
 
     return;
 
@@ -573,7 +586,7 @@ void JadedBus::getInstalledTimeout()
     }
 
     // offline:get png and other info from local file
-    if (m_installedList.size() < 1) {
+    if (m_installedList.size() < 1 || g_offline) {
         m_installedList.clear();
 
         for (j = 0; j < AllPkgList.size(); ++j) {
@@ -855,6 +868,7 @@ void JadedBus::getPkgListTimeOut()
 * then will run every 30 minutes;
 */
 static int g_getIconCounter = 0;
+bool g_getIconDone = false;
 void JadedBus::getIconTimeOut()
 {
     g_getIconCounter ++;
@@ -895,6 +909,7 @@ void JadedBus::getIconTimeOut()
                 }
             }
         }
+        g_getIconDone = true;
     } else if (g_getIconCounter > 1 && g_getIconCounter < 10) {
         return;
     } else {
