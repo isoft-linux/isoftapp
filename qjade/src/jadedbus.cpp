@@ -434,7 +434,7 @@ void JadedBus::getUpdateFinished(const QString &pkgInfo)
 void JadedBus::getUpdateTimeout() 
 {
     printf("\n trace %s,%d,get upt info[%s]time[%d]\n",__FUNCTION__,__LINE__,qPrintable(m_updateInfo),(int)time(NULL));
-    if (m_updateInfo.isEmpty()) {
+    if (m_updateInfo.isEmpty() || g_offline) {
         emit getUpdateError();
         return;
     }

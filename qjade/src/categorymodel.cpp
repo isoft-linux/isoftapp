@@ -8,6 +8,7 @@
 #include <QJsonObject>
 #include <QJsonArray>
 #include <QCoreApplication>
+#include <QTimer>
 #include "categorymodel.h"
 #include "globaldeclarations.h"
 #include <cstdio>
@@ -21,10 +22,15 @@ int g_cate_act_number=0;
 CategoryModel::CategoryModel(HttpGet* parent) 
   : HttpGet(parent) 
 {
+    if (isQjadePkgListInited) {
+        useCache();
+    } else {
     get(CATEGORY_URI);
 
     g_cate_number = 0;
     g_cate_act_number = 0;
+
+    }
 
     //-------------------------------------------------------------------------
     // FIXME: Hot Today is Chinglish, please someone else change it more native 
@@ -45,6 +51,70 @@ CategoryModel::~CategoryModel()
         if (obj) delete obj; obj = NULL;
     }
     m_dataList.clear();
+}
+
+void CategoryModel::useCacheFinished()
+{
+    int pkgNumber = 0, i = 0;
+    for (i = 0; i < g_qjadePkgList.size(); ++i) {
+        if (g_qjadePkgList[i].name.isEmpty()) {
+            continue;
+        }
+        QString size ="";
+        for (int j = 0; j < AllPkgList.size(); ++j) {
+            if (AllPkgList.at(j).pkgName  == g_qjadePkgList[i].name) {
+                size = AllPkgList.at(j).size;
+                break;
+            }
+        }
+        QString dstSize ="";
+        getStrSize(size,dstSize);
+        if(dstSize.isEmpty()) {
+            continue;
+        }
+
+        pkgNumber ++;
+    }
+    m_dataList.append(new CategoryObject("all-pkg", tr("All_Pkg"),  //hot-today,Hot Today
+        "hot-today.png",pkgNumber));
+
+
+    bool isFind = false;
+    for (i = 0; i < g_categoryList.size(); ++i) {
+        pkgNumber = 0;
+        for (int j = 0; j < g_qjadePkgList.size(); ++j) {
+            if (g_qjadePkgList[j].category == g_categoryList[i].title) {
+                pkgNumber ++;
+            }
+        }
+        m_dataList.append(
+            new CategoryObject("category-" + g_categoryList[i].name,
+                g_categoryList[i].title,
+                "",pkgNumber));
+    }
+
+
+    pkgNumber = 0;
+    for (i = 0; i < AllPkgList.size(); ++i) {
+        if(AllPkgList.at(i).datetime == "0") {
+            continue;
+        }
+        for(int j =0;j< g_qjadePkgList.size();j++) {
+            if (AllPkgList.at(i).pkgName == g_qjadePkgList.at(j).name) {
+                pkgNumber ++;
+            }
+        }
+    }
+    m_dataList.append(new CategoryObject("my-pkgs", tr("My_pkgs"),
+        "",pkgNumber)); // ICON is null.
+
+    emit categoryChanged();
+}
+
+
+void CategoryModel::useCache()
+{
+    QTimer::singleShot(100, this, SLOT(useCacheFinished()));
 }
 
 void CategoryModel::finished(QNetworkReply *reply) 
@@ -86,7 +156,7 @@ void CategoryModel::finished(QNetworkReply *reply)
 
         #endif
 
-        if (!isQjadePkgListInited) {
+        if (true) {
             isExist = false;
             QString name = obj["name"].toString();
             for (int i = 0; i < g_categoryList.size(); ++i) {
@@ -331,6 +401,8 @@ void CategoryModel::getPackageFinished(QNetworkReply *reply)
         m_dataList.append(new CategoryObject("my-pkgs", tr("My_pkgs"),
             "",pkgNumber)); // ICON is null.
         emit categoryChanged();
+
+        isQjadePkgListInited = true;
     #endif
     }
 

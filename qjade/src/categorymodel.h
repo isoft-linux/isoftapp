@@ -37,10 +37,12 @@ private:
 
     QNetworkAccessManager m_pk;
     QNetworkAccessManager m_pks;
+    void useCache();
 
 private Q_SLOTS:
     void getPackageFinished(QNetworkReply *reply);
     void getPackagesFinished(QNetworkReply *reply);
+    void useCacheFinished();
 };
 
 class CategoryObject : public QObject 

@@ -127,8 +127,8 @@ nm_signal(GDBusProxy *proxy,
         checkDB(daemon);
     }
 #else
-
-    // online or offline for qjade
+    printf("%s, line %d:nm[%d] vs [%d]\n", __func__, __LINE__, (int) nm_state,(int)NM_STATE_CONNECTED_LOCAL);
+    // adjust nm_state
     if(nm_state > NM_STATE_CONNECTED_LOCAL) {
         checkDB(daemon);
 
@@ -138,7 +138,7 @@ nm_signal(GDBusProxy *proxy,
             ERROR_NETWORK_ONLINE,
             errStr,
             ERROR_CODE_NETWORK);
-    } else if (nm_state == NM_STATE_CONNECTED_LOCAL) { // offline
+    } else if (nm_state <= NM_STATE_CONNECTED_LOCAL) { // offline
         char errStr[512]="";
         snprintf(errStr,"%s","offline");
         gdbus_isoftapp_emit_error(GDBUS_ISOFTAPP(daemon),

@@ -36,9 +36,13 @@ protected:
 
 private:
     void m_cleanup();
+    void useCache();
 
 private:
     QList<QObject*> m_dataList;
+
+private Q_SLOTS:
+    void useCacheFinished();
 };
 
 class IconObject : public QObject 

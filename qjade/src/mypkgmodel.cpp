@@ -32,7 +32,7 @@ MypkgModel::~MypkgModel()
 
 void MypkgModel::m_get()
 {
-    QTimer::singleShot(3000, this, SLOT(getPackageFinished()));
+    QTimer::singleShot(100, this, SLOT(getPackageFinished()));
 }
 
 //-----------------------------------------------------------------------------

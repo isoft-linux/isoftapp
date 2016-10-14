@@ -49,8 +49,23 @@ void PackageByCategoryModel::m_get()
 //-----------------------------------------------------------------------------
 void PackageByCategoryModel::setCategory(QString category) 
 {
-    // 全部软件：直接使用cache；
+    printf("\n%s,%d,category[%s]vs[%s]\n",__FUNCTION__,__LINE__,
+           qPrintable(category),qPrintable(g_qjadePkgList[2].category));
+    QString categorySim = "";
+    QString dstCate = "all-pkg";
     if (category == "all-pkg") {
+        categorySim = "all-pkg";
+    } else {
+        categorySim = category.mid(9);
+    }
+    for (int i = 0; i < g_categoryList.size(); i++) {
+        if(g_categoryList[i].name == categorySim) {
+            dstCate = g_categoryList[i].title;
+            break;
+        }
+    }
+    // 全部软件：直接使用cache；
+    if (1||category == "all-pkg") {
         if(g_offline) {
             emit error();
             return;
@@ -79,12 +94,23 @@ void PackageByCategoryModel::setCategory(QString category)
             }
 
             QString needInstall = QString::number(status, 10);
+            if (dstCate == "all-pkg") {
             m_dataList.append(new PackageObject(g_qjadePkgList[i].name,
                 g_qjadePkgList[i].title,
                 g_qjadePkgList[i].description,
                 g_qjadePkgList[i].icon,
                 g_qjadePkgList[i].url,
                 dstSize,needInstall));
+            } else {
+                if (dstCate == g_qjadePkgList[i].category) {
+                    m_dataList.append(new PackageObject(g_qjadePkgList[i].name,
+                        g_qjadePkgList[i].title,
+                        g_qjadePkgList[i].description,
+                        g_qjadePkgList[i].icon,
+                        g_qjadePkgList[i].url,
+                        dstSize,needInstall));
+                }
+            }
         }
         printf("\n%s,%d,g_qjadePkgList num[%d] AllPkgList num[%d]\n",__FUNCTION__,__LINE__,
                g_qjadePkgList.size(),AllPkgList.size());

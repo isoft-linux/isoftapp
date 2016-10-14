@@ -137,7 +137,7 @@ Rectangle {
                         categoryListView.currentIndex = index
                         if (modelData.title =="My_pkgs") {
                             storeStackView.clear()
-                            storeStackView.push(Qt.resolvedUrl("HistoryView.qml"))
+                            storeStackView.push({item:Qt.resolvedUrl("HistoryView.qml"), properties: {category: modelData.name}})
                         } else
                         if (patt.test(modelData.name)) {
                             storeStackView.clear()

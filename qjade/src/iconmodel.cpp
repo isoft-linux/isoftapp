@@ -7,16 +7,22 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonArray>
-
+#include <QTimer>
 #include <unistd.h>
 
 #include "iconmodel.h"
 #include "globaldeclarations.h"
 #include "globallist.h"
 #define QJADE_DEBUG 1
+extern bool g_offline;
+static bool iconFristRun = false;
+QList<QObject*> g_dataList;
 IconModel::IconModel(HttpGet* parent) 
   : HttpGet(parent) 
 {
+    if (iconFristRun) {
+        useCache();
+    } else
     refresh();
 }
 
@@ -24,7 +30,25 @@ IconModel::~IconModel()
 {
     m_cleanup();
 }
-
+void IconModel::useCacheFinished()
+{
+    if(g_offline) {
+        emit error();
+        return;
+    }
+    m_cleanup();
+    foreach (IconObject *obj, g_dataList) {
+        if (obj) {
+            m_dataList.append(new IconObject(obj->name(), obj->title(),
+                obj->icon(), obj->url()));
+        }
+    }
+    emit iconChanged();
+}
+void IconModel::useCache()
+{
+    QTimer::singleShot(100, this, SLOT(useCacheFinished()));
+}
 void IconModel::refresh() 
 {
     get(GRIDVIEW_URI);
@@ -67,7 +91,13 @@ void IconModel::finished(QNetworkReply *reply)
         }
         m_dataList.append(new IconObject(pkgName, obj["title"].toString(), 
             obj["icon"].toString(), obj["url"].toString()));
+
+        if (!iconFristRun) {
+            g_dataList.append(new IconObject(pkgName, obj["title"].toString(),
+                obj["icon"].toString(), obj["url"].toString()));
+        }
     }
+    iconFristRun = true;
     printf("\n######%s,%d,IconModel size:[%d]\n",__FUNCTION__,__LINE__,m_dataList.size());
     emit iconChanged();
 }
