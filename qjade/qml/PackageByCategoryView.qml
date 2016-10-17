@@ -1,5 +1,6 @@
 /*
- * Copyright (C) 2014 - 2015 Leslie Zhai <xiang.zhai@i-soft.com.cn>
+ * Copyright (C) 2014 - 2016 Leslie Zhai <xiang.zhai@i-soft.com.cn>
+ * Copyright (C) 2016 fujiang <fujiang.zhu@i-soft.com.cn>
  */
 
 import QtQuick 2.2
@@ -383,12 +384,13 @@ Rectangle {
                     width: funcButton.width
                     anchors.top: funcButton.top
                     anchors.left: funcButton.left
-                    model: [qsTr("Open"), qsTr("Uninstall"), qsTr("Upgrade"),qsTr("SelectOp") ]
+                    model: [qsTr("Open"), qsTr("Uninstall"), qsTr("Upgrade"),qsTr("SelectOp"), "DEBUG" ]
                     visible: false
                     currentIndex: 3
 
                     onPressedChanged:     {
                         currentIndex = 3
+                        actCombox.model = [qsTr("Open"), qsTr("Uninstall"), qsTr("Upgrade")];
                     }
                     onActivated: {
                         if (index == 0) {
