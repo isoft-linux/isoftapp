@@ -115,7 +115,7 @@ ApplicationWindow {
                 //normal_color: "#a7be7a"
                 //anchors.top: storeToolButton.bottom
                 //anchors.left: storeToolButton.right
-                x: storeToolButton.x + storeToolButton.width +20
+                x: storeToolButton.x + storeToolButton.width +10
 
                 MouseArea {
                     anchors.fill: parent
@@ -136,7 +136,7 @@ ApplicationWindow {
                 //normal_color: "#b2c689"
                 //anchors.top: updateToolButton.bottom
                 //anchors.left: updateToolButton.right
-                x: updateToolButton.x + updateToolButton.width +20
+                x: updateToolButton.x + updateToolButton.width +10
 
                 MouseArea {
                     anchors.fill: parent

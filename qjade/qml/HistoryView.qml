@@ -23,8 +23,9 @@ Rectangle {
         onPackageChanged: myLoader.visible = false;
         onError: {
             if (Global.isNetworkAvailable == false) {
-                myLoader.visible = true;
+                //myLoader.visible = true;
                 historyView.enabled = false
+                networkErrorText.isVisible = true;
             } else {
                 myLoader.visible = false;
                 myResultText.isVisible = true;
@@ -311,7 +312,8 @@ Rectangle {
         style: MyScrollViewStyle {}
     }
 
-    MyLoader { id: myLoader; isVisible: true }
+    MyLoader { id: myLoader; isVisible: false }
 
     MyResultText { id: myResultText; result: qsTr("No Installed Available") }
+    MyResultText { id: networkErrorText; result: qsTr("Network is Unavailable") }
 }

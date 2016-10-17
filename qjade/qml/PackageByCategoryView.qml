@@ -25,7 +25,7 @@ Rectangle {
         id: pkModel
         category: packageByCategoryView.category
         onPackageChanged: myLoader.visible = false;
-        onError: myLoader.visible = true;
+        onError: {myLoader.visible = false;myResultText.isVisible = true;}
     }
 
     Rectangle {
@@ -383,9 +383,9 @@ Rectangle {
                     width: funcButton.width
                     anchors.top: funcButton.top
                     anchors.left: funcButton.left
-                    model: [qsTr("Open"), qsTr("Uninstall"), qsTr("Upgrade"),qsTr("SelectOp") ]
+                    model: [qsTr("Open"), qsTr("Uninstall"), qsTr("Upgrade") ]
                     visible: false
-                    currentIndex: 3
+                    currentIndex: 0
 
                     onPressedChanged:     {
                         currentIndex = 3
@@ -526,4 +526,5 @@ Rectangle {
     }
 
     MyLoader { id: myLoader; isVisible: packageByCategoryView.loading }
+    MyResultText { id: myResultText; result: qsTr("Network is Unavailable") }
 }
