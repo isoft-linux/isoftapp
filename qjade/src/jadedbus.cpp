@@ -406,8 +406,8 @@ QString JadedBus::getInfo(QString name)
     return "UnknownInfo";
 }
 
-static QString m_updateInfo;
-
+static QString m_updateInfo="";
+static bool g_updateDone = false;
 void JadedBus::getUpdateFinished(const QString &pkgInfo)
 {
 
@@ -493,6 +493,9 @@ void JadedBus::getUpdateTimeout()
     }
 
     if (m_updateList.size() >0) {
+        if (!g_updateDone) {
+            g_updateDone = true;
+        }
         emit updateChanged(m_updateList.size());
     } else {
         emit getUpdateError();
@@ -501,10 +504,12 @@ void JadedBus::getUpdateTimeout()
 
 void JadedBus::getUpdate() 
 {
-    m_updateInfo = "";
-    m_isoftapp->ListUpdate();
-    ////m_jaded->getUpdate();
-    QTimer::singleShot(9000, this, SLOT(getUpdateTimeout()));
+    if (!g_updateDone) {
+        m_isoftapp->ListUpdate();
+        QTimer::singleShot(9000, this, SLOT(getUpdateTimeout()));
+    } else {
+        QTimer::singleShot(500, this, SLOT(getUpdateTimeout()));
+    }
 }
 
 void JadedBus::getMyPkgNumTimeout()
@@ -527,6 +532,7 @@ void JadedBus::getMyPkgNumber()
     QTimer::singleShot(1000, this, SLOT(getMyPkgNumTimeout()));
 }
 
+static bool g_installedListDone = false;
 void JadedBus::getInstalledFinished(const QStringList &installed) 
 {
     m_installedList.clear();
@@ -636,16 +642,22 @@ void JadedBus::getInstalledTimeout()
 
     printf("\n trace###### %s,%d,go here,jade[%d],all[%d]\n",__FUNCTION__,__LINE__,
            g_qjadePkgList.size(),AllPkgList.size());
-    emit installedChanged();
 
-    if (m_installedList.size() == 0)
+    if (m_installedList.size() == 0) {
         emit getInstalledError();
+    } else {
+        g_installedListDone = true;
+        emit installedChanged();
+    }
 }
 
 void JadedBus::getInstalled() 
 {
-    ////m_jaded->getInstalled();
-    QTimer::singleShot(6000, this, SLOT(getInstalledTimeout()));
+    if (!g_installedListDone) {
+        QTimer::singleShot(6000, this, SLOT(getInstalledTimeout()));
+    } else {
+        QTimer::singleShot(500, this, SLOT(getInstalledTimeout()));
+    }
 }
 
 void JadedBus::searchFinished(const QStringList &search)                     
