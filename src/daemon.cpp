@@ -877,16 +877,21 @@ daemon_get_path_mode(GdbusIsoftapp *object,
             GDBusMethodInvocation *invocation)
 {
     int ret = -1;
+    char path_mode[600]="";
+    Daemon *daemon = (Daemon *)object;
     int fd = open(ISOFTAPP_CACHE_RPMPATHMODE_FILE,O_RDONLY);
     if (fd < 1) {
+        snprintf(path_mode,600,"%s/rpms|||3",ISOFTAPP_CACHE_DIR);
+        printf("trace:%s,%d,get path mode[%s]\n",__FUNCTION__,__LINE__,path_mode);
+
+        gdbus_isoftapp_emit_settings_changed(GDBUS_ISOFTAPP(daemon),
+                                             path_mode);
         return FALSE;
     }
-    Daemon *daemon = (Daemon *)object;
     t_RPMPATHMODE rpmPathMode;
     memset(&rpmPathMode,0,sizeof(t_RPMPATHMODE));
     ret = read(fd,&rpmPathMode,sizeof(t_RPMPATHMODE));
     close(fd);
-    char path_mode[600]="";
     snprintf(path_mode,600,"%s|||%d",rpmPathMode.path,rpmPathMode.mode);
     printf("trace:%s,%d,get path mode[%s]\n",__FUNCTION__,__LINE__,path_mode);
 
