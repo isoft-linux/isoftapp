@@ -52,6 +52,14 @@ Item {
                     } else {
                         checkAllBox.checked = false;
                     }
+                    var moreThanOne = false;
+                    for (var i = 0; i < myListModel.count; i++) {
+                        if (myListModel.get(i).check) {
+                            moreThanOne = true;
+                            break;
+                        }
+                    }
+                    myButton.visible = moreThanOne;
                 }
             }
         }
@@ -74,6 +82,7 @@ Item {
             text: "Check All"
 
             onClicked: {
+                myButton.visible = this.checked;
                 for (var i = 0; i < myListModel.count; i++) {
                     myListModel.setProperty(i, "check", this.checked);
                 }
@@ -86,6 +95,13 @@ Item {
                     item.checkItem(this.checked, i);
                 }
             }
+        }
+
+        Button {
+            id: myButton
+            anchors.left: checkAllBox.right
+            text: "Operation"
+            visible: false
         }
     }
 }
