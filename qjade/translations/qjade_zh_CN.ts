@@ -63,7 +63,7 @@
         <location filename="../qml/HistoryView.qml" line="98"/>
         <location filename="../qml/HistoryView.qml" line="136"/>
         <location filename="../qml/HistoryView.qml" line="256"/>
-        <location filename="../qml/HistoryView.qml" line="296"/>
+        <location filename="../qml/HistoryView.qml" line="304"/>
         <source>Waiting</source>
         <translation type="unfinished">等待</translation>
     </message>
@@ -96,12 +96,12 @@
         <translation type="unfinished">重新安装</translation>
     </message>
     <message>
-        <location filename="../qml/HistoryView.qml" line="317"/>
+        <location filename="../qml/HistoryView.qml" line="325"/>
         <source>No Installed Available</source>
         <translation type="unfinished">您好，目前没有安装过软件。</translation>
     </message>
     <message>
-        <location filename="../qml/HistoryView.qml" line="318"/>
+        <location filename="../qml/HistoryView.qml" line="326"/>
         <source>Network is Unavailable</source>
         <translation type="unfinished">无法连接网络</translation>
     </message>
@@ -113,22 +113,22 @@
         <translation type="unfinished">已安装</translation>
     </message>
     <message>
-        <location filename="../qml/HistoryView.qml" line="276"/>
+        <location filename="../qml/HistoryView.qml" line="278"/>
         <source>Open</source>
         <translation type="unfinished">打开</translation>
     </message>
     <message>
-        <location filename="../qml/HistoryView.qml" line="276"/>
+        <location filename="../qml/HistoryView.qml" line="279"/>
         <source>Uninstall</source>
         <translation type="unfinished">软件卸载</translation>
     </message>
     <message>
-        <location filename="../qml/HistoryView.qml" line="276"/>
+        <location filename="../qml/HistoryView.qml" line="280"/>
         <source>Upgrade</source>
         <translation type="unfinished">升级</translation>
     </message>
     <message>
-        <location filename="../qml/HistoryView.qml" line="276"/>
+        <location filename="../qml/HistoryView.qml" line="281"/>
         <source>SelectOp</source>
         <translation type="unfinished">选择操作</translation>
     </message>
@@ -221,7 +221,7 @@
         <translation type="unfinished">出错</translation>
     </message>
     <message>
-        <location filename="../qml/PackageByCategoryView.qml" line="529"/>
+        <location filename="../qml/PackageByCategoryView.qml" line="541"/>
         <source>Network is Unavailable</source>
         <translation type="unfinished">无法连接网络</translation>
     </message>
@@ -242,31 +242,32 @@
         <translation type="unfinished">安装</translation>
     </message>
     <message>
+        <location filename="../qml/PackageByCategoryView.qml" line="392"/>
         <source>SelectOp</source>
-        <translation type="obsolete">选择操作</translation>
+        <translation type="unfinished">选择操作</translation>
     </message>
     <message>
-        <location filename="../qml/PackageByCategoryView.qml" line="448"/>
+        <location filename="../qml/PackageByCategoryView.qml" line="460"/>
         <source>install all selected items</source>
         <translation type="unfinished">全选</translation>
     </message>
     <message>
-        <location filename="../qml/PackageByCategoryView.qml" line="474"/>
+        <location filename="../qml/PackageByCategoryView.qml" line="486"/>
         <source>InstallAll</source>
         <translation type="unfinished">一键安装</translation>
     </message>
     <message>
-        <location filename="../qml/PackageByCategoryView.qml" line="386"/>
+        <location filename="../qml/PackageByCategoryView.qml" line="389"/>
         <source>Open</source>
         <translation type="unfinished">打开</translation>
     </message>
     <message>
-        <location filename="../qml/PackageByCategoryView.qml" line="386"/>
+        <location filename="../qml/PackageByCategoryView.qml" line="390"/>
         <source>Uninstall</source>
         <translation type="unfinished">软件卸载</translation>
     </message>
     <message>
-        <location filename="../qml/PackageByCategoryView.qml" line="386"/>
+        <location filename="../qml/PackageByCategoryView.qml" line="391"/>
         <source>Upgrade</source>
         <translation type="unfinished">升级</translation>
     </message>
@@ -278,7 +279,7 @@
         <location filename="../qml/PackageByCategoryView.qml" line="125"/>
         <location filename="../qml/PackageByCategoryView.qml" line="167"/>
         <location filename="../qml/PackageByCategoryView.qml" line="365"/>
-        <location filename="../qml/PackageByCategoryView.qml" line="414"/>
+        <location filename="../qml/PackageByCategoryView.qml" line="426"/>
         <source>Waiting</source>
         <translation type="unfinished">等待</translation>
     </message>
@@ -303,7 +304,7 @@
         <translation type="obsolete">名称:</translation>
     </message>
     <message>
-        <location filename="../qml/PackageInfoView.qml" line="289"/>
+        <location filename="../qml/PackageInfoView.qml" line="297"/>
         <source>Version:</source>
         <translation type="unfinished">版本:</translation>
     </message>
@@ -312,7 +313,7 @@
         <translation type="obsolete">时间:</translation>
     </message>
     <message>
-        <location filename="../qml/PackageInfoView.qml" line="290"/>
+        <location filename="../qml/PackageInfoView.qml" line="298"/>
         <source>Size:</source>
         <translation type="unfinished">大小:</translation>
     </message>
@@ -338,12 +339,12 @@
         <translation type="unfinished">返回</translation>
     </message>
     <message>
-        <location filename="../qml/PackageInfoView.qml" line="268"/>
+        <location filename="../qml/PackageInfoView.qml" line="276"/>
         <source>Desc</source>
         <translation type="unfinished">软件介绍</translation>
     </message>
     <message>
-        <location filename="../qml/PackageInfoView.qml" line="228"/>
+        <location filename="../qml/PackageInfoView.qml" line="230"/>
         <source>Open</source>
         <translation type="unfinished">打开</translation>
     </message>
@@ -356,7 +357,7 @@
         <location filename="../qml/PackageInfoView.qml" line="126"/>
         <location filename="../qml/PackageInfoView.qml" line="153"/>
         <location filename="../qml/PackageInfoView.qml" line="208"/>
-        <location filename="../qml/PackageInfoView.qml" line="248"/>
+        <location filename="../qml/PackageInfoView.qml" line="256"/>
         <source>Waiting</source>
         <translation type="unfinished">等待</translation>
     </message>
@@ -388,22 +389,22 @@
         <translation type="unfinished">已安装最新版</translation>
     </message>
     <message>
-        <location filename="../qml/PackageInfoView.qml" line="228"/>
+        <location filename="../qml/PackageInfoView.qml" line="231"/>
         <source>Uninstall</source>
         <translation type="unfinished">软件卸载</translation>
     </message>
     <message>
-        <location filename="../qml/PackageInfoView.qml" line="228"/>
+        <location filename="../qml/PackageInfoView.qml" line="232"/>
         <source>Upgrade</source>
         <translation type="unfinished">升级</translation>
     </message>
     <message>
-        <location filename="../qml/PackageInfoView.qml" line="228"/>
+        <location filename="../qml/PackageInfoView.qml" line="233"/>
         <source>SelectOp</source>
         <translation type="unfinished">选择操作</translation>
     </message>
     <message>
-        <location filename="../qml/PackageInfoView.qml" line="393"/>
+        <location filename="../qml/PackageInfoView.qml" line="401"/>
         <source>No App Available</source>
         <translation type="unfinished">您好，没有找到软件</translation>
     </message>
@@ -468,27 +469,27 @@
         <translation type="unfinished">出错</translation>
     </message>
     <message>
-        <location filename="../qml/SearchView.qml" line="335"/>
+        <location filename="../qml/SearchView.qml" line="337"/>
         <source>Open</source>
         <translation type="unfinished">打开</translation>
     </message>
     <message>
-        <location filename="../qml/SearchView.qml" line="335"/>
+        <location filename="../qml/SearchView.qml" line="338"/>
         <source>Uninstall</source>
         <translation type="unfinished">软件卸载</translation>
     </message>
     <message>
-        <location filename="../qml/SearchView.qml" line="335"/>
+        <location filename="../qml/SearchView.qml" line="339"/>
         <source>Upgrade</source>
         <translation type="unfinished">升级</translation>
     </message>
     <message>
-        <location filename="../qml/SearchView.qml" line="335"/>
+        <location filename="../qml/SearchView.qml" line="340"/>
         <source>SelectOp</source>
         <translation type="unfinished">选择操作</translation>
     </message>
     <message>
-        <location filename="../qml/SearchView.qml" line="362"/>
+        <location filename="../qml/SearchView.qml" line="370"/>
         <source>Installed</source>
         <translation type="unfinished">已安装最新版</translation>
     </message>
@@ -509,7 +510,7 @@
         <translation type="unfinished">安装</translation>
     </message>
     <message>
-        <location filename="../qml/SearchView.qml" line="376"/>
+        <location filename="../qml/SearchView.qml" line="384"/>
         <source>No App Available</source>
         <translation type="unfinished">您好，没有找到软件</translation>
     </message>
@@ -521,7 +522,7 @@
         <location filename="../qml/SearchView.qml" line="254"/>
         <location filename="../qml/SearchView.qml" line="299"/>
         <location filename="../qml/SearchView.qml" line="325"/>
-        <location filename="../qml/SearchView.qml" line="355"/>
+        <location filename="../qml/SearchView.qml" line="363"/>
         <source>Waiting</source>
         <translation type="unfinished">等待</translation>
     </message>

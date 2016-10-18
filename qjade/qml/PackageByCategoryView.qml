@@ -383,12 +383,23 @@ Rectangle {
                     width: funcButton.width
                     anchors.top: funcButton.top
                     anchors.left: funcButton.left
-                    model: [qsTr("Open"), qsTr("Uninstall"), qsTr("Upgrade") ]
+                    //model: [qsTr("Open"), qsTr("Uninstall"), qsTr("Upgrade"), qsTr("SelectOp")]
+                    model: ListModel {
+                             id: listmodel
+                             ListElement { text: qsTr("Open")}
+                             ListElement { text: qsTr("Uninstall")}
+                             ListElement { text: qsTr("Upgrade")}
+                             ListElement { text: qsTr("SelectOp")}
+                    }
                     visible: false
-                    currentIndex: 0
+                    currentIndex: 3
 
                     onPressedChanged:     {
-                        currentIndex = 3
+                        if(listmodel.count == 4) {
+                            listmodel.remove(3)
+                        }
+                        //currentIndex = 3
+
                     }
                     onActivated: {
                         if (index == 0) {
@@ -406,7 +417,8 @@ Rectangle {
                         } else if (index == 2) {
                             jadedBus.update(modelData.name)
                         }
-                        currentIndex = 3
+                        //currentIndex = 3
+                        currentIndex = index
 
                         if (index != 0) {
                             actCombox.visible = false
