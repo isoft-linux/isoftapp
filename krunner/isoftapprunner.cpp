@@ -41,6 +41,7 @@ ISoftAppRunner::ISoftAppRunner(QObject *parent, const QVariantList &args)
                                              "/org/isoftlinux/Isoftapp", 
                                              QDBusConnection::systemBus(), 
                                              this);
+    return;//qjade 20161018
     connect(isoftapp, &org::isoftlinux::Isoftapp::Error, 
             [this](qlonglong error, const QString &details, qlonglong errcode) {
         errored = true;
