@@ -10,13 +10,13 @@ Item {
         id: myListModel
 
         ListElement {
-            name: "item1"
+            name: "item0"
             check: false
         }
 
         Component.onCompleted: {
-            for (var i = 0; i < 100; i++) {
-                myListModel.append({name: "item" + (i + 2), checked: false});
+            for (var i = 1; i < 100; i++) {
+                myListModel.append({name: "item" + i, checked: false});
             }
         }
     }
@@ -25,11 +25,34 @@ Item {
         id: myListViewDelegate
 
         Rectangle {
+            objectName: "myItem"
             width: parent.width; height: 30
 
+            signal checkItem(bool checked, int i);
+            onCheckItem: {
+                myCheckBox.checked = checked;
+            }
+
             CheckBox {
+                id: myCheckBox
                 text: name
                 checked: check
+
+                onClicked: {
+                    myListModel.setProperty(index, "check", this.checked);
+                    if (this.checked) {
+                        var allChecked = true;
+                        for (var i = 0; i < myListModel.count; i++) {
+                            if (myListModel.get(i).check == false) {
+                                allChecked = false;
+                                break;
+                            }
+                        }
+                        checkAllBox.checked = allChecked;
+                    } else {
+                        checkAllBox.checked = false;
+                    }
+                }
             }
         }
     }
@@ -47,12 +70,20 @@ Item {
         width: parent.width; height: 30
 
         CheckBox {
+            id: checkAllBox
             text: "Check All"
 
             onClicked: {
                 for (var i = 0; i < myListModel.count; i++) {
-                    myListModel.setProperty(i, "name", "item " + (i + 1) + " " + this.checked);
                     myListModel.setProperty(i, "check", this.checked);
+                }
+                for (var i = 0; i < myListView.contentItem.children.length; i++) {
+                    var item = myListView.contentItem.children[i];
+                    if (typeof(item) == 'undefined')
+                        continue;
+                    else if (item.objectName != "myItem")
+                        continue;
+                    item.checkItem(this.checked, i);
                 }
             }
         }
