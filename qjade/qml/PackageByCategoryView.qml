@@ -1,5 +1,6 @@
 /*
- * Copyright (C) 2014 - 2015 Leslie Zhai <xiang.zhai@i-soft.com.cn>
+ * Copyright (C) 2014 - 2016 Leslie Zhai <xiang.zhai@i-soft.com.cn>
+ * Copyright (C) 2016 fujiang <fujiang.zhu@i-soft.com.cn>
  */
 
 import QtQuick 2.2
@@ -399,7 +400,6 @@ Rectangle {
                             listmodel.remove(3)
                         }
                         //currentIndex = 3
-
                     }
                     onActivated: {
                         if (index == 0) {
