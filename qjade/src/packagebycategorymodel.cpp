@@ -94,13 +94,14 @@ void PackageByCategoryModel::setCategory(QString category)
             }
 
             QString needInstall = QString::number(status, 10);
+            QString checked = QString::number(0, 10);
             if (dstCate == "all-pkg") {
             m_dataList.append(new PackageObject(g_qjadePkgList[i].name,
                 g_qjadePkgList[i].title,
                 g_qjadePkgList[i].description,
                 g_qjadePkgList[i].icon,
                 g_qjadePkgList[i].url,
-                dstSize,needInstall));
+                dstSize,needInstall,checked));
             } else {
                 if (dstCate == g_qjadePkgList[i].category) {
                     m_dataList.append(new PackageObject(g_qjadePkgList[i].name,
@@ -108,7 +109,7 @@ void PackageByCategoryModel::setCategory(QString category)
                         g_qjadePkgList[i].description,
                         g_qjadePkgList[i].icon,
                         g_qjadePkgList[i].url,
-                        dstSize,needInstall));
+                        dstSize,needInstall,checked));
                 }
             }
         }
@@ -212,10 +213,11 @@ void PackageByCategoryModel::getPackageFinished(QNetworkReply *reply)
     }
 
     QString needInstall = QString::number(status, 10);
+    QString checked = QString::number(0, 10);
     m_dataList.append(new PackageObject(pkgName, obj["title"].toString(),
         pkg.description, obj["icon"].toString(),
         obj["url"].toString(),
-        dstSize,needInstall));
+        dstSize,needInstall,checked));
 
     g_qjadePkgList.append(pkg);
     if (m_pks_act_size == m_pks_size) {

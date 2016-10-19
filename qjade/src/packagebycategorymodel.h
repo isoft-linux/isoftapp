@@ -66,17 +66,20 @@ class PackageObject : public QObject
 
     Q_PROPERTY(QString size READ size WRITE setSize NOTIFY sizeChanged)
     Q_PROPERTY(QString needInstall READ needInstall WRITE setNeedInstall NOTIFY needInstallChanged)
+    Q_PROPERTY(QString checked READ checked WRITE setChecked NOTIFY checkedChanged)
 
 public:
     PackageObject(QObject *parent = 0) : QObject(parent) {}
     PackageObject(const QString &name, const QString &title, 
         const QString &description, const QString &icon, const QString &url, const QString &size,const QString &needInstall,
+        const QString &checked,
         QObject *parent = 0)
       : QObject(parent) 
     {
         m_name = name; m_title = title; m_description = description; 
         m_icon = icon; m_url = url;m_size = size;
         m_needInstall = needInstall;
+        m_checked = checked;
     }
 
     QString name() const { return m_name; }
@@ -123,6 +126,12 @@ public:
         if (needInstall != m_needInstall) m_needInstall = needInstall; emit needInstallChanged();
     }
 
+    QString checked() const { return m_checked; }
+    void setChecked(const QString &checked)
+    {
+        if (checked != m_checked) m_checked = checked; emit checkedChanged();
+    }
+
 Q_SIGNALS:
     void nameChanged();
     void titleChanged();
@@ -131,6 +140,7 @@ Q_SIGNALS:
     void urlChanged();
     void sizeChanged();
     void needInstallChanged();
+    void checkedChanged();
 
 private:
     QString m_name;
@@ -140,6 +150,7 @@ private:
     QString m_url;
     QString m_size;
     QString m_needInstall;
+    QString m_checked;
 };
 
 #endif  // PACKAGE_BY_CATEGORY_MODEL_H

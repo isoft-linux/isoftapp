@@ -490,6 +490,32 @@ void JadedBus::getUpdateTimeout()
         // datetime:lastest ver;-->used in .qml
         m_updateList.append(new JadedPackageObject(QString(i),
             name,icon,preVer,desc,"category",dstSize,lastestVer));
+        /* 20161019 ... todo...
+        m_updateList.append(new JadedPackageObject(QString(i),
+            name,icon,preVer,desc,"category",dstSize,lastestVer));
+        m_updateList.append(new JadedPackageObject(QString(i),
+            name,icon,preVer,desc,"category",dstSize,lastestVer));
+        m_updateList.append(new JadedPackageObject(QString(i),
+            name,icon,preVer,desc,"category",dstSize,lastestVer));
+        m_updateList.append(new JadedPackageObject(QString(i),
+            name,icon,preVer,desc,"category",dstSize,lastestVer));
+        m_updateList.append(new JadedPackageObject(QString(i),
+            name,icon,preVer,desc,"category",dstSize,lastestVer));
+        m_updateList.append(new JadedPackageObject(QString(i),
+            name,icon,preVer,desc,"category",dstSize,lastestVer));
+        m_updateList.append(new JadedPackageObject(QString(i),
+            name,icon,preVer,desc,"category",dstSize,lastestVer));
+        m_updateList.append(new JadedPackageObject(QString(i),
+            name,icon,preVer,desc,"category",dstSize,lastestVer));
+        m_updateList.append(new JadedPackageObject(QString(i),
+            name,icon,preVer,desc,"category",dstSize,lastestVer));
+        m_updateList.append(new JadedPackageObject(QString(i),
+            name,icon,preVer,desc,"category",dstSize,lastestVer));
+        m_updateList.append(new JadedPackageObject(QString(i),
+            name,icon,preVer,desc,"category",dstSize,lastestVer));
+        m_updateList.append(new JadedPackageObject(QString(i),
+            name,icon,preVer,desc,"category",dstSize,lastestVer));
+            */
     }
 
     if (m_updateList.size() >0) {
@@ -981,14 +1007,12 @@ void JadedBus::install(QString name)
     if (name.isEmpty()) {
         return;
     }
-
     if (m_isTaskExist(name))
         return;
 
     m_taskQueue.append(TaskQueue(name, "install"));
     if (m_taskQueue.size() == 1)
         m_runTask();
-
     return;
 
     //m_jaded->install(name);

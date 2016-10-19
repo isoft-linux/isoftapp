@@ -287,6 +287,7 @@ Rectangle {
                         if(listmodel.count == 4) {
                             listmodel.remove(3)
                         }
+                        currentIndex = 3
                     }
                     onActivated: {
                         if (index == 0) {

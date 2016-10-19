@@ -19,9 +19,6 @@ Rectangle {
     property string title
     property bool loading
 
-    property var selectedItemList:[]
-    property var notInstallItemList:[]
-
     PackageByCategoryModel {
         id: pkModel
         category: packageByCategoryView.category
@@ -57,7 +54,6 @@ Rectangle {
             id: pkListView
             model: pkModel.packages
             anchors.fill: parent
-            property int pre_index:-1
 
             delegate: Rectangle {
                 id: pkRect
@@ -83,31 +79,17 @@ Rectangle {
                     Component.onCompleted: {
                         jadedBus.info = jadedBus.getInfo(modelData.name)
 
-                        if (pkListView.pre_index != pkListView.index) {
-                            if (allChecked.checked) {
-                                allChecked.checked = false
-                                allChecked.pressed = false
-
-                                delete selectedItemList
-                                delete notInstallItemList
-                                for (var i = 0; i < pkListView.contentItem.children.length; ++i) {
-                                    var item = pkListView.contentItem.children[i]
-                                    if (typeof(item) == 'undefined' ) {
-                                        continue;
-                                    }
-                                    else if(item.objectName != "rectItem") {
-                                        continue;
-                                    }
-                                    item.checkItem(false)
+                        for(var i = 0 ; i < pkModel.packages.length;i++) {
+                            if (pkModel.packages[i].name  == modelData.name) {
+                                if (pkModel.packages[i].checked == "0" ) {
+                                    appCheckBox.checked = false;
+                                } else {
+                                    appCheckBox.checked = true;
                                 }
+                                break;
                             }
-                            bottonAct.enabled = false
                         }
 
-                        var item = pkListView.contentItem.children[index]
-                        if (typeof(item) != 'undefined' ) {
-                        item.state = "checked"
-                        }
                         pkRect.objectName = "rectItem"
                         if (jadedBus.info == "UnknownInfo") {
                             item.state = ""
@@ -167,9 +149,7 @@ Rectangle {
                                 infoText.visible = true
                                 infoText.text = qsTr("Waiting")
                                 progressInfo.visible = true
-
                             }
-
                         }
                     }
 
@@ -182,9 +162,11 @@ Rectangle {
                                 actCombox.visible = true
                                 appCheckBox.enabled = false
 
-                                var item = pkListView.contentItem.children[index]
-                                if (typeof(item) != 'undefined' ) {
-                                item.state = "" // for allChecked
+                                for(var i = 0 ; i < pkModel.packages.length;i++) {
+                                    if (pkModel.packages[i].name  == name) {
+                                        pkModel.packages[i].checked = "0";
+                                        break;
+                                    }
                                 }
 
                                 progressInfo.visible = false;
@@ -199,10 +181,12 @@ Rectangle {
                                 actCombox.visible = false
 
                                 appCheckBox.enabled = true
+
+                                /*
                                 var item2 = pkListView.contentItem.children[index]
                                 if (typeof(item2) != 'undefined' )
                                 item2.state = "checked" // for allChecked
-
+*/
                                 progressInfo.visible = false;
                             }
                         }
@@ -215,53 +199,29 @@ Rectangle {
                     anchors.leftMargin: 18
                     anchors.verticalCenter: parent.verticalCenter
                     scale: 0.9
-
                     checked: false
                     onCheckedChanged: {
-                        var tmpItem = modelData.name
-                        var findit = false
-                        var k = 0
                         if (appCheckBox.checked) {
-                            for (var i = 0; i < selectedItemList.length; i++) {
-                                if (selectedItemList[i] == tmpItem) {
+                            for(var i = 0 ; i < pkModel.packages.length;i++) {
+                                if (pkModel.packages[i].name  == modelData.name) {
+                                    pkModel.packages[i].checked = "1";
                                     nameText.text = modelData.title
-                                    findit = true
+                                    bottonAct.enabled = true
+                                    break
                                 }
                             }
-                            if (findit == false) {
-                                selectedItemList.push(modelData.name)
-                                nameText.text = modelData.title
-                            }
-
-                            for (k = 0; k < notInstallItemList.length; k++) {
-                                if (notInstallItemList[k] == tmpItem) {
-                                    var nullItem = ""
-                                    notInstallItemList[k] = nullItem
-                                }
-                            }
-
 
                         } else {
-                            for (var j = 0; j < selectedItemList.length; j++) {
-                                if (selectedItemList[j] == tmpItem) {
-                                    var nullVar = ""
-                                    selectedItemList[j] = nullVar
+                            for(var i = 0 ; i < pkModel.packages.length;i++) {
+                                if (pkModel.packages[i].name  == modelData.name) {
+                                    pkModel.packages[i].checked = "0";
+                                    break;
                                 }
-                            }
-
-                            findit = false
-                            for (k = 0; k < notInstallItemList.length; k++) {
-                                if (notInstallItemList[k] == tmpItem) {
-                                    findit = true
-                                }
-                            }
-                            if (findit == false) {
-                                notInstallItemList.push(modelData.name)
                             }
                         }
                     }
 
-                    }
+                }
 
                 Image {
                     id: appIcon
@@ -354,6 +314,7 @@ Rectangle {
                                 for(var i = 0 ; i < pkModel.packages.length;i++) {
                                     if (pkModel.packages[i].name == modelData.name) {
                                         pkModel.packages[i].needInstall = "9" ;
+                                        pkModel.packages[i].checked = "0";
                                         break;
                                     }
                                 }
@@ -399,7 +360,7 @@ Rectangle {
                         if(listmodel.count == 4) {
                             listmodel.remove(3)
                         }
-                        //currentIndex = 3
+                        currentIndex = 3
                     }
                     onActivated: {
                         if (index == 0) {
@@ -411,6 +372,7 @@ Rectangle {
                             for(var i = 0 ; i < pkModel.packages.length;i++) {
                                 if (pkModel.packages[i].name == modelData.name) {
                                     pkModel.packages[i].needInstall = "2" ;
+                                    pkModel.packages[i].checked = "0";
                                     break;
                                 }
                             }
@@ -434,8 +396,6 @@ Rectangle {
                     anchors.left: parent.left
                     color: "#e4ecd7"
                 }
-
-
             }
         }
 
@@ -459,7 +419,18 @@ Rectangle {
         checked: false
         text: qsTr("install all selected items")
         onClicked: {
-            selectedItemList = []
+            for(var i = 0 ; i < pkModel.packages.length;i++) {
+                if (pkModel.packages[i].needInstall == "2") {
+                    if (allChecked.checked ) {
+                        if(pkModel.packages[i].checked == "0") {
+                            pkModel.packages[i].checked = "1";
+                        }
+                    } else {
+                        pkModel.packages[i].checked = "0";
+                    }
+                }
+            }
+
             for (var i = 0; i < pkListView.contentItem.children.length; ++i) {
                 var item = pkListView.contentItem.children[i]
                 if (typeof(item) == 'undefined' ) {
@@ -472,6 +443,7 @@ Rectangle {
                     item.checkItem(checked)
 
             }
+
             if (checked) {
                 bottonAct.enabled = true
             } else {
@@ -495,44 +467,29 @@ Rectangle {
         //    cursorShape: Qt.PointingHandCursor
 
         onClicked: {
-            var i =0
-            for (i = 0; i < selectedItemList.length; i++) {
-                if (selectedItemList[i] != "") {
-                    //jadedBus.install(selectedItemList[i])
-                }
-
-                selectedItemList[i] = ""
-            }
-
-            for(i = 0 ; i < pkModel.packages.length;i++) {
-                if (pkModel.packages[i].needInstall == "2") {
-                    var find = false
-                    for (var j = 0; j < notInstallItemList.length; j++) {
-                        if (notInstallItemList[j] == pkModel.packages[i].name) {
-                            find = true;
-                            notInstallItemList[j] = "";
-                            break;
-                        }
-                    }
-                    if (find) {
-                        continue;
+            for(var i = 0 ; i < pkModel.packages.length;i++) {
+                if (pkModel.packages[i].checked == "1") {
+                    if (pkModel.packages[i].needInstall != "2") {
+                        //continue;
                     }
                     jadedBus.install(pkModel.packages[i].name)
                     pkModel.packages[i].needInstall = "9"
+                    pkModel.packages[i].checked = "0"
                 }
             }
-
-            selectedItemList = []
-            notInstallItemList = []
+            for (var i = 0; i < pkListView.contentItem.children.length; ++i) {
+                var item = pkListView.contentItem.children[i]
+                if (typeof(item) == 'undefined' ) {
+                    continue;
+                }
+                else if(item.objectName != "rectItem") {
+                    continue;
+                }
+                item.checkItem(checked)
+            }
 
             allChecked.checked = false
             bottonAct.enabled = false
-
-            if(typeof(pkListView.index) == 'undefined' ) {
-                pkListView.pre_index = -2
-            } else {
-                pkListView.pre_index = pkListView.index
-            }
         }
         //}
     }
