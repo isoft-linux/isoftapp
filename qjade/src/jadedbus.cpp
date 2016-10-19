@@ -439,7 +439,7 @@ void JadedBus::getUpdateTimeout()
         return;
     }
     m_updateList.clear();
-
+    QString checked = QString::number(0, 10);
     // m_updateInfo = [firefox,firefox-41.0.2-15,firefox-43.0-2|]-->from isoftapp-daemon:listUpdate()
     // [pkgname,pre version,lastest version|pkgname,pre v,lastest v]
     QStringList pkgList = m_updateInfo.split("|", QString::SkipEmptyParts);
@@ -488,34 +488,9 @@ void JadedBus::getUpdateTimeout()
 
         // version:prever;--->used in .qml
         // datetime:lastest ver;-->used in .qml
+        // category:=>checked-->used in .qml
         m_updateList.append(new JadedPackageObject(QString(i),
-            name,icon,preVer,desc,"category",dstSize,lastestVer));
-        /* 20161019 ... todo...
-        m_updateList.append(new JadedPackageObject(QString(i),
-            name,icon,preVer,desc,"category",dstSize,lastestVer));
-        m_updateList.append(new JadedPackageObject(QString(i),
-            name,icon,preVer,desc,"category",dstSize,lastestVer));
-        m_updateList.append(new JadedPackageObject(QString(i),
-            name,icon,preVer,desc,"category",dstSize,lastestVer));
-        m_updateList.append(new JadedPackageObject(QString(i),
-            name,icon,preVer,desc,"category",dstSize,lastestVer));
-        m_updateList.append(new JadedPackageObject(QString(i),
-            name,icon,preVer,desc,"category",dstSize,lastestVer));
-        m_updateList.append(new JadedPackageObject(QString(i),
-            name,icon,preVer,desc,"category",dstSize,lastestVer));
-        m_updateList.append(new JadedPackageObject(QString(i),
-            name,icon,preVer,desc,"category",dstSize,lastestVer));
-        m_updateList.append(new JadedPackageObject(QString(i),
-            name,icon,preVer,desc,"category",dstSize,lastestVer));
-        m_updateList.append(new JadedPackageObject(QString(i),
-            name,icon,preVer,desc,"category",dstSize,lastestVer));
-        m_updateList.append(new JadedPackageObject(QString(i),
-            name,icon,preVer,desc,"category",dstSize,lastestVer));
-        m_updateList.append(new JadedPackageObject(QString(i),
-            name,icon,preVer,desc,"category",dstSize,lastestVer));
-        m_updateList.append(new JadedPackageObject(QString(i),
-            name,icon,preVer,desc,"category",dstSize,lastestVer));
-            */
+            name,icon,preVer,desc,checked,dstSize,lastestVer));
     }
 
     if (m_updateList.size() >0) {

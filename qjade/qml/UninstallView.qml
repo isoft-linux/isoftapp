@@ -13,9 +13,15 @@ Rectangle {
     height: parent.height
 
     property int count: uninstallListView.count
-    property var selectedItemList:[]
-    property var notInstallItemList:[]
-    property int pre_index:-1
+
+    ListModel {
+        id: myListModel
+        ListElement {
+            name: ""
+            checked: false
+            installed: false
+        }
+    }
 
     JadedBus {                                                                     
         id: uninstallJadedBus
@@ -29,7 +35,13 @@ Rectangle {
         onInstalledChanged: {                                                         
             myLoader.visible = false;
             uninstallListView.model = uninstallJadedBus.installed;
-            uninstallListView.visible = count == 0 ? false : true;                    
+            uninstallListView.visible = count == 0 ? false : true;
+
+            for(var i = 0; i < uninstallJadedBus.installed.length; i++) {
+                myListModel.append({name: uninstallJadedBus.installed[i].name,
+                                    checked: false,
+                                   installed:true});
+            }
         }                                                                          
     }
 
@@ -136,31 +148,21 @@ Rectangle {
 
                     Component.onCompleted: {
                         jadedBus.info = jadedBus.getInfo(modelData.name)
+                        for(var i = 0; i < myListModel.count; i++) {
+                            if (myListModel.get(i).name  == modelData.name) {
+                                if (myListModel.get(i).checked ) {
+                                    appCheckBox.checked = true;
+                                } else {
+                                    appCheckBox.checked = false;
+                                }
+                                break;
+                            }
+                        }
+
                         if (jadedBus.info == "InfoWaiting") {
                             removeButton.visible = false
                             infoText.visible = true
                             infoText.text = qsTr("Waiting")
-                        }
-
-                        if (pre_index != uninstallListView.index) {
-                            if (allChecked.checked) {
-                                allChecked.checked = false
-                                allChecked.pressed = false
-
-                                delete selectedItemList
-                                delete notInstallItemList
-                                for (var i = 0; i < uninstallListView.contentItem.children.length; ++i) {
-                                    var item = uninstallListView.contentItem.children[i]
-                                    if (typeof(item) == 'undefined' ) {
-                                        continue;
-                                    }
-                                    else if(item.objectName != "rectItem") {
-                                        continue;
-                                    }
-                                    item.checkItem(false,1)
-                                }
-                            }
-                            bottonAct.enabled = false
                         }
                     }
                     onErrored: {
@@ -194,8 +196,8 @@ Rectangle {
                             uninstallRect.height = 0
                             uninstallView.count--
                             var newCount = 0
-                            for(var i = 0 ; i < uninstallJadedBus.installed.length;i++) {
-                                if (uninstallJadedBus.installed[i].id != "unknown") {
+                            for(var i = 0; i < myListModel.count; i++) {
+                                if (myListModel.get(i).installed) {
                                     newCount ++
                                 }
                             }
@@ -212,56 +214,24 @@ Rectangle {
 
                     checked: false
                     onCheckedChanged: {
-                        var tmpItem = modelData.name
-                        var findit = false
-                        var x = 9999
-                        var k = 0
                         if (appCheckBox.checked) {
-                            for (var i = 0; i < selectedItemList.length; i++) {
-                                if (selectedItemList[i] == tmpItem) {
-                                    nameText.text = modelData.version
-                                    findit = true
-                                }
-                                if (selectedItemList[i] == "") {
-                                    x = i
+                            for(var i = 0; i < myListModel.count; i++) {
+                                if (myListModel.get(i).name  == modelData.name) {
+                                    myListModel.setProperty(i, "checked", true);
+                                    bottonAct.enabled = true
+                                    break;
                                 }
                             }
-                            if (findit == false) {
-                                if (x < 9999) {
-                                    selectedItemList[x] = modelData.name
-                                } else {
-                                    selectedItemList.push(modelData.name)
-                                }
-                                nameText.text = modelData.version
-                            }
-
-                            for (k = 0; k < notInstallItemList.length; k++) {
-                                if (notInstallItemList[k] == tmpItem) {
-                                    var nullItem = ""
-                                    notInstallItemList[k] = nullItem
-                                }
-                            }
-
                         } else {
-                            for (var j = 0; j < selectedItemList.length; j++) {
-                                if (selectedItemList[j] == tmpItem) {
-                                    var nullVar = ""
-                                    selectedItemList[j] = nullVar
+                            for(var i = 0; i < myListModel.count; i++) {
+                                if (myListModel.get(i).name  == modelData.name) {
+                                    myListModel.setProperty(i, "checked", false);
+                                    break;
                                 }
-                            }
-
-                            findit = false
-                            for (k = 0; k < notInstallItemList.length; k++) {
-                                if (notInstallItemList[k] == tmpItem) {
-                                    findit = true
-                                }
-                            }
-                            if (findit == false) {
-                                notInstallItemList.push(modelData.name)
                             }
                         }
                     }
-                    }
+                }
 
                 Image {
                     id: appIcon
@@ -352,14 +322,12 @@ Rectangle {
                                 }
                             }
 
-                            var findit = false
-                            for (var k = 0; k < notInstallItemList.length; k++) {
-                                if (notInstallItemList[k] == modelData.name) {
-                                    findit = true
+                            for(var i = 0; i < myListModel.count; i++) {
+                                if (myListModel.get(i).name  == modelData.name) {
+                                    myListModel.setProperty(i, "checked", false);
+                                    myListModel.setProperty(i, "installed", false);
+                                    break;
                                 }
-                            }
-                            if (findit == false) {
-                                notInstallItemList.push(modelData.name)
                             }
                         }
 
@@ -404,15 +372,22 @@ Rectangle {
             } else {
                 bottonAct.enabled = false
             }
+            for(var i = 0; i < myListModel.count; i++) {
+                if (myListModel.get(i).installed) {
+                    if (allChecked.checked ) {
+                        myListModel.setProperty(i, "checked", true);
+                    } else {
+                        myListModel.setProperty(i, "checked", false);
+                    }
+                }
+            }
 
-            delete selectedItemList
-            for (var i = 0; i < uninstallListView.count; i++) {
+            for (var i = 0; i < uninstallListView.contentItem.children.length; ++i) {
                 var item = uninstallListView.contentItem.children[i]
                 if (typeof(item) == 'undefined' ||
                     item.objectName != "rectItem") {
                     continue;
                 }
-
                 item.checkItem(checked,i)
             }
         }
@@ -431,40 +406,24 @@ Rectangle {
         //    cursorShape: Qt.PointingHandCursor
 
         onClicked: {
-            for (var i = 0; i < selectedItemList.length; i++) {
-                if (selectedItemList[i] != "") {
-                    //jadedBus.uninstall(selectedItemList[i])
-                    selectedItemList[i] = ""
+            for(var i = 0; i < myListModel.count; i++) {
+                if (myListModel.get(i).installed && myListModel.get(i).checked) {
+                    jadedBus.uninstall(myListModel.get(i).name)
+                    myListModel.setProperty(i, "checked", false);
+                    myListModel.setProperty(i, "installed", false);
                 }
             }
-
-            for(i = 0 ; i < uninstallJadedBus.installed.length;i++) {
-                var find = false
-                for (var j = 0; j < notInstallItemList.length; j++) {
-                    if (notInstallItemList[j] == uninstallJadedBus.installed[i].name) {
-                        find = true;
-                        break;
-                    }
-                }
-                if (find == true ) {
-                    continue;
-                }
-                if (uninstallJadedBus.installed[i].id != "unknown") {
-                    jadedBus.uninstall(uninstallJadedBus.installed[i].name )
-                }
-                uninstallJadedBus.installed[i].id = "unknown"
-            }
-
-            selectedItemList = []
-            notInstallItemList = []
 
             allChecked.checked = false
             bottonAct.enabled = false
 
-            if(typeof(uninstallListView.index) == 'undefined' ) {
-                pre_index = -2
-            } else {
-                pre_index = uninstallListView.index
+            for (var i = 0; i < uninstallListView.count; i++) {
+                var item = uninstallListView.contentItem.children[i]
+                if (typeof(item) == 'undefined' ||
+                    item.objectName != "rectItem") {
+                    continue;
+                }
+                item.checkItem(checked,i)
             }
         }
         //}

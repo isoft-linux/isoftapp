@@ -15,8 +15,6 @@ Rectangle {
 
     property int count: updateListView.count
 
-    property var selectedItemList:[]
-
     Component.onCompleted: {
         if (Global.isNetworkAvailable == false) {
             myResultText.result = qsTr("Network is Unavailable");
@@ -136,25 +134,21 @@ Rectangle {
 
                     checked: false
                     onCheckedChanged: {
-                        var tmpItem = modelData.name
-                        var findit = false
                         if (appCheckBox.checked) {
-                            for (var i = 0; i < selectedItemList.length; i++) {
-                                if (selectedItemList[i] == tmpItem) {
+                            for(var i = 0 ; i < updateJadedBus.updates.length;i++) {
+                                if (updateJadedBus.updates[i].name  == modelData.name) {
+                                    updateJadedBus.updates[i].category = "1";
                                     nameText.text = modelData.name
-                                    findit = true
+                                    bottonAct.enabled = true
+                                    break
                                 }
-                            }
-                            if (findit == false) {
-                                selectedItemList.push(modelData.name)
-                                nameText.text = modelData.name
                             }
 
                         } else {
-                            for (var j = 0; j < selectedItemList.length; j++) {
-                                if (selectedItemList[j] == tmpItem) {
-                                    var nullVar = ""
-                                    selectedItemList[j] = nullVar
+                            for(var i = 0 ; i < updateJadedBus.updates.length;i++) {
+                                if (updateJadedBus.updates[i].name  == modelData.name) {
+                                    updateJadedBus.updates[i].category = "0";
+                                    break;
                                 }
                             }
                         }
@@ -237,6 +231,16 @@ Rectangle {
 
                     Component.onCompleted: {
                         jadedBus.info = jadedBus.getInfo(modelData.name)
+                        for(var i = 0 ; i < updateJadedBus.updates.length;i++) {
+                            if (updateJadedBus.updates[i].name  == modelData.name) {
+                                if (updateJadedBus.updates[i].category == "0" ) {
+                                    appCheckBox.checked = false;
+                                } else {
+                                    appCheckBox.checked = true;
+                                }
+                                break;
+                            }
+                        }
                         if (jadedBus.info == "InfoWaiting") {
                             updateButton.visible = false;
                             infoText.visible = true
@@ -335,14 +339,23 @@ Rectangle {
         text: qsTr("Update all selected items")
 
         onClicked: {
+            for(var i = 0 ; i < updateJadedBus.updates.length;i++) {
+                if (allChecked.checked ) {
+                    if(updateJadedBus.updates[i].category == "0") {
+                        updateJadedBus.updates[i].category = "1";
+                    }
+                } else {
+                    updateJadedBus.updates[i].category = "0";
+                }
+            }
+
             if (checked) {
                 bottonAct.enabled = true
             } else {
                 bottonAct.enabled = false
             }
 
-            delete selectedItemList
-            for (var i = 0; i < updateListView.count; i++) {
+            for (var i = 0; i < updateListView.contentItem.children.length; ++i) {
                 var item = updateListView.contentItem.children[i]
                 if (typeof(item) == 'undefined' ||
                     item.objectName != "rectItem") {
@@ -367,12 +380,22 @@ Rectangle {
         //    cursorShape: Qt.PointingHandCursor
 
         onClicked: {
-            for (var i = 0; i < selectedItemList.length; i++) {
-                if (selectedItemList[i] != "") {
-                    enabled = false
-                    jadedBus.update(selectedItemList[i])
-                    selectedItemList[i] = ""
+            for(var i = 0 ; i < updateJadedBus.updates.length;i++) {
+                if (updateJadedBus.updates[i].category == "1") {
+                    jadedBus.update(updateJadedBus.updates[i].name)
+                    updateJadedBus.updates[i].category = "0"
                 }
+            }
+
+            for (var i = 0; i < updateListView.contentItem.children.length; ++i) {
+                var item = updateListView.contentItem.children[i]
+                if (typeof(item) == 'undefined' ) {
+                    continue;
+                }
+                else if(item.objectName != "rectItem") {
+                    continue;
+                }
+                item.checkItem(checked)
             }
 
             allChecked.checked = false
