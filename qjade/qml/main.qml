@@ -358,7 +358,7 @@ ApplicationWindow {
             id: minWindowButton;
             anchors.right: closeWindowButton.left
             anchors.rightMargin: 12
-            y: parent.y + 3
+            y: parent.y + 8
         }
     }
     

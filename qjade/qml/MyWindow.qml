@@ -14,13 +14,13 @@ Window {
     color: "transparent"
 
     property string title: "Title"
-
+/*
     BorderImage {                                                                  
         anchors.fill: parent 
         border { left: 10; top: 10; right: 10; bottom: 10 }                        
         source: "../images/shadow.png"                                                       
     }
-
+*/
     Rectangle {
         width: parent.width - 19; height: parent.height - 19
         anchors.top: parent.top
