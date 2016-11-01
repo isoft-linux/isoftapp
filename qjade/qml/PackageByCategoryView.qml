@@ -92,7 +92,6 @@ Rectangle {
 
                         pkRect.objectName = "rectItem"
                         if (jadedBus.info == "UnknownInfo") {
-                            item.state = ""
                             pkRect.visible = false;
                             pkRect.height = 0;
                             pkModel.removeAt(index);
@@ -112,9 +111,6 @@ Rectangle {
                             actCombox.visible = true
                             appCheckBox.enabled = false
 
-                            if (typeof(item) != 'undefined' ) {
-                            item.state = "" // for allChecked
-                            }
                         } else if (jadedBus.info == "InfoUpdatable") {
                             funcButton.text = qsTr("Update")
                         }
