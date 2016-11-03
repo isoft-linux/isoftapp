@@ -816,12 +816,12 @@ bool isFileExist(const char *file_path,const char *md5Str)
     return ret;
 }
 int g_installed_num = 0;
-void install(int argc, char *argv[],
+bool install(int argc, char *argv[],
              void (*report_progress)(double *progress, void *arg_data,const char *filename,Status status),
              void *arg_data,
              bool reInstall);
 static bool realInstall(void (*report_progress)(double *progress, void *arg_data,const char *filename,Status status),
-                        void *arg_data)
+                        void *arg_data,bool isUpGrade)
 
 {
     list<t_PKGS>::iterator i;
@@ -831,7 +831,7 @@ static bool realInstall(void (*report_progress)(double *progress, void *arg_data
     int j = 0;
     bool done = false;
     if (argc <= 1) {
-        return true;
+        return false;
     }
 
     printf("\ntrace:%s,%d.argc[%d]\n",__FUNCTION__,__LINE__,argc);
@@ -889,7 +889,6 @@ static bool realInstall(void (*report_progress)(double *progress, void *arg_data
         data = download_data_new();
         if (!data)
             continue;
-
         url = (*i).uri;
         data->file_path = file_path;
         data->url = url.c_str();
@@ -902,6 +901,12 @@ static bool realInstall(void (*report_progress)(double *progress, void *arg_data
         snprintf(argv[j], URI_PATH_MAX-1,"%s", file_path);
         done = true;
         j++;
+
+        if (!isUpGrade && !isFileExist(file_path, (*i).md5Str) ) {
+            printf("\ntrace:%s,%d.dl file[%s]'s md5 is error.\n",__FUNCTION__,__LINE__,file_path);
+            done = false;
+            break;
+        }
 #else
         snprintf(argv[j], URI_PATH_MAX-1,"%s", (*i).uri);
         done = true;
@@ -950,7 +955,7 @@ cleanup:
         argv = NULL;
     }
 
-    return true;
+    return done;
 }
 
 bool insertInstPkgList(t_PKGS *pkg)
@@ -1427,7 +1432,7 @@ void upgrade(int argc, char *argv[],
              void (*report_progress)(double *progress, void *arg_data,const char *filename,Status status),
              void *arg_data);
 
-void install(int argc, char *argv[],
+bool install(int argc, char *argv[],
              void (*report_progress)(double *progress, void *arg_data,const char *filename,Status status),
              void *arg_data,
              bool reInstall)
@@ -1435,9 +1440,10 @@ void install(int argc, char *argv[],
     char pkgName[512]="";
     bool isInstalled = false;
     bool needInst = false;
+    bool installedOK = false;
     if (argc < 3) {
         usage();
-        return;
+        return installedOK;
     }
 
     printf("\ntrace:%s,%d.[%s]\n",__FUNCTION__,__LINE__,reInstall?"reinstall":"not re");
@@ -1457,7 +1463,7 @@ void install(int argc, char *argv[],
             doInstall(pkgName,true);
 
          }
-        realInstall(report_progress,arg_data);
+        installedOK = realInstall(report_progress,arg_data,reInstall);
         goto cleanup;
 
     }
@@ -1480,12 +1486,13 @@ void install(int argc, char *argv[],
             }
             goto cleanup;
         }
-        realInstall(report_progress,arg_data);
+        installedOK = realInstall(report_progress,arg_data,reInstall);
     } else {
         if (report_progress) {
             double progress = 0.0;printf("\ntrace:%s,%d.\n",__FUNCTION__,__LINE__);
             report_progress(&progress, arg_data,pkgName,STATUS_INSTALLED);
         }
+        installedOK = true;
     }
 
 cleanup:
@@ -1502,6 +1509,7 @@ cleanup:
     closePkgDB();
     clearInstallList();
     printf("\ntrace:%s,%d.\n",__FUNCTION__,__LINE__);
+    return installedOK;
 }
 
 

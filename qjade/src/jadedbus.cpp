@@ -227,7 +227,8 @@ void JadedBus::getFinished(const QString &pkgName,qlonglong status)
         status != STATUS_UPDATED &&
         status != STATUS_INSTALLED &&
         status != STATUS_INSTALL &&
-        status != STATUS_UPGRADED) {
+        status != STATUS_UPGRADED &&
+        status != STATUS_INSTALL_ERROR) {
         return;
     }
 
@@ -266,6 +267,12 @@ void JadedBus::getFinished(const QString &pkgName,qlonglong status)
                     QDateTime local(QDateTime::currentDateTime());
                     AllPkgList[i].datetime = local.toString("yyyy-MM-dd hh:mm:ss");
                 }
+            } else if ( status == STATUS_INSTALL_ERROR) {
+                if (AllPkgList[i].status != 2) {
+                    AllPkgList[i].status = 2;
+                }
+                QString details ="insatallfailed";
+                m_errored(pkgName,details);
             }
             getMyPkgNumber();
 

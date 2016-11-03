@@ -119,7 +119,9 @@ Rectangle {
                         if (name == modelData.name) {
                             if (detail == "lastest")
                                 nameText.text = modelData.title + " (" + qsTr("Is lastest") + ")"
-                            else
+                            else if (detail == "insatallfailed") {
+                                nameText.text = modelData.title + " (" + qsTr("Error") + ")"
+                            } else
                             nameText.text = modelData.title + " (" + qsTr("Error") + ")"
                             funcButton.visible = true;
                             infoText.visible = false;
@@ -157,6 +159,7 @@ Rectangle {
                                 infoText.visible = false
                                 actCombox.visible = true
                                 appCheckBox.enabled = false
+                                nameText.text = modelData.title
 
                                 for(var i = 0 ; i < pkModel.packages.length;i++) {
                                     if (pkModel.packages[i].name  == name) {

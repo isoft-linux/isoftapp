@@ -328,7 +328,7 @@ daemon_get_update_duration(GdbusIsoftapp *object)
     return daemon->priv->update_duration;
 }
 
-extern void install(int argc, char *argv[],
+extern bool install(int argc, char *argv[],
                     void (*report_progress)(double *progress, void *arg_data,const char *filename,Status status),
                     void *arg_data,
                     bool reInstall);
@@ -513,8 +513,12 @@ install_routine(void *arg)
     argv[0]=(char *)"";
     argv[1]=(char *)"";
     argv[2]=(char *)daemon->priv->arg;
-    install(3, argv, rpm_progress_handle, daemon, false);
-    gdbus_isoftapp_emit_finished(GDBUS_ISOFTAPP(daemon),(char *)daemon->priv->arg, STATUS_INSTALLED);
+    bool isOK = install(3, argv, rpm_progress_handle, daemon, false);
+    if (isOK) {
+        gdbus_isoftapp_emit_finished(GDBUS_ISOFTAPP(daemon),(char *)daemon->priv->arg, STATUS_INSTALLED);
+    } else {
+        gdbus_isoftapp_emit_finished(GDBUS_ISOFTAPP(daemon),(char *)daemon->priv->arg, STATUS_INSTALL_ERROR);
+    }
 
 #if 1
     for(int j = 7;j < 2000;j++) {

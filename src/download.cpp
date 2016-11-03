@@ -121,10 +121,12 @@ void *download_routine(void *arg)
 
     chunk.memory = (char *)malloc(1);
     chunk.size = 0;
-
+    memset(&fileinfo,0,sizeof(struct stat));
     snprintf(tmpfile_path, sizeof(tmpfile_path) - 1, "%s.st", data->file_path);
     if (stat(tmpfile_path, &fileinfo) == 0)
         resume_from = fileinfo.st_size;
+    else
+        resume_from = 0;
 
     outfile = fopen(tmpfile_path, resume_from ? "ab" : "wb");
     if (outfile == NULL) {
