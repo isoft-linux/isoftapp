@@ -28,12 +28,12 @@ Item {
     GridView {
         id: iconView
         model: iconModel.icons
-        width: parent.width - 30
+        width: parent.width
         height: parent.height - slideShow.height
         anchors.top: slideShow.bottom
-        anchors.topMargin: 8
+        anchors.topMargin: 28
         anchors.horizontalCenter: parent.horizontalCenter
-        cellWidth: 167; cellHeight: 85
+        cellWidth: 175; cellHeight: 85
         focus: true
         anchors.left: parent.left
         anchors.leftMargin: 50
@@ -244,10 +244,10 @@ Item {
     SlideShow {                                                                    
         id: slideShow                                                              
         slideModel: slideshowModel.slideshow                                       
-        width: parent.width - 30 //668
-        height: 168
+        width: parent.width - 50 //668
+        height: 192
         anchors.top: parent.top                                                    
-        anchors.margins: 8                                                         
+        anchors.margins: 12
         anchors.horizontalCenter: parent.horizontalCenter                          
     }
 
@@ -257,16 +257,16 @@ Item {
     //------------------------------------------------------------------------- 
     Rectangle {                                                                    
         width: (parent.width - slideShow.width) / 2                                
-        height: 200                                                                
-        color: "white"                                                             
+        height: 224
+        color: "white"
         anchors.top: parent.top                                                    
         anchors.right: parent.right                                                
     }                                                                              
                                                                                    
     Rectangle {                                                                    
         width: (parent.width - slideShow.width) / 2                                
-        height: 200                                                                
-        color: "white"                                                             
+        height: 224
+        color: "white"
         anchors.top: parent.top                                                    
         anchors.left: parent.left                                                  
     }

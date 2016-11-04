@@ -17,14 +17,14 @@ Rectangle {
 
     width: 90
     height: 69
-    color: click ? "white" : (hover ? "white"  : "transparent")
+    color: click ? "white" : (hover ? "#5eb7fa"  : "transparent")
 
     Rectangle {
         id: buttonRect
         width: parent.width
-        height: 5
+        height: 7
         anchors.bottom: parent.bottom
-        color: myToolButton.click ? "#0b79ce" : "#3296e4"
+        color: myToolButton.click ? "#0b79ce" : (myToolButton.hover ? "#5eb7fa"  : "#3296e4")
     }
 
     Text {

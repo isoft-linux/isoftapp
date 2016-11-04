@@ -52,14 +52,13 @@ ApplicationWindow {
         Image {
             id: logoImage
             source: brand.logo
-            sourceSize.width: 50; sourceSize.height: 50
-            //anchors.top: parent.top;
+            //sourceSize.width: 50; sourceSize.height: 50
             anchors.left: parent.left
             anchors.verticalCenter: parent.verticalCenter
             anchors { topMargin: 6; leftMargin: 16 }
             smooth: true
         }
-
+/*
         Text {
             id:brandText
             text: brand.name
@@ -69,7 +68,7 @@ ApplicationWindow {
             font.weight: Font.DemiBold
             color: "#e3f0fc"
         }
-
+*/
         //---------------------------------------------------------------------
         // TODO: Drag area
         //---------------------------------------------------------------------
@@ -80,17 +79,13 @@ ApplicationWindow {
         //-------------------------------------------------------------------------
         Rectangle {
             id: toolBar
-            //width: 12; height: 12 //75,rootWindow.height - windowTitle.height
-            //anchors.top: parent.top//windowTitle.bottom
-            //anchors.left: brandText.right
-            x: brandText.x + brandText.width + 30
+            x: logoImage.x + logoImage.width + 10
             y: parent.y
             color: "#e4ecd7"
 
             MyToolButton {
                 id: storeToolButton
                 title: qsTr("MainPage")
-                //icon: "../images/store-toolbutton.png"
                 click: true
 
                 MouseArea {
@@ -102,7 +97,6 @@ ApplicationWindow {
                         stackView.clear()
                         stackView.push(Qt.resolvedUrl("StoreView.qml"))
                         jadedBus.getUpdate()
-                        //storeToolButton.click_color = "white"
                     }
                     cursorShape: Qt.PointingHandCursor
                 }
@@ -111,11 +105,7 @@ ApplicationWindow {
                 id: updateToolButton
                 title: qsTr("Upgrade")
                 upgrade_button:true
-                //icon: "../images/update-toolbutton.png"
-                //normal_color: "#a7be7a"
-                //anchors.top: storeToolButton.bottom
-                //anchors.left: storeToolButton.right
-                x: storeToolButton.x + storeToolButton.width +10
+                x: storeToolButton.x + storeToolButton.width
 
                 MouseArea {
                     anchors.fill: parent
@@ -132,11 +122,7 @@ ApplicationWindow {
             MyToolButton {
                 id: uninstallToolButton
                 title: qsTr("Uninstall")
-                //icon: "../images/uninstall-toolbutton.png"
-                //normal_color: "#b2c689"
-                //anchors.top: updateToolButton.bottom
-                //anchors.left: updateToolButton.right
-                x: updateToolButton.x + updateToolButton.width +10
+                x: updateToolButton.x + updateToolButton.width
 
                 MouseArea {
                     anchors.fill: parent

@@ -17,7 +17,8 @@ const QString APPLICATION_VERSION = "2.2.9";
 const QString APPLICATION_ENCODING = "UTF-8";
 const QString TRANSLATIONS_PATH = "translations";
 
-const QString SERVER_HOST = "http://appstore.isoft-linux.org/"; 
+//const QString SERVER_HOST = "http://appstore.isoft-linux.org/";
+const QString SERVER_HOST = "http://appstore.zhcn.cc/";
 const QString CATEGORY_URI = SERVER_HOST + "appstore/categories/" + QLocale::system().name().toLower();
 const QString SLIDESHOW_URI = SERVER_HOST + "appstore/advertisements/" + QLocale::system().name().toLower();
 const QString GRIDVIEW_URI = SERVER_HOST + "appstore/sticky/" + QLocale::system().name().toLower();

@@ -78,14 +78,15 @@ Item {
 
         delegate: Rectangle {
             id: selectorItem
-            width: 40; height: 40; color: "transparent"
+            width: 30; height: 30; color: "transparent"
 
             property bool hover
 
             Rectangle { 
-                width: 20; height: 20; 
-                color: slideShow.currentIndex == index ? "white" : (selectorItem.hover ? "white" : "#66C184")
-                opacity: slideShow.currentIndex == index ? 0.2 : (selectorItem.hover ? 0.2 : 1.0)
+                width: 14; height: 14;
+                color: slideShow.currentIndex == index ? "#00c5da" : (selectorItem.hover ? "#00c5da" : "white")
+                opacity: slideShow.currentIndex == index ? 1.0 : (selectorItem.hover ? 1.0 : 0.2)
+                radius: width/2
             }
 
             MouseArea {
