@@ -159,7 +159,7 @@ Rectangle {
                                 infoText.visible = false
                                 actCombox.visible = true
                                 appCheckBox.enabled = false
-                                nameText.text = modelData.title
+                                //nameText.text = modelData.title
 
                                 for(var i = 0 ; i < pkModel.packages.length;i++) {
                                     if (pkModel.packages[i].name  == name) {
