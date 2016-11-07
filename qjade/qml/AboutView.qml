@@ -59,7 +59,6 @@ MyWindow {
         sourceSize.width: 128; sourceSize.height: 128
         anchors.top: parent.top; anchors.right: parent.right
         anchors { topMargin: 60; rightMargin: 40 }
-        visible: false
     }
 
     Button { 

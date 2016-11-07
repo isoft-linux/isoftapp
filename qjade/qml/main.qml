@@ -51,7 +51,7 @@ ApplicationWindow {
         //---------------------------------------------------------------------
         Image {
             id: logoImage
-            source: brand.logo
+            source: "../title.png"
             //sourceSize.width: 50; sourceSize.height: 50
             anchors.left: parent.left
             anchors.verticalCenter: parent.verticalCenter
