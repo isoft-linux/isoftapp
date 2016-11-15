@@ -1,4 +1,7 @@
-// Copyright (C) 2014 - 2015 Leslie Zhai <xiang.zhai@i-soft.com.cn>
+/*
+ * Copyright (C) 2014 - 2015 Leslie Zhai <xiang.zhai@i-soft.com.cn>
+ *               2016 fujiang <fujiang.zhu@i-soft.com.cn>
+ */
 
 #include "jadedbus.h"
 #include "globaldeclarations.h"
@@ -387,6 +390,19 @@ void JadedBus::m_errored(const QString &name,const QString &detail)
     emit errored(name,detail);
 }
 
+extern QStringList g_backendList;
+
+QString JadedBus::getBackend(QString name)
+{
+    QString isBackend = "0";
+    if (name.isEmpty()) {
+        return isBackend;
+    }
+    if (g_backendList.contains(name)) {
+        isBackend = "1";
+    }
+    return isBackend;
+}
 QString JadedBus::getInfo(QString name) 
 {
     int i = 0,j = 0;

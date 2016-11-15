@@ -1,6 +1,7 @@
 /*                                                                              
  * Copyright (C) 2014 AnthonOS Open Source Community                               
  *               2014 - 2015 Leslie Zhai <xiang.zhai@i-soft.com.cn>
+ *               2016 fujiang <fujiang.zhu@i-soft.com.cn>
  */
 
 #include <QNetworkRequest>
@@ -259,7 +260,6 @@ void PackageByCategoryModel::getPackagesFinished(QNetworkReply *reply)
 
         QString tmp = PACKAGE_URI + pkname + "/" +
                                      QLocale::system().name().toLower();
-        //printf("\n%s,%d,to get info by name:[%s],pkg num[%d]\n",__FUNCTION__,__LINE__,qPrintable(tmp),m_pks_size);
     }
     disconnect(&m_pks, SIGNAL(finished(QNetworkReply*)),                           
         this, SLOT(getPackagesFinished(QNetworkReply*)));

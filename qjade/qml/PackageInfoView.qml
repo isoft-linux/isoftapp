@@ -1,5 +1,6 @@
 /*                                                                                 
  * Copyright (C) 2014 - 2015 Leslie Zhai <xiang.zhai@i-soft.com.cn>
+ *               2016 fujiang <fujiang.zhu@i-soft.com.cn>
  */
 
 import QtQuick 2.2
@@ -110,6 +111,16 @@ Rectangle {
             property string info: "UnknownInfo"
 
             Component.onCompleted: {
+                var  backend = getBackend(packageName)
+                if(backend== "1") {
+                    for (var i = 0 ; i<listmodel.count; i++) {
+                        var obj = listmodel.get(i);
+                        if (obj.name == "open") {
+                            listmodel.remove(i);
+                            break;
+                        }
+                    }
+                }
                 jadedBus.info = jadedBus.getInfo(packageName)
 
                 if (jadedBus.info == "UnknownInfo") {
@@ -227,26 +238,31 @@ Rectangle {
             anchors.left: funcButton.left
             model: ListModel {
                      id: listmodel
-                     ListElement { text: qsTr("Open")}
-                     ListElement { text: qsTr("Uninstall")}
-                     ListElement { text: qsTr("Upgrade")}
-                     ListElement { text: qsTr("SelectOp")}
+                     ListElement { name: "open";     text: qsTr("Open")}
+                     ListElement { name: "uninstall";text: qsTr("Uninstall")}
+                     ListElement { name: "upgrade";  text: qsTr("Upgrade")}
+                     ListElement { name: "selectOp"; text: qsTr("SelectOp")}
             }
             visible: false
             currentIndex: 3
 
             onPressedChanged:     {
-                if(listmodel.count == 4) {
-                    listmodel.remove(3)
+                for (var i = 0 ; i<listmodel.count; i++) {
+                    var obj = listmodel.get(i);
+                    if (obj.name == "selectOp") {
+                        listmodel.remove(i);
+                        break;
+                    }
                 }
                 currentIndex = 3
             }
             onActivated: {
-                if (index == 0) {
+                var obj = listmodel.get(index);
+                if (obj.name == "open") {
                     jadedBus.runCmd(packageInfoModel.name)
-                } else if (index == 1) {
+                } else if (obj.name == "uninstall") {
                     jadedBus.uninstall(packageInfoModel.name)
-                } else if (index == 2) {
+                } else if (obj.name == "upgrade") {
                     jadedBus.update(packageInfoModel.name)
                 }
                 //currentIndex = 3

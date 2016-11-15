@@ -1,5 +1,6 @@
 /*                                                                              
  * Copyright (C) 2014 Leslie Zhai <xiang.zhai@i-soft.com.cn>                       
+ *               2016 fujiang <fujiang.zhu@i-soft.com.cn>
  */
 
 #ifndef PACKAGE_INFO_MODEL_H

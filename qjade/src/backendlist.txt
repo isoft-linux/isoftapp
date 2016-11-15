@@ -1,0 +1,5 @@
+vmwarepatch
+gperftools
+pandoc
+GraphicsMagick
+clonezilla

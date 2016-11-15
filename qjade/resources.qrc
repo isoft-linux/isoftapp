@@ -45,5 +45,6 @@
   <file>images/uninstall-toolbutton.png</file>
   <file>images/ajax-loader.gif</file>
   <file>images/window_handle.png</file>
+  <file>backendlist.txt</file>
 </qresource>
 </RCC>

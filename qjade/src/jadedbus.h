@@ -1,4 +1,7 @@
-// Copyright (C) 2014 - 2015 Leslie Zhai <xiang.zhai@i-soft.com.cn>
+/*
+ * Copyright (C) 2014 - 2015 Leslie Zhai <xiang.zhai@i-soft.com.cn>
+ *               2016 fujiang <fujiang.zhu@i-soft.com.cn>
+ */
 
 #ifndef JADEDBUS_H
 #define JADEDBUS_H
@@ -59,6 +62,7 @@ public:
     Q_INVOKABLE void setPathMode(QString path,QString mode);
     Q_INVOKABLE void getPathMode();
     Q_INVOKABLE void getMyPkgNumber();
+    Q_INVOKABLE QString getBackend(QString name);
 
     QList<QObject*> updates() const { return m_updateList; }
     QList<QObject*> installed() const { return m_installedList; }

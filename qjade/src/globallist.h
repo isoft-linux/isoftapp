@@ -1,3 +1,6 @@
+/*
+ * Copyright (C) 2016 fujiang <fujiang.zhu@i-soft.com.cn>
+ */
 #ifndef QJADE_GLOBALLIST_H
 #define QJADE_GLOBALLIST_H
 #include "util.h"

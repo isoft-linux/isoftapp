@@ -1,5 +1,6 @@
 /*                                                                                 
  * Copyright (C) 2014 - 2015 Leslie Zhai <xiang.zhai@i-soft.com.cn>
+ *               2016 fujiang <fujiang.zhu@i-soft.com.cn>
  */
 
 import QtQuick 2.2

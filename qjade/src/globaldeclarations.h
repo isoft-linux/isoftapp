@@ -1,6 +1,7 @@
 /*                                                                              
  * Copyright (C) 2014 AnthonOS Open Source Community                               
  *               2014 - 2015 Leslie Zhai <xiang.zhai@i-soft.com.cn>
+ *               2016 fujiang <fujiang.zhu@i-soft.com.cn>
  */
 
 #ifndef GLOBAL_DECLARATIONS_H
@@ -21,7 +22,7 @@ const QString TRANSLATIONS_PATH = "translations";
 const QString SERVER_HOST = "http://appstore.zhcn.cc/";
 const QString CATEGORY_URI = SERVER_HOST + "appstore/categories/" + QLocale::system().name().toLower();
 const QString SLIDESHOW_URI = SERVER_HOST + "appstore/advertisements/" + QLocale::system().name().toLower();
-const QString GRIDVIEW_URI = SERVER_HOST + "appstore/sticky/" + QLocale::system().name().toLower();
+const QString GRIDVIEW_URI = SERVER_HOST + "appstore/sticky/" + QLocale::system().name().toLower() + "/"  + QSysInfo::currentCpuArchitecture();
 const QString CATEGORY_PACKAGE_URI = SERVER_HOST + "appstore/category-packages/";
 const QString PACKAGE_URI = SERVER_HOST + "appstore/package/";
 const QString SEARCH_URI = SERVER_HOST + "appstore/search/";

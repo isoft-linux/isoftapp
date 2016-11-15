@@ -1,6 +1,7 @@
 /*                                                                              
  * Copyright (C) 2014 AnthonOS Open Source Community
  *               2014 - 2015 Leslie Zhai <xiang.zhai@i-soft.com.cn>
+ *               2016 fujiang <fujiang.zhu@i-soft.com.cn>
  */
 
 #include <QApplication>
@@ -57,6 +58,8 @@ QList<t_QJADE_PKGINFO> g_qjadePkgList;
 */
 QList<t_CATEGORY_INFO> g_categoryList;
 
+QStringList g_backendList;
+
 int main(int argc, char *argv[]) 
 {                                                                        
     //-------------------------------------------------------------------------
@@ -85,6 +88,18 @@ int main(int argc, char *argv[])
     i18n.translate();
     
     const QString productName = brand.name();
+
+    QString backfile = QString(DATADIR) + "/" + "qjade/backendlist.txt";
+    QFile file(backfile);
+    if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        while (!file.atEnd()) {
+            QString lineStr = QString(file.readLine());
+            if (lineStr.endsWith("\n"))
+                lineStr.truncate(lineStr.length() - 1);
+
+            g_backendList.append(lineStr);
+        }
+    }
 
     //begin
     g_isoftapp = new org::isoftlinux::Isoftapp("org.isoftlinux.Isoftapp",

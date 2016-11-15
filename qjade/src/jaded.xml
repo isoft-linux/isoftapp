@@ -6,6 +6,10 @@
             <arg type="s" name="name" direction="in" />
             <arg type="s" name="info" direction="out" />
         </method>
+        <method name="getBackend">
+            <arg type="s" name="name" direction="in" />
+            <arg type="s" name="info" direction="out" />
+        </method>
         <method name="getUpdate">
         </method>
         <method name="getInstalled">

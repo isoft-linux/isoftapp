@@ -1,6 +1,7 @@
 /*                                                                              
  * Copyright (C) 2014 AnthonOS Open Source Community                               
  *               2014 - 2015 Leslie Zhai <xiang.zhai@i-soft.com.cn>
+ *               2016 fujiang <fujiang.zhu@i-soft.com.cn>
  */
 
 #ifndef ICON_MODEL_H

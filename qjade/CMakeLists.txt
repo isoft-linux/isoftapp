@@ -64,3 +64,4 @@ install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/brand/qjade.png DESTINATION ${DATADIR}
 install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/qml DESTINATION ${DATADIR}/qjade)
 install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/images DESTINATION ${DATADIR}/qjade)
 install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/translations/qjade_zh_CN.qm DESTINATION /usr/share/qt5/translations)
+install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/backendlist.txt DESTINATION ${DATADIR}/qjade)

@@ -1,5 +1,5 @@
 /*
- *               2016 fj <fujiang@i-soft.com.cn>
+ * Copyright (C) 2016 fujiang <fujiang.zhu@i-soft.com.cn>
  */
 
 #ifndef MY_PKG_MODEL_H
