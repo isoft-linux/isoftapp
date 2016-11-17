@@ -37,6 +37,7 @@ Rectangle {
             myLoader.visible = false;
             uninstallListView.model = uninstallJadedBus.installed;
             uninstallListView.visible = count == 0 ? false : true;
+            allChecked.enabled = count == 0 ? false : true;
 
             for(var i = 0; i < uninstallJadedBus.installed.length; i++) {
                 myListModel.append({name: uninstallJadedBus.installed[i].name,
@@ -203,6 +204,7 @@ Rectangle {
                                 }
                             }
                             countText.text = qsTr("Uninstall") + ": " + qsTr("%1 total").arg(newCount)
+                            allChecked.enabled = newCount == 0 ? false : true;
                         }
                     }
                 }
@@ -366,6 +368,7 @@ Rectangle {
         anchors.topMargin: 10
         checked: false
         text: qsTr("uninstall all selected items")
+        enabled: false
 
         onClicked: {
             if (checked) {

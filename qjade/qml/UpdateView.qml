@@ -40,6 +40,7 @@ Rectangle {
                 updateListView.visible = count == 0 ? false : true;                     
                 myResultText.visible = count == 0 ? true : false;
                 updateText.text = qsTr("Update") + ": " + qsTr("%1 total").arg(count);
+                allChecked.enabled = count == 0 ? false : true;
             }
         }
     }
@@ -283,6 +284,7 @@ Rectangle {
                             updateRect.height = 0
                             updateView.count--
                             updateText.text = qsTr("Update") + ": " + qsTr("%1 total").arg(updateView.count)
+                            allChecked.enabled = updateView.count == 0 ? false : true;
                             }
                         }
                     }
@@ -338,6 +340,7 @@ Rectangle {
         anchors.topMargin: 10
         checked: false
         text: qsTr("Update all selected items")
+        enabled: false
 
         onClicked: {
             for(var i = 0 ; i < updateJadedBus.updates.length;i++) {
