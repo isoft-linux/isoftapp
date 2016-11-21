@@ -147,11 +147,18 @@ Rectangle {
                             }
 
                         } else {
+                            var hasChecked = false;
                             for(var i = 0 ; i < updateJadedBus.updates.length;i++) {
                                 if (updateJadedBus.updates[i].name  == modelData.name) {
                                     updateJadedBus.updates[i].category = "0";
-                                    break;
+                                    //break;
                                 }
+                                if (updateJadedBus.updates[i].category == "1") {
+                                    hasChecked = true;
+                                }
+                            }
+                            if (!hasChecked) {
+                                bottonAct.enabled = false
                             }
                         }
                     }
@@ -276,6 +283,9 @@ Rectangle {
                                 isError = false
                                 appCheckBox.checked = false
                             } else {
+                                if (appCheckBox.checked) {
+                                    appCheckBox.checked = false
+                                }
 
                             updateButton.visible = false
                             infoText.visible = true

@@ -222,11 +222,18 @@ Rectangle {
                             }
 
                         } else {
+                            var hasChecked = false;
                             for(var i = 0 ; i < pkModel.packages.length;i++) {
                                 if (pkModel.packages[i].name  == modelData.name) {
                                     pkModel.packages[i].checked = "0";
-                                    break;
+                                    //break;
                                 }
+                                if (pkModel.packages[i].checked == "1") {
+                                    hasChecked = true;
+                                }
+                            }
+                            if (!hasChecked) {
+                                bottonAct.enabled = false
                             }
                         }
                     }

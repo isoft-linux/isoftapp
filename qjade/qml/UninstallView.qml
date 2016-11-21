@@ -165,6 +165,9 @@ Rectangle {
                             removeButton.visible = false
                             infoText.visible = true
                             infoText.text = qsTr("Waiting")
+                        } else if (jadedBus.info == "InfoAvailable"){
+                            uninstallRect.visible = false
+                            uninstallRect.height = 0
                         }
                     }
                     onErrored: {
@@ -198,10 +201,14 @@ Rectangle {
                             uninstallRect.height = 0
                             uninstallView.count--
                             var newCount = 0
+
                             for(var i = 0; i < myListModel.count; i++) {
                                 if (myListModel.get(i).installed) {
                                     newCount ++
                                 }
+                            }
+                            if (appCheckBox.checked) {
+                                appCheckBox.checked = false
                             }
                             countText.text = qsTr("Uninstall") + ": " + qsTr("%1 total").arg(newCount)
                             allChecked.enabled = newCount == 0 ? false : true;
@@ -226,11 +233,18 @@ Rectangle {
                                 }
                             }
                         } else {
+                            var hasChecked = false;
                             for(var i = 0; i < myListModel.count; i++) {
                                 if (myListModel.get(i).name  == modelData.name) {
                                     myListModel.setProperty(i, "checked", false);
-                                    break;
+                                    //break;
                                 }
+                                if (myListModel.get(i).installed && myListModel.get(i).checked) {
+                                    hasChecked = true;
+                                }
+                            }
+                            if (!hasChecked) {
+                                bottonAct.enabled = false
                             }
                         }
                     }
