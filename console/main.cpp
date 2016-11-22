@@ -119,6 +119,7 @@ static void PrintHashes(double Percent)
    }
 }
 static QString g_fileName="";
+static bool g_finished = false;
 int main(int argc, char *argv[])
 {
     QCoreApplication app(argc, argv);
@@ -167,8 +168,16 @@ int main(int argc, char *argv[])
             std::cout << file.toStdString() << " " << std::string(_("Available")) << std::endl;
             return;
         } else if(status != STATUS_REMOVE && status !=STATUS_INSTALL ) {
-            if (g_fileName == file && abs((int)(percent*100.0) - 100) < 1 ) {
+            if ((int)(percent*100.0) < 0 || (int)(percent*100.0) > 100 ) {
                 return;
+            }
+            if (g_fileName == file && (int)(percent*100.0) == 100 ) {
+                if (g_finished)
+                    return;
+                g_finished = true;
+            }
+            if (g_fileName != file && !g_fileName.isEmpty()) {
+                g_finished = false;
             }
             g_fileName = file;
         }
