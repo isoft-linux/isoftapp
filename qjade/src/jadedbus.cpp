@@ -461,6 +461,7 @@ void JadedBus::getUpdateTimeout()
         emit getUpdateError();
         return;
     }
+    bool find = false;
     m_updateList.clear();
     QString checked = QString::number(0, 10);
     // m_updateInfo = [firefox,firefox-41.0.2-15,firefox-43.0-2|]-->from isoftapp-daemon:listUpdate()
@@ -474,6 +475,7 @@ void JadedBus::getUpdateTimeout()
         QString pkgInfo = pkgList.at(i);
         QStringList infoList = pkgInfo.split(",", QString::SkipEmptyParts);
         char str[256]="";
+        find = false;
         // [vlc,1.2.0,1.2.9]
         // name,pre version,lastest version
         if(infoList.size() == 3 ) {
@@ -496,6 +498,7 @@ void JadedBus::getUpdateTimeout()
                             break;
                         }
                     }
+                    find = true;
                     break;
                 }
             }
@@ -503,6 +506,10 @@ void JadedBus::getUpdateTimeout()
 
         if(name.isEmpty()) {
             printf("\nERROR:%s,%d,can not find pkg name\n",__FUNCTION__,__LINE__);
+            continue;
+        }
+        if(!find) {
+            printf("\ntrace:%s,%d,no this pkg on server.name[%s]icon[%s]size[%s]find[%s]\n",__FUNCTION__,__LINE__,qPrintable(name),qPrintable(icon),qPrintable(size) ,find?"find":"not find");
             continue;
         }
 

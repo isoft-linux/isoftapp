@@ -257,6 +257,8 @@ Rectangle {
                     //anchors.leftMargin: 7
                     anchors.verticalCenter: parent.verticalCenter
                     sourceSize.width: 48; sourceSize.height: 48
+                    // offline-> online:meet error:[QML Image: Network access is disabled]
+                    //onStatusChanged: if (appIcon.status == Image.Error) appIcon.source = "/var/cache/isoftapp/qjade/vlc.png"
                 }
 
                 ProgressBar {

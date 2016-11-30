@@ -50,8 +50,6 @@ void PackageByCategoryModel::m_get()
 //-----------------------------------------------------------------------------
 void PackageByCategoryModel::setCategory(QString category) 
 {
-    printf("\n%s,%d,category[%s]vs[%s]\n",__FUNCTION__,__LINE__,
-           qPrintable(category),qPrintable(g_qjadePkgList[2].category));
     QString categorySim = "";
     QString dstCate = "all-pkg";
     if (category == "all-pkg") {
