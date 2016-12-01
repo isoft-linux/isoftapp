@@ -85,6 +85,8 @@ typedef enum {
 } ErrorCode;
 //end
 
+static QString m_updateInfo="";
+static bool g_updateDone = false;
 bool g_offline = false;
 static bool g_hasInited = false;
 static org::isoftlinux::Isoftapp *m_isoftapp = Q_NULLPTR;
@@ -288,8 +290,13 @@ void JadedBus::getFinished(const QString &pkgName,qlonglong status)
     for (i = 0; i < m_taskQueue.size(); i++) {
         if (m_taskQueue[i].status == "doing" &&
             pkgName == m_taskQueue[i].name) {
-            printf("trace:%s,%d,name[%s],index[%d] task will be finished.\n",__FUNCTION__,__LINE__,
-                   qPrintable(m_taskQueue[i].name),i);
+            if (m_taskQueue[i].action == "update") {
+                int t = (int)time(NULL);
+                m_updateInfo.replace(pkgName,QString::number(t, 10));
+                //getUpdate() ;
+            }
+            printf("trace:%s,%d,name[%s],index[%d][%s] task is finished.\n",__FUNCTION__,__LINE__,
+                   qPrintable(m_taskQueue[i].name),i,qPrintable(m_taskQueue[i].action));
             m_taskQueue[i].status = "done";
             g_doingPkgName = "";
             m_taskQueue.removeFirst();
@@ -429,8 +436,6 @@ QString JadedBus::getInfo(QString name)
     return "UnknownInfo";
 }
 
-static QString m_updateInfo="";
-static bool g_updateDone = false;
 void JadedBus::getUpdateFinished(const QString &pkgInfo)
 {
 
@@ -739,7 +744,7 @@ void JadedBus::m_taskStarted(const QString &name)
 }
 
 
-void JadedBus::taskFinished(const QString &name) 
+void JadedBus::taskFinished(const QString &name)
 {
     //to call () getAllPkgList
     emit taskChanged(name);

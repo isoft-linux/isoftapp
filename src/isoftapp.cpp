@@ -1805,6 +1805,70 @@ bool getNewerPkgVer(const char *pkgName,char nvrNewStr[256],char uri[512])
 }
 
 /*
+* 比较升级版本
+* nvrNewStr:新版
+* nvrStr: 旧版
+* 不能互换位置
+*/
+int compareVersion(const char *nvrNewStr,const char *nvrStr)
+{
+    if (nvrNewStr == NULL || nvrStr == NULL) {
+        return -1;
+    }
+    int result = 0;
+    int newLen = strlen(nvrNewStr);
+    int oldLen = strlen(nvrStr);
+    int i = 0;
+    if (newLen >= oldLen) {
+        for (i = 0; i < oldLen; i++) {
+            if (nvrNewStr[i] >= nvrStr[i]) {
+                if (nvrNewStr[i] > nvrStr[i]) {
+                    result = 1;
+                    break;
+                }
+            } else {
+                int restNew = atoi(nvrNewStr+i);
+                int restOld = atoi(nvrStr+i);
+                if (restNew > restOld) {
+                    result = 1;
+                    break;
+                } else {
+                    result = -1;
+                    break;
+                }
+            }
+        }
+        if (result == 0 && newLen > oldLen) {
+            result = 1;
+        }
+    } else {
+        for (i = 0; i < newLen; i++) {
+            if (nvrNewStr[i] >= nvrStr[i]) {
+                if (nvrNewStr[i] > nvrStr[i]) {
+                    result = 1;
+                    break;
+                }
+            } else {
+                int restNew = atoi(nvrNewStr+i);
+                int restOld = atoi(nvrStr+i);
+                if (restNew > restOld) {
+                    result = 1;
+                    break;
+                } else {
+                    result = -1;
+                    break;
+                }
+            }
+        }
+        if (result == 0) {
+            result = -1;
+        }
+    }
+
+    return result;
+}
+
+/*
 * insert into toUpPkgList
 */
 void realUpgrade(const char *pkgName,bool onlyGetUpgPkg,string &upgPkgs)
@@ -1829,8 +1893,8 @@ void realUpgrade(const char *pkgName,bool onlyGetUpgPkg,string &upgPkgs)
 #endif
         return;
     }
-
-    if (strcmp(nvrNewStr,nvrStr) > 0) {
+    int isNew = compareVersion(nvrNewStr,nvrStr);
+    if (isNew > 0) {
         cout << nvrStr << " => " << nvrNewStr <<endl;
 
         t_PKGS pkg;

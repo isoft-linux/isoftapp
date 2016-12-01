@@ -115,6 +115,7 @@ ApplicationWindow {
                         uninstallToolButton.click = false
                         stackView.clear()
                         stackView.push(Qt.resolvedUrl("UpdateView.qml"))
+                        jadedBus.getUpdate()
                     }
                     cursorShape: Qt.PointingHandCursor
                 }
