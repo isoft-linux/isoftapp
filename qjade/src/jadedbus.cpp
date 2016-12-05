@@ -85,6 +85,13 @@ typedef enum {
 } ErrorCode;
 //end
 
+typedef struct {
+    QString name;
+    QString version; // current version
+} t_uptPkg;
+
+/* 从isoftapp-daemon 获取所有软件包信息 */
+extern QList<t_PKGINFO> AllPkgList;
 static QString m_updateInfo="";
 static bool g_updateDone = false;
 bool g_offline = false;
@@ -197,6 +204,23 @@ void JadedBus::getAllPkgList(const QString &pkgName,qlonglong status)
     }
     AllPkgList.clear();
 
+    // if pkg in upgrade list, update AllPkgList.version to preversion.
+    QStringList uptPkgList;
+    QList<t_uptPkg> uptList;
+    if (!m_updateInfo.isEmpty() ) {
+        uptPkgList = m_updateInfo.split("|", QString::SkipEmptyParts);
+        for (int i = 0; i < uptPkgList.size(); i++ ) {
+            QString pkgInfo = uptPkgList.at(i);
+            QStringList infoList = pkgInfo.split(",", QString::SkipEmptyParts);
+            if(infoList.size() == 3 ) {
+                t_uptPkg upt;
+                upt.name = infoList[0];
+                upt.version = infoList[1];
+                uptList.append(upt);
+            }
+        }
+    }
+
     for (int i = 0; i < pkgList.size(); i++ ) {
         QString pkgInfo = pkgList.at(i);
         QStringList infoList = pkgInfo.split(",", QString::SkipEmptyParts);
@@ -209,7 +233,29 @@ void JadedBus::getAllPkgList(const QString &pkgName,qlonglong status)
             pkg.pkgName = infoList[1];
             pkg.size = infoList[2];
             pkg.datetime = infoList[3];
-            pkg.version = infoList[4];
+            pkg.version = QString("");
+            if ( !uptList.isEmpty() ) {
+                for (int j = 0; j < uptList.size(); j++ ) {
+                    if (uptList.at(j).name == pkg.pkgName) {
+                        if (uptList.at(j).version.startsWith(pkg.pkgName)) {
+                            char *p = strstr(uptList.at(j).version.toLocal8Bit().constData(),
+                                             pkg.pkgName.toLocal8Bit().constData());
+                            if (p) {
+                                p = p + strlen(pkg.pkgName.toLocal8Bit().constData()) +1;
+                                pkg.version = QString(p);
+                            } else {
+                                pkg.version = infoList[4];
+                            }
+                        } else
+                            pkg.version = infoList[4];
+
+                        break;
+                    }
+                }
+            }
+            if(pkg.version.isEmpty()) {
+                pkg.version = infoList[4];
+            }
 
             AllPkgList.append(pkg);
             memset(name,0,sizeof(name));
