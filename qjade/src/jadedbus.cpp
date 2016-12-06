@@ -99,15 +99,9 @@ static bool g_hasInited = false;
 static org::isoftlinux::Isoftapp *m_isoftapp = Q_NULLPTR;
 JadedBus::JadedBus(QObject *parent) 
   : QObject(parent)
-  ////  m_jaded(NULL)
 {
-#if 0
-    m_jaded = new cn::com::isoft::JadedInterface("cn.com.isoft.Jaded", "/Jaded", 
-            QDBusConnection::sessionBus(), this);
-#endif
-
     if (!m_isoftapp) {
-    m_isoftapp = new org::isoftlinux::Isoftapp("org.isoftlinux.Isoftapp",
+        m_isoftapp = new org::isoftlinux::Isoftapp("org.isoftlinux.Isoftapp",
                                                    "/org/isoftlinux/Isoftapp",
                                                    QDBusConnection::systemBus());
     }
@@ -354,12 +348,6 @@ void JadedBus::getFinished(const QString &pkgName,qlonglong status)
     return;
 }
 
-/*
-*
-* get data from isoftapp daemon and
-* update AllPkgList every 8 seconds automatically.
-*
-*/
 void JadedBus::listChged(const QString &pkgName)
 {
     if (pkgName.isEmpty()) {
@@ -560,7 +548,8 @@ void JadedBus::getUpdateTimeout()
             continue;
         }
         if(!find) {
-            printf("\ntrace:%s,%d,no this pkg on server.name[%s]icon[%s]size[%s]find[%s]\n",__FUNCTION__,__LINE__,qPrintable(name),qPrintable(icon),qPrintable(size) ,find?"find":"not find");
+            printf("\ntrace:%s,%d.name[%s]icon[%s]size[%s][%s]\n",__FUNCTION__,__LINE__,
+                   qPrintable(name),qPrintable(icon),qPrintable(size) ,find?"find":"not find");
             continue;
         }
 
@@ -631,10 +620,6 @@ void JadedBus::getInstalledFinished(const QStringList &installed)
     emit installedChanged();
 }
 
-/*
-* 卸载页面展示内容：
-* 1、从全局列表 g_qjadePkgList 中获取
-*/
 void JadedBus::getInstalledTimeout() 
 {
     int i = 0,j = 0;
@@ -774,13 +759,6 @@ void JadedBus::searchTimeout()
 
 void JadedBus::search(QString name) 
 {
-#if 0
-    connect(m_jaded,                                                               
-            &cn::com::isoft::JadedInterface::searchFinished,                       
-            this,                                                                  
-            &JadedBus::searchFinished);
-    m_jaded->search(name);
-#endif
     QTimer::singleShot(6000, this, SLOT(searchTimeout()));
 }
 
@@ -792,7 +770,6 @@ void JadedBus::m_taskStarted(const QString &name)
 
 void JadedBus::taskFinished(const QString &name)
 {
-    //to call () getAllPkgList
     emit taskChanged(name);
 }
 
@@ -830,7 +807,6 @@ bool JadedBus::m_isTaskExist(QString name)
 
     for (int i = 0; i < m_taskQueue.size(); i++) {
         if (m_taskQueue[i].name == name) {
-            printf("trace:%s,%d,name[%s] is already in queue.\n",__FUNCTION__,__LINE__,qPrintable(name));
             return true;
         }
     }
@@ -865,11 +841,9 @@ void JadedBus::m_runTask()
         printf("%s,%d, will install [%s].\n",__FUNCTION__,__LINE__,qPrintable(name));
         m_isoftapp->Install(qPrintable(name));
     } else if (action == "installfile") {
-        //m_pkt->installFile(id, true);
     } else if (action == "update") {
         printf("%s,%d, will upgrade [%s].\n",__FUNCTION__,__LINE__,qPrintable(name));
         m_isoftapp->Upgrade(qPrintable(name));
-        //m_pkt->updatePackage(package);
     } else if (action == "uninstall") {
         printf("%s,%d, will uninstall [%s].\n",__FUNCTION__,__LINE__,qPrintable(name));
         QString desktopName = m_isoftapp->GetDesktopName(name).value();
@@ -917,16 +891,12 @@ void JadedBus::runTaskTimeOut()
                 }
             }
         }
-        printf("%s,%d, will install [%s].\n",__FUNCTION__,__LINE__,qPrintable(name));
         m_isoftapp->Install(qPrintable(name));
     } else if (action == "installfile") {
         //m_pkt->installFile(id, true);
     } else if (action == "update") {
-        printf("%s,%d, will upgrade [%s].\n",__FUNCTION__,__LINE__,qPrintable(name));
         m_isoftapp->Upgrade(qPrintable(name));
-        //m_pkt->updatePackage(package);
     } else if (action == "uninstall") {
-        printf("%s,%d, will uninstall [%s].\n",__FUNCTION__,__LINE__,qPrintable(name));
         m_isoftapp->Remove(qPrintable(name),false);
     }
 
@@ -1070,8 +1040,6 @@ void JadedBus::install(QString name)
     if (m_taskQueue.size() == 1)
         m_runTask();
     return;
-
-    //m_jaded->install(name);
 }
 
 void JadedBus::installFile(QString filePath) 
@@ -1081,8 +1049,6 @@ void JadedBus::installFile(QString filePath)
 
 void JadedBus::uninstall(QString name)
 {
-    ////m_jaded->uninstall(id);
-
     printf("trace:%s,%d, to uninstall [%s]m[%d]\n",__FUNCTION__,__LINE__,
            qPrintable(name),m_taskQueue.size());
     if (name.isEmpty()) {
@@ -1097,8 +1063,6 @@ void JadedBus::uninstall(QString name)
         m_runTask();
 
     return;
-
-    //emit taskQueueChanged(m_oldQueue.size());
 }
 
 void JadedBus::update(QString name) 
@@ -1115,7 +1079,6 @@ void JadedBus::update(QString name)
     m_taskQueue.append(TaskQueue(name, "update"));
     if (m_taskQueue.size() == 1)
         m_runTask();
-    ////m_jaded->update(name);
 }
 
 void JadedBus::cancel(QString name) 
@@ -1126,14 +1089,12 @@ void JadedBus::cancel(QString name)
             break;
         }
     }
-    ////_jaded->cancel(name);
 }
 
 void JadedBus::getTaskQueue() 
 {
     const QStringList task;
     m_taskQueueChanged(task);
-    ////m_jaded->getTaskQueue();
 }
 
 void JadedBus::getSettingChanged(const QString &pathMode)
@@ -1151,7 +1112,5 @@ void JadedBus::getSettingChanged(const QString &pathMode)
 void JadedBus::getPathMode()
 {
     m_isoftapp->GetPathMode();
-
-    printf("trace:%s,%d\n",__FUNCTION__,__LINE__);
 }
 
