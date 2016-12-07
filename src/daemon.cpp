@@ -1163,6 +1163,10 @@ daemon_init(Daemon *daemon)
         daemon_update((GdbusIsoftapp*)daemon,NULL);
     }
 
+    if (g_rpmPathMode.mode == 2) {
+        delete_rpm_files();
+    }
+
 cleanup:
     if (error) {
         g_error_free(error);
