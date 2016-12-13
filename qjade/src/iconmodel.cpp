@@ -98,7 +98,9 @@ void IconModel::finished(QNetworkReply *reply)
                 obj["icon"].toString(), obj["url"].toString()));
         }
     }
-    iconFristRun = true;
+    if (m_dataList.size() > 0) {
+        iconFristRun = true;
+    }
     printf("\n######%s,%d,IconModel size:[%d]\n",__FUNCTION__,__LINE__,m_dataList.size());
     emit iconChanged();
 }

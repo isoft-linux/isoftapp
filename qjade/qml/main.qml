@@ -51,7 +51,7 @@ ApplicationWindow {
         //---------------------------------------------------------------------
         Image {
             id: logoImage
-            source: "../title.png"
+            source: "../brand/title.png"
             //sourceSize.width: 50; sourceSize.height: 50
             anchors.left: parent.left
             anchors.verticalCenter: parent.verticalCenter
@@ -300,7 +300,7 @@ ApplicationWindow {
 
             Image {
                 anchors.verticalCenter: parent.verticalCenter
-                source: "../images/" + searchButtonRegion.name + 
+                source: "../images/" + searchButtonRegion.name +
                     (searchButtonRegion.hover ? "_hover" : "") + ".png"
             }
 

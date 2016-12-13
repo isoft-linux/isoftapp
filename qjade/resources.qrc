@@ -20,8 +20,12 @@
   <file>qml/MyResultText.qml</file>
   <file>qml/PackageInfoView.qml</file>
   <file>qml/TaskQueueView.qml</file>
+  <file>qml/Setting.qml</file>
+  <file>qml/HistoryView.qml</file>
   <file>qml/global.js</file>
+  <file>brand/title.png</file>
   <file>images/qjade.png</file>
+  <file>images/new_array.png</file>
   <file>images/window_minimize.png</file>
   <file>images/window_minimize_hover.png</file>
   <file>images/window_maximize.png</file>
@@ -45,6 +49,5 @@
   <file>images/uninstall-toolbutton.png</file>
   <file>images/ajax-loader.gif</file>
   <file>images/window_handle.png</file>
-  <file>backendlist.txt</file>
 </qresource>
 </RCC>

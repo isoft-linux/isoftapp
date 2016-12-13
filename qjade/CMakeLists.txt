@@ -7,6 +7,7 @@ find_package(Qt5Widgets REQUIRED)
 find_package(Qt5Qml REQUIRED)
 find_package(Qt5Quick REQUIRED)
 
+qt5_add_resources(qjade_RC_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/resources.qrc)
 
 set(qjade_SRCS
     src/brand.cpp
@@ -26,6 +27,7 @@ set(qjade_SRCS
     src/searchmodel.cpp
     src/slideshowmodel.cpp
     src/util.cpp
+    ${qjade_RC_SRCS}
     )
 
 qt5_add_dbus_interface(qjade_SRCS
@@ -61,7 +63,7 @@ install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/brand/isoft.png DESTINATION ${DATADIR}
 install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/brand/title.png DESTINATION ${DATADIR}/qjade)
 install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/brand/isoft.png DESTINATION ${DATADIR}/icons/oxygen/32x32/apps)
 install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/brand/qjade.png DESTINATION ${DATADIR}/icons/oxygen/32x32/apps)
-install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/qml DESTINATION ${DATADIR}/qjade)
-install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/images DESTINATION ${DATADIR}/qjade)
+##install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/qml DESTINATION ${DATADIR}/qjade)
+##install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/images DESTINATION ${DATADIR}/qjade)
 install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/translations/qjade_zh_CN.qm DESTINATION /usr/share/qt5/translations)
 install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/backendlist.txt DESTINATION ${DATADIR}/qjade)

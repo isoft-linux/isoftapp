@@ -129,9 +129,7 @@ int main(int argc, char *argv[])
     //-------------------------------------------------------------------------
     // TODO: QQmlApplicationEngine
     //-------------------------------------------------------------------------
-    QUrl filePath = QString(DATADIR) + "/" + "qjade/qml/main.qml";
-    QQmlApplicationEngine engine(filePath);
-    //QQmlApplicationEngine engine(QUrl("qrc:/qml/main.qml"));
+    QQmlApplicationEngine engine(QUrl("qrc:/qml/main.qml"));
     QObject *topLevel = engine.rootObjects().value(0);
     QQuickWindow *window = qobject_cast<QQuickWindow *>(topLevel); 
     if (!window) {                                                 
